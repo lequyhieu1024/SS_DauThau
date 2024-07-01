@@ -21,10 +21,12 @@ use App\Http\Controllers\Api\SystemController;
 // get token
 Route::group(['middleware' => 'web'], function () {
     Route::get('/csrf-token', function () {
-        return csrf_token();
-        //or return $request->session()->token();
+        return response()->json(['csrfToken' => csrf_token()]);
     });
 });
+// check login
+Route::get('not-yet-authenticated', [AuthController::class, 'notYetAuthenticated'])->name('not-yet-authenticated');
+
 Route::group(['prefix' => 'auth'], function () {
     // API không cần đăng nhập
     // Route::post('register', [AuthController::class, 'register']);
@@ -35,14 +37,12 @@ Route::group(['prefix' => 'auth'], function () {
 
     // API cần đăng nhập
     Route::group(['middleware' => ['auth:sanctum']], function () {
-        Route::get('user', [AuthController::class, 'user']);
         Route::get('logout', [AuthController::class, 'logout']);
     });
 });
 // 'middleware' => ['auth:sanctum']
 //API cần đăng nhập
 Route::group(['prefix' => 'admin','middleware' => ['auth:sanctum']], function () {
-
     // system
     Route::resource('system', SystemController::class);
     // Roles
