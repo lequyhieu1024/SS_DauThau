@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\ImageManagerStatic as Image;
 
 if (!function_exists('upload_image')) {
@@ -24,3 +25,18 @@ if (!function_exists('upload_image')) {
         return 'uploads/images/' . $filename;
     }
 }
+// if (!function_exists('get_setting')) {
+//     function get_setting($key, $limit = null, $lang = false, $default = null)
+//     {
+//         $settings = Cache::remember('business_settings', 86400, function () {
+//             return BusinessSetting::all();
+//         });
+//         if ($lang == false) {
+//             $setting = $settings->where('type', $key)->first();
+//         } else {
+//             $setting = $settings->where('type', $key)->where('lang', $lang)->first();
+//             $setting = !$setting ? $settings->where('type', $key)->first() : $setting;
+//         }
+//         return $setting == null ? $default : $setting->value;
+//     }
+// }
