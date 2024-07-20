@@ -92,7 +92,7 @@ class StaffController extends Controller
             $data = $request->all();
             $rules = [
                 'name' => 'required',
-                'code' => 'required|unique:users',
+                'taxcode' => 'required|unique:users',
                 'email' => 'required|unique:users|regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
                 'phone' => 'required|unique:users|regex:/^0[0-9]{9}$/',
                 'password' => 'required',
@@ -100,8 +100,8 @@ class StaffController extends Controller
             ];
             $message = [
                 'name.required' => 'Vui lòng nhập tên',
-                'code.required' => 'Vui lòng nhập mã nhân viên',
-                'code.unique' => 'Mã nhân viên đã tồn tại',
+                'taxcode.required' => 'Vui lòng nhập mã số thuế',
+                'taxcode.unique' => 'Mã số thuế đã tồn tại',
                 'phone.required' => 'Vui lòng nhập sđt',
                 'phone.regex' => 'Sđt không đúng đinh dạng',
                 'phone.unique' => 'Sđt đã tồn tại',
@@ -118,7 +118,7 @@ class StaffController extends Controller
             // thêm vào user db
             $user = new User();
             $user->name = $request->name;
-            $user->code = $request->code;
+            $user->taxcode = $request->taxcode;
             $user->type = "staff";
             if ($request->hasFile('avatar')) {
                 $user->avatar = upload_image($request->file('avatar'));
@@ -237,7 +237,7 @@ class StaffController extends Controller
             $staff = Staff::where('id', $id)->firstOrFail();
             $rules = [
                 'name' => 'required',
-                'code' => 'required|unique:users,code,' . $staff->user_id,
+                'taxcode' => 'required|unique:users,taxcode,' . $staff->user_id,
                 'email' => 'required|unique:users,email,' . $staff->user_id . '|regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
                 'phone' => 'required|unique:users,phone,' . $staff->user_id . '|regex:/^0[0-9]{9}$/',
                 'password' => 'required',
@@ -245,8 +245,8 @@ class StaffController extends Controller
             ];
             $message = [
                 'name.required' => 'Vui lòng nhập tên',
-                'code.required' => 'Vui lòng nhập mã nhân viên',
-                'code.unique' => 'Mã nhân viên đã tồn tại',
+                'taxcode.required' => 'Vui lòng nhập mã số thuế',
+                'taxcode.unique' => 'Mã số thuế đã tồn tại',
                 'phone.required' => 'Vui lòng nhập sđt',
                 'phone.regex' => 'Sđt không đúng đinh dạng',
                 'phone.unique' => 'Sđt đã tồn tại',
@@ -268,7 +268,7 @@ class StaffController extends Controller
             // câph nhật vào user db
             $user = User::findOrFail($staff->user_id);
             $user->name = $request->name;
-            $user->code = $request->code;
+            $user->taxcode = $request->taxcode;
             if ($request->hasFile('avatar')) {
                 $user->avatar = upload_image($request->file('avatar'));
             }
