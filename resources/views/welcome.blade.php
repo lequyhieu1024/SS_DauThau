@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Become Developer !</title>
+    <title>Bidding | Septenary Solution !</title>
 
     <!-- Fonts -->
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Styles -->
-    <style>
+    {{-- <style>
         /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
         html {
             line-height: 1.15;
@@ -384,7 +384,7 @@
         }
     </style>
 
-    <style>
+    {{-- <style>
         body {
             background-color: #f5f5f5;
         }
@@ -419,51 +419,15 @@
             border-color: #4CAF50;
             /* Màu viền khi hover */
         }
-    </style>
+    </style> --}}
 
 </head>
 
 <body class="antialiased">
-    <div class="container">
-        <div class="image-container mt-5 mb-3">
-            <img src="https://img.freepik.com/free-vector/gradient-code-logo-template_23-2148836609.jpg"
-                alt="BecomeDev">
+    <div class="">
+        <div class="image-container">
+            <img src="{{ asset('img/logo.jpg') }}" style="width: 1680px; height: 1000px;" alt="BecomeDev">
         </div>
-
-
-        <p>
-            Dear Students,
-        </p>
-        <p>
-            We are excited to share some important news with you! BecomeDev's website is currently undergoing
-            maintenance as we implement a new Learning Management System designed to enhance your learning experience.
-            This upgrade will bring a more practical approach to your studies, offering you a seamless and enriched
-            educational journey.
-        </p>
-
-        <p>
-            We appreciate your patience during this period and are thrilled to announce that our new and improved
-            website is set to go live by the end of July. Stay tuned for updates, and get ready to explore the enhanced
-            features and tools that will support your learning and development.
-        </p>
-
-        <p>
-            Thank you for being a part of BecomeDev. We can't wait for you to experience the future of learning with us!
-        </p>
-
-
-        <p>
-            Best regards, <br>
-            The BecomeDev Team
-        </p>
-
-
-
-
-
-        <!--     <h1>Coming Soon</h1> -->
-        <!--     <p>We are working on something awesome!</p> -->
-        <!--     <div class="countdown" id="countdown"></div> -->
     </div>
 </body>
 

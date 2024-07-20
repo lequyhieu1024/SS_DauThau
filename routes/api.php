@@ -36,13 +36,12 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('send-email', [AuthController::class, 'forgotPasswordApi']);
 
     // API cần đăng nhập
-    Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::group(['middleware' => ['auth.jwt']], function () {
         Route::get('logout', [AuthController::class, 'logout']);
     });
 });
-// 'middleware' => ['auth:sanctum']
 //API cần đăng nhập
-Route::group(['prefix' => 'admin','middleware' => ['auth:sanctum']], function () {
+Route::group(['prefix' => 'admin','middleware' => ['auth.jwt']], function () {
     // system
     Route::resource('system', SystemController::class);
     // Roles
