@@ -17,7 +17,6 @@ if (!function_exists('upload_image')) {
         if (!file_exists(public_path('uploads/images/'))) {
             mkdir(public_path('uploads/images/'), 0755, true);
         }
-
         // Resize và lưu ảnh
         Image::make($file->getRealPath())->resize(300, 200)->save($path);
 

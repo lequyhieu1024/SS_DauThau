@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'jwt', // Đảm bảo driver là 'jwt'
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*

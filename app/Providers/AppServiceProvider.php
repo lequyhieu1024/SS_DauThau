@@ -16,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
         require_once app_path('Http/Helper.php');
+        require_once app_path('helpers.php');
     }
 
     /**
