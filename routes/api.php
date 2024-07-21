@@ -37,7 +37,8 @@ Route::group(['prefix' => 'auth'], function () {
 
     // API cần đăng nhập
     Route::group(['middleware' => ['auth.jwt']], function () {
-        Route::get('logout', [AuthController::class, 'logout']);
+        Route::get('profile', [AuthController::class, 'profile']);
+        Route::post('logout', [AuthController::class, 'logout']);
     });
 });
 //API cần đăng nhập

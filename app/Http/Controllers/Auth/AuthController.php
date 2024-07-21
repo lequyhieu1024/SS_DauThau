@@ -73,19 +73,37 @@ class AuthController extends Controller
             return response()->json(['result' => false, 'message' => 'Không thể tạo token'], 500);
         }
 
-        return $this->loginSuccess($token);
+        return $this->respondWithToken($token);
     }
 
-    public function loginSuccess($token)
-    {
+//     public function login(Request $request)
+// {
+//     $credentials = $request->only('email', 'password');
+    
+//     if ($token = JWTAuth::attempt($credentials)) {
+//         return $this->respondWithToken($token);
+//     }
+    
+//     return response()->json(['error' => 'Unauthorized'], 401);
+// }
+
+protected function respondWithToken($token)
+{
+    return response()->json([
+        'data' => [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
+        ]
+    ]);
+}
+
+    public function profile(){
         $user = JWTAuth::user();
         return response()->json([
             'result' => true,
-            'message' => 'Đăng nhập thành công',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'user' => [
+             'data' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'taxcode' => $user->taxcode,
