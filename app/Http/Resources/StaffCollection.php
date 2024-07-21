@@ -34,16 +34,11 @@ class StaffCollection extends ResourceCollection
                     'updated_at' => $staff->updated_at,
                 ];
             }),
-            'meta' => [
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
-                'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
-                'first_page_url' => $this->url(1),
-                'last_page_url' => $this->url($this->lastPage()),
-                'next_page_url' => $this->nextPageUrl(),
-                'prev_page_url' => $this->previousPageUrl(),
-            ],
+            'total_elements' => $this->total(),
+            'total_pages' => $this->lastPage(),
+            'page_size' => $this->perPage(),
+            'number_of_elements' => $this->count(),
+            'current_page' => $this->currentPage(),
         ];
     }
 }

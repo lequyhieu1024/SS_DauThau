@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoleCollection;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
+// use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
@@ -28,16 +29,18 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // orm truy xuất tất cả dữ liệu, piginate(10) là phân 10 record 1 trang
-        $roles = Role::paginate(10);
-        // $roles = Role::where('id', '!=', 1)->paginate(10);
-
-        // lưu collection vào biến $data
+        // Lấy tham số 'size' từ request, mặc định là 10 nếu không có
+        $pageSize = $request->query('size', 10);
+    
+        // Lấy dữ liệu từ model Role và phân trang
+        $roles = Role::paginate($pageSize);
+    
+        // Tạo collection để trả về
         $data = new RoleCollection($roles);
-
-        // trả về dữ liệu json
+    
+        // Trả về dữ liệu JSON
         return response()->json([
             'result' => true,
             'status' => 200,
@@ -54,7 +57,13 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all()->groupBy('section');
+        $permissions = Permission::all();
+        foreach($permissions as $permission) {
+            // dd($permission);
+            $permission->name = __(convertText($permission->name));
+            $permission->section = __(convertText($permission->section));
+        }
+        
         if ($permissions->isEmpty()) {
             return response()->json([
                 'result' => false,
@@ -150,7 +159,13 @@ class RoleController extends Controller
     }
     public function edit($id)
     {
-        $permission_groups = Permission::get()->groupBy('section');
+        $permission_groups = Permission::all();
+        foreach($permission_groups as $permission) {
+            // dd($permission);
+            $permission->name = __(convertText($permission->name));
+            $permission->section = __(convertText($permission->section));
+        }
+        // $permission_groups = Permission::get()->groupBy('section');
         $role = Role::findOrFail($id);
         $permission_checked = RoleHasPermission::where('role_id', $id)->pluck('permission_id')->toArray();
         return response()->json([

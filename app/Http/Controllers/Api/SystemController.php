@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 
 class SystemController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware(['permission:list_system'])->only('index');
-    //     $this->middleware(['permission:update_system'])->only(['update']);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['permission:list_system'])->only('index');
+        $this->middleware(['permission:update_system'])->only(['update']);
+    }
     /**
      * Display a listing of the resource.
      *
