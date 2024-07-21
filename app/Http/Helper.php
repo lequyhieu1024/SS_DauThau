@@ -39,3 +39,11 @@ if (!function_exists('upload_image')) {
 //         return $setting == null ? $default : $setting->value;
 //     }
 // }
+
+if (!function_exists('convertText')) {
+    function convertText($string)
+    {
+        return ucwords(str_replace('_', ' ', $string));
+    }
+}
+
