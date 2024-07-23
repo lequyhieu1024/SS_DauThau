@@ -61,6 +61,7 @@ class RoleController extends Controller
         foreach($permissions as $permission) {
             // dd($permission);
             $permission->name = __(convertText($permission->name));
+            $permission->value = $permission->section;
             $permission->section = __(convertText($permission->section));
         }
         
