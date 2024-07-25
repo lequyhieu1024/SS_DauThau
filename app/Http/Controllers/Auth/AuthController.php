@@ -20,8 +20,8 @@ class AuthController extends Controller
             $messages = [
                 'taxcode.required' => 'Mã số thuế không được để trống',
                 'password.required' => 'Mật khẩu không được để trống',
-            ];  
-    
+            ];
+
             $validator = Validator::make($request->all(), [
                 'taxcode' => [
                     'required',
@@ -33,19 +33,19 @@ class AuthController extends Controller
                     }],
                 'password' => 'required',
             ], $messages);
-    
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
-    
+
             $credentials = $request->only('taxcode', 'password');
         }
         if(isset($request->email)){
             $messages = [
                 'email.required' => 'Email không được để trống',
                 'password.required' => 'Mật khẩu không được để trống',
-            ];  
-    
+            ];
+
             $validator = Validator::make($request->all(), [
                 'email' => [
                     'required', 'string',
@@ -57,11 +57,11 @@ class AuthController extends Controller
                     }],
                 'password' => 'required',
             ], $messages);
-    
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
-    
+
             $credentials = $request->only('email', 'password');
         }
 
@@ -79,11 +79,11 @@ class AuthController extends Controller
 //     public function login(Request $request)
 // {
 //     $credentials = $request->only('email', 'password');
-    
+
 //     if ($token = JWTAuth::attempt($credentials)) {
 //         return $this->respondWithToken($token);
 //     }
-    
+
 //     return response()->json(['error' => 'Unauthorized'], 401);
 // }
 
@@ -92,8 +92,8 @@ protected function respondWithToken($token)
     return response()->json([
         'data' => [
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+//            'token_type' => 'bearer',
+//            'expires_in' => JWTAuth::factory()->getTTL() * 60,
             'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
         ]
     ]);

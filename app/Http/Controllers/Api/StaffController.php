@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\ModelHasRole;
@@ -10,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\StaffCollection;
 use App\Http\Resources\StaffResource;
+use App\Http\Resources\StaffCollection;
 
 class StaffController extends Controller
 {
@@ -119,6 +120,7 @@ class StaffController extends Controller
             $user = new User();
             $user->name = $request->name;
             $user->taxcode = $request->taxcode;
+            $user->account_ban_at = $request->account_ban_at;
             $user->type = "staff";
             if ($request->hasFile('avatar')) {
                 $user->avatar = upload_image($request->file('avatar'));
@@ -260,11 +262,11 @@ class StaffController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
             }
-            
+
             // câph nhật vào staff db
             $staff->role_id = $request->role_id;
             $staff->save();
-        
+
             // câph nhật vào user db
             $user = User::findOrFail($staff->user_id);
             $user->name = $request->name;
@@ -276,21 +278,21 @@ class StaffController extends Controller
             $user->phone = $request->phone;
             $user->password = Hash::make($request->password);
             $user->save();
-        
+
             // câph nhật vào bảng model has role để được phân quyền
             $modelHasRole = ModelHasRole::where('model_id', $staff->user_id)->firstOrFail();
             $modelHasRole->role_id = $request->role_id;
             $modelHasRole->save();
-        
+
             // commit
             DB::commit();
-        
+
             // cập nhật thành công thì lấy lại thông tin nhân viên vừa cập nhật
             $staffNew = Staff::join('users', 'users.id', '=', 'staffs.user_id')
                             ->join('roles', 'roles.id', '=', 'staffs.role_id')->where('staffs.id', '=', $id)
                             ->select('staffs.*','users.*','users.id as user_id', 'roles.name as role_name')
                             ->first();
-        
+
             return response()->json([
                 'result' => true,
                 'status' => 200,
@@ -301,7 +303,7 @@ class StaffController extends Controller
             DB::rollBack();
             throw $th;
         }
-        
+
     }
 
     /**
@@ -332,6 +334,36 @@ class StaffController extends Controller
                 'status' => 400,
                 'message' => 'Xóa nhân viên thất bại'
             ], 400);
+        }
+    }
+
+    public function banStaff($id){
+        $staff = Staff::find($id);
+        $user = User::find($staff->user_id);
+        //dd($user);
+        if(!$user){
+            return response()->json([
+                'result' => false,
+                'status' => 404,
+                'message' => 'Không tìm thấy nhân viên'
+            ], 404);
+        }
+        if($user->account_ban_at == null){
+            $user->account_ban_at = now();
+            $user->save();
+            return response()->json([
+                'result' => true,
+                'status' => 200,
+                'message' => 'Khóa tài khoản thành công'
+            ], 200);
+        }else{
+            $user->account_ban_at = null;
+            $user->save();
+            return response()->json([
+                'result' => true,
+                'status' => 200,
+                'message' => 'Mở khóa tài khoản thành công'
+            ], 200);
         }
     }
 }

@@ -15,4 +15,7 @@ class Staff extends Model
         'user_id',
         'role_id',
     ];
+    protected $casts = [
+        'role_id' => 'array', // Tự động chuyển đổi giữa JSON và mảng
+    ];
 }
