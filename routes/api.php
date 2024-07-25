@@ -49,4 +49,6 @@ Route::group(['prefix' => 'admin','middleware' => ['auth.jwt']], function () {
     Route::resource('role', RoleController::class);
     //Staff
     Route::resource('staff', StaffController::class);
+    // cấm tài khoản
+    Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
 });

@@ -33,13 +33,13 @@ class RoleController extends Controller
     {
         // Lấy tham số 'size' từ request, mặc định là 10 nếu không có
         $pageSize = $request->query('size', 10);
-    
+
         // Lấy dữ liệu từ model Role và phân trang
         $roles = Role::paginate($pageSize);
-    
+
         // Tạo collection để trả về
         $data = new RoleCollection($roles);
-    
+
         // Trả về dữ liệu JSON
         return response()->json([
             'result' => true,
@@ -64,7 +64,7 @@ class RoleController extends Controller
             $permission->value = $permission->section;
             $permission->section = __(convertText($permission->section));
         }
-        
+
         if ($permissions->isEmpty()) {
             return response()->json([
                 'result' => false,
@@ -154,7 +154,7 @@ class RoleController extends Controller
 
         return response()->json([
             'result' => true,
-            'message' => 'Lấy vai trò thành công',
+            'message' => 'Lấy chi tiết vai trò thành công',
             'data' => new RoleResource($role)
         ], 200);
     }
