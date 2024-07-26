@@ -29,10 +29,12 @@ class StaffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $staffs = Staff::join('users', 'users.id', '=', 'staffs.user_id')->join('roles', 'roles.id', '=', 'staffs.role_id')->select('users.*','users.id as user_id', 'staffs.*','staffs.id as staff_id','roles.name as role_name')->paginate(10);
+            // Lấy tham số 'size' từ request, mặc định là 10 nếu không có
+            $pageSize = $request->query('size', 10);
+            $staffs = Staff::join('users', 'users.id', '=', 'staffs.user_id')->join('roles', 'roles.id', '=', 'staffs.role_id')->select('users.*','users.id as user_id', 'staffs.*','staffs.id as staff_id','roles.name as role_name')->paginate($pageSize);
             $data = new StaffCollection($staffs); // chưa hoàn thiện staff collection
             return response(
                 [
@@ -132,14 +134,17 @@ class StaffController extends Controller
             // thêm vào staff db
             $staff = new Staff();
             $staff->user_id = $user->id;
-            $staff->role_id = $request->role_id;
+            $staff->role_id = json_encode($request->role_id);
             $staff->save();
             // thêm vào bảng model has role để được phân quyền
-            $modelHasRole = new ModelHasRole();
-            $modelHasRole->role_id = $request->role_id;
-            $modelHasRole->model_type = 'App\Models\User';
-            $modelHasRole->model_id = $user->id;
-            $modelHasRole->save();
+            foreach ($request->role_id as $roleId) {
+                $modelHasRole = new ModelHasRole();
+                $modelHasRole->role_id = $roleId;
+                $modelHasRole->model_type = 'App\Models\User';
+                $modelHasRole->model_id = $user->id;
+                $modelHasRole->save();
+            }
+//            dd($modelHasRole);
             //commit
             DB::commit();
             // thêm thành công
@@ -163,7 +168,15 @@ class StaffController extends Controller
      */
     public function show($id)
     {
-        $staff = Staff::join('users', 'users.id', '=', 'staffs.user_id')->join('roles', 'roles.id', '=', 'staffs.role_id')->where('staffs.id', '=', $id)->select('staffs.*','users.*','users.id as user_id', 'roles.name as role_name')->first();
+        $staff = Staff::join('users', 'users.id', '=', 'staffs.user_id')->where('staffs.id', '=', $id)->select('staffs.*','users.*','users.id as user_id')->first();
+        $staffRole = json_decode($staff->role_id);
+        $roleName = [];
+        foreach ($staffRole as $roleId) {
+            $role = Role::find($roleId);
+            $roleName[] = $role->name;
+        }
+
+        $staff->role_name = $roleName;
         if (!$staff) {
             return response()->json([
                 'result' => false,
@@ -190,8 +203,9 @@ class StaffController extends Controller
     {
         try {
             // lấy ra thông tin nhân viên
-            $staff = Staff::join('users', 'users.id', 'staffs.user_id')->join('roles', 'roles.id', 'staffs.role_id')->where('staffs.id', '=', $id)->select('staffs.id as staff_id','staffs.role_id as staff_role','users.*', 'roles.name as role_name')->first();
+            $staff = Staff::join('users', 'users.id', 'staffs.user_id')->where('staffs.id', '=', $id)->select('staffs.id as staff_id','staffs.role_id as staff_role','users.*')->first();
             // dd($staff);
+            $staff->staff_role = json_decode($staff->staff_role);
             // lấy ra danh sách  vai trò
             $roles = Role::all();
             // nếu chưa có vai trò nào thì thông báo chưa có vai trò
@@ -235,7 +249,7 @@ class StaffController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            dd($data);
+//            dd($data);
             $staff = Staff::where('id', $id)->firstOrFail();
             $rules = [
                 'name' => 'required',
@@ -264,7 +278,7 @@ class StaffController extends Controller
             }
 
             // câph nhật vào staff db
-            $staff->role_id = $request->role_id;
+            $staff->role_id = json_encode($request->role_id);
             $staff->save();
 
             // câph nhật vào user db
@@ -279,19 +293,49 @@ class StaffController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
-            // câph nhật vào bảng model has role để được phân quyền
-            $modelHasRole = ModelHasRole::where('model_id', $staff->user_id)->firstOrFail();
-            $modelHasRole->role_id = $request->role_id;
-            $modelHasRole->save();
+            // Lấy các vai trò hiện tại của nhân viên từ bảng model_has_roles
+            $currentRoles = ModelHasRole::where('model_id', $staff->user_id)->pluck('role_id')->toArray();
+
+            // Vai trò mới từ yêu cầu
+            $newRoles = $request->input('role_id', []);
+
+            // Vai trò cần xóa: những vai trò hiện tại nhưng không còn trong danh sách vai trò mới
+            $rolesToDelete = array_diff($currentRoles, $newRoles);
+
+            // Vai trò cần thêm: những vai trò mới nhưng không có trong danh sách vai trò hiện tại
+            $rolesToAdd = array_diff($newRoles, $currentRoles);
+
+            // Xóa các vai trò không còn tồn tại
+            ModelHasRole::where('model_id', $staff->user_id)
+                ->whereIn('role_id', $rolesToDelete)
+                ->delete();
+
+            // Thêm các vai trò mới
+            foreach ($rolesToAdd as $roleId) {
+                ModelHasRole::create([
+                    'role_id' => $roleId,
+                    'model_type' => 'App\Models\User',
+                    'model_id' => $staff->user_id,
+                ]);
+            }
 
             // commit
             DB::commit();
 
             // cập nhật thành công thì lấy lại thông tin nhân viên vừa cập nhật
             $staffNew = Staff::join('users', 'users.id', '=', 'staffs.user_id')
-                            ->join('roles', 'roles.id', '=', 'staffs.role_id')->where('staffs.id', '=', $id)
-                            ->select('staffs.*','users.*','users.id as user_id', 'roles.name as role_name')
+                            ->select('staffs.*','users.*','users.id as user_id')
+                            ->where('staffs.id', $id)
                             ->first();
+//            dd($staffNew);
+            $staffNew->role_id = json_decode($staffNew->role_id);
+            $roleName = [];
+            foreach ($staffNew->role_id as $roleId) {
+                $role = Role::find($roleId);
+                $roleName[] = $role->name;
+            }
+
+            $staffNew->role_name = $roleName;
 
             return response()->json([
                 'result' => true,
@@ -315,6 +359,7 @@ class StaffController extends Controller
     public function destroy($id)
     {
         $staff = Staff::find($id);
+        $user = User::find($staff->user_id);
         if(!$staff){
             return response()->json([
                 'result' => false,
@@ -322,7 +367,7 @@ class StaffController extends Controller
                 'message' => 'Không tìm thấy nhân viên cần xóa'
             ], 404);
         }
-        if($staff->delete()){
+        if($staff->delete() && $user->delete()){
             return response()->json([
                 'result' => true,
                 'status' => 200,
