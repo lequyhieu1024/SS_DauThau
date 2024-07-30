@@ -1,0 +1,35 @@
+openapi: 3.0.0
+
+info:
+  title: Website Phân tích và Biểu đồ hoá Dữ liệu Đấu thầu Mua sắm Công
+  description: Dữ liệu đấu thầu mua sắm công trên cả nước đang có hàng triệu bản ghi ở dạng thô, nếu được biểu đồ hóa/ đồ thị hóa hợp lý sẽ giúp doanh nghiệp dễ dàng phân tích, nghiên cứu thị trường, đối thủ cạnh tranh. Góp phần thúc đẩy chuyển đổi số trong lĩnh vực đấu thầu.
+  version: 1.0.0
+
+servers:
+  - url: 'https://staging-bidding.minhle3107.site/api'
+  - url: 'http://localhost:8000/api'
+
+tags:
+  - name: auth
+    description: Operations about authentication
+  - name: users
+    description: Operations about user
+
+paths:
+  /auth/login:
+    $ref: "./paths/auth/login.yaml"
+components:
+  parameters:
+    $ref: "./parameters/_index.yaml"
+
+  schemas:
+    $ref: "./schemas/_index.yaml"
+
+  responses:
+    $ref: "./responses/_index.yaml"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
