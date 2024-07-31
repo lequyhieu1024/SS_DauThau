@@ -74,8 +74,9 @@ class BiddingFieldController extends Controller
         ], 201);
     }
 
-    public function show(ValidateIdRequest $request, $id)
+    public function show(ValidateIdRequest $request)
     {
+        $id = $request->route('id');
         $biddingField = BiddingField::findBiddingFieldById($id);
 
         if (!$biddingField) {
@@ -119,8 +120,10 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function destroy(ValidateIdRequest $request, string $id)
+    public function destroy(ValidateIdRequest $request)
     {
+        $id = $request->route('id');
+
         $biddingField = BiddingField::deleteBiddingField($id);
 
         if (!$biddingField) {
@@ -135,4 +138,5 @@ class BiddingFieldController extends Controller
             'message' => 'Bidding field deleted successfully',
         ], 200);
     }
+
 }
