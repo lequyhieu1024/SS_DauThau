@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class BiddingFieldController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $rules = [
@@ -104,9 +101,6 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -137,9 +131,6 @@ class BiddingFieldController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         if (!is_numeric($id) || $id <= 0) {
@@ -165,13 +156,6 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(Request $request, string $id)
     {
         $biddingField = BiddingField::find($id);
@@ -217,12 +201,6 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy(string $id)
     {
         if (!is_numeric($id) || $id <= 0) {
