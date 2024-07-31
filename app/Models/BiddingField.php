@@ -10,6 +10,10 @@ class BiddingField extends Model
         'name', 'description', 'code', 'is_active', 'parent_id'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     public static function getFilteredBiddingFields($filters)
     {
         $query = self::query();

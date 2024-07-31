@@ -104,7 +104,9 @@ class BiddingFieldController extends Controller
             ], 400);
         }
 
-        $biddingField = BiddingField::updateBiddingField($id, $updateRequest->all());
+        $updateData = $updateRequest->except('is_active');
+
+        $biddingField = BiddingField::updateBiddingField($id, $updateData);
 
         if (!$biddingField) {
             return response()->json([
@@ -117,6 +119,31 @@ class BiddingFieldController extends Controller
             'result' => true,
             'message' => 'Bidding field updated successfully',
             'data' => $biddingField,
+        ], 200);
+    }
+
+    public function toggleActiveStatus(ValidateIdRequest $request)
+    {
+        $id = $request->route('id');
+
+        $biddingField = BiddingField::findBiddingFieldById($id);
+
+        if (!$biddingField) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Bidding field not found',
+            ], 404);
+        }
+
+        $biddingField->is_active = !$biddingField->is_active;
+        $biddingField->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Bidding field status toggled successfully',
+            'data' => [
+                'is_active' => $biddingField->is_active,
+            ],
         ], 200);
     }
 

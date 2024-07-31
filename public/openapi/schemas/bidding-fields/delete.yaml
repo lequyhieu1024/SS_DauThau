@@ -1,11 +1,8 @@
 type: object
 properties:
-  isOk:
+  result:
     type: boolean
     example: true
-  statusCode:
-    type: integer
-    example: 200
   message:
     type: string
     example: "Bidding field deleted successfully"

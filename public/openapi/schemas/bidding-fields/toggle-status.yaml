@@ -1,0 +1,14 @@
+type: object
+properties:
+  result:
+    type: boolean
+    example: true
+  message:
+    type: string
+    example: "Bidding field status toggled successfully"
+  data:
+    type: object
+    properties:
+      is_active:
+        type: boolean
+        example: true

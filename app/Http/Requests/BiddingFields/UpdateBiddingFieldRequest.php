@@ -22,7 +22,7 @@ class UpdateBiddingFieldRequest extends FormRequest
             'description' => 'sometimes|required|string',
             'code' => 'sometimes|required|integer|min:1|unique:bidding_fields,code,'.$id,
             'is_active' => 'sometimes|required|boolean',
-            'parent_id' => 'nullable|exists:bidding_fields,id',
+//            'parent_id' => 'nullable|exists:bidding_fields,id',
         ];
     }
 
