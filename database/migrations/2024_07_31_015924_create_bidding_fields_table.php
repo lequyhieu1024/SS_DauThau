@@ -17,10 +17,9 @@ return new class extends Migration {
             $table->integer('code')->unique();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
-            $table->unsignedBigInteger('parent_id')->nullable(); // id_parent: int (self-referencing foreign key)
+            $table->unsignedBigInteger('parent_id')->nullable();
 
-            // Foreign key constraint
-            $table->foreign('parent_id')->references('id')->on('bidding_fields')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('bidding_fields')->onDelete('set null');
         });
     }
 
