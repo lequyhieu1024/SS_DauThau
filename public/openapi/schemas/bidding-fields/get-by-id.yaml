@@ -35,6 +35,20 @@ properties:
       parent_id:
         type: integer
         example: 51
+      children:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 51
+            name:
+              type: string
+              example: "Minh test"
+            parent_id:
+              type: integer
+              example: 52
       parent:
         type: object
         properties:
@@ -44,23 +58,4 @@ properties:
           name:
             type: string
             example: "Minh test"
-          description:
-            type: string
-            example: "Minh test"
-          code:
-            type: integer
-            example: 101
-          is_active:
-            type: boolean
-            example: true
-          created_at:
-            type: string
-            format: date-time
-            example: "2024-07-31T03:28:24.000000Z"
-          updated_at:
-            type: string
-            format: date-time
-            example: "2024-07-31T03:28:24.000000Z"
-          parent_id:
-            type: integer
-            example: 49
+

@@ -26,9 +26,9 @@ class BiddingField extends Model
             $query->where('code', $filters['code']);
         }
 
-        if (isset($filters['parent'])) {
+        if (isset($filters['parent_name'])) {
             $query->whereHas('parent', function ($q) use ($filters) {
-                $q->where('name', 'like', '%'.$filters['parent'].'%');
+                $q->where('name', 'like', '%'.$filters['parent_name'].'%');
             });
         }
 
@@ -49,7 +49,22 @@ class BiddingField extends Model
 
     public static function findBiddingFieldById($id)
     {
-        return self::with('parent')->find($id);
+        $biddingField = self::with(['children:id,name,parent_id', 'parent:id,name'])->find($id);
+
+        if ($biddingField && $biddingField->parent_id) {
+            $biddingField->parent_name = $biddingField->parent->name;
+        }
+
+        if ($biddingField && $biddingField->children) {
+            $biddingField->children = $biddingField->children->map(function ($child) {
+                return [
+                    'id' => $child->id,
+                    'name' => $child->name,
+                ];
+            });
+        }
+
+        return $biddingField;
     }
 
     public static function updateBiddingField($id, $data)
@@ -72,11 +87,11 @@ class BiddingField extends Model
 
     public function parent()
     {
-        return $this->belongsTo(BiddingField::class, 'parent_id');
+        return $this->belongsTo(BiddingField::class, 'parent_id')->select('id', 'name');
     }
 
     public function children()
     {
-        return $this->hasMany(BiddingField::class, 'parent_id');
+        return $this->hasMany(BiddingField::class, 'parent_id')->select('id', 'name', 'parent_id');
     }
 }

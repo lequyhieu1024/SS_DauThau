@@ -20,11 +20,25 @@ class BiddingFieldController extends Controller
 
         $biddingFields = $query->with('parent')->paginate($limit, ['*'], 'page', $page);
 
+        $transformedBiddingFields = $biddingFields->map(function ($biddingField) {
+            return [
+                'id' => $biddingField->id,
+                'name' => $biddingField->name,
+                'description' => $biddingField->description,
+                'code' => $biddingField->code,
+                'is_active' => $biddingField->is_active,
+                'created_at' => $biddingField->created_at,
+                'updated_at' => $biddingField->updated_at,
+                'parent_id' => $biddingField->parent_id,
+                'parent_name' => $biddingField->parent ? $biddingField->parent->name : null,
+            ];
+        });
+
         return response()->json([
             'result' => true,
             'message' => 'Get bidding fields successfully',
             'data' => [
-                'bidding_fields' => $biddingFields->items(),
+                'bidding_fields' => $transformedBiddingFields,
                 'page' => $biddingFields->currentPage(),
                 'limit' => $biddingFields->perPage(),
                 'total_items' => $biddingFields->total(),
