@@ -45,8 +45,6 @@ patch:
               type: string
             code:
               type: number
-            is_active:
-              type: boolean
             parent_id:
               type: number
   responses:
