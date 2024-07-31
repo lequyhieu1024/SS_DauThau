@@ -53,5 +53,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
 
-    Route::resource('bidding-fields', BiddingFieldController::class);
+    Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
+    Route::resource('bidding-fields', BiddingFieldController::class)->except(['show']);
+    Route::get('bidding-fields/{id}', [BiddingFieldController::class, 'show']);
 });

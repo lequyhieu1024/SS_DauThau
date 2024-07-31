@@ -22,17 +22,14 @@ paths:
     $ref: "./paths/auth/login.yaml"
 
   /admin/bidding-fileds:
-    $ref: "./paths/admin/bidding-fields.yaml"
+    $ref: "./paths/admin/bidding-fields/get-all.yaml"
+  /admin/bidding-fields/all-ids:
+    $ref: "./paths/admin/bidding-fields/get-all-ids.yaml"
+  /admin/bidding-fileds/{id}:
+    $ref: "./paths/admin/bidding-fields/get-by-id.yaml"
+
+
 components:
-  parameters:
-    $ref: "./parameters/_index.yaml"
-
-  schemas:
-    $ref: "./schemas/_index.yaml"
-
-  responses:
-    $ref: "./responses/_index.yaml"
-
   securitySchemes:
     bearerAuth:
       type: http

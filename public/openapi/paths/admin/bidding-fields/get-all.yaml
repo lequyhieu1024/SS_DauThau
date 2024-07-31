@@ -6,31 +6,31 @@ get:
     - bearerAuth: [ ]
   parameters:
     - name: limit
-      in: path
+      in: query
       required: false
       description: Limit items per page
       schema:
         type: number
     - name: page
-      in: path
+      in: query
       required: false
       description: Page number
       schema:
         type: number
     - name: name
-      in: path
+      in: query
       required: false
       description: Name of Bidding Field
       schema:
         type: string
     - name: code
-      in: path
+      in: query
       required: false
       description: Code of Bidding Field
       schema:
         type: number
     - name: parent
-      in: path
+      in: query
       required: false
       description: Name of Parent Bidding Field
       schema:
@@ -41,5 +41,36 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../../schemas/bidding-fields.yaml"
+            $ref: "../../../schemas/bidding-fields/get-all.yaml"
+
+post:
+  tags:
+    - Bidding Field
+  summary: Create Bidding Field
+  security:
+    - bearerAuth: [ ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            code:
+              type: number
+            is_active:
+              type: boolean
+            parent_id:
+              type: number
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            $ref: "../../../schemas/bidding-fields/create.yaml"
 
