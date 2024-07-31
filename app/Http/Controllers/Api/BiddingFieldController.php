@@ -140,7 +140,7 @@ class BiddingFieldController extends Controller
     {
         $id = $request->route('id');
 
-        $biddingField = BiddingField::findBiddingFieldById($id);
+        $biddingField = BiddingField::findBiddingFieldByIdToggleStatus($id);
 
         if (!$biddingField) {
             return response()->json([
@@ -178,6 +178,18 @@ class BiddingFieldController extends Controller
             'result' => true,
             'message' => 'Bidding field deleted successfully',
         ], 200);
+    }
+
+    public function getAllIds1()
+    {
+        // Logic to get all IDs
+        return response()->json(['ids' => [1, 2, 3]]);
+    }
+
+    public function getById($id)
+    {
+        // Logic to get bidding field by ID
+        return response()->json(['id' => $id, 'name' => 'Sample Bidding Field']);
     }
 
 }
