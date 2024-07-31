@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/api/docs', [DocsController::class, 'show']);
+Route::get('/docs', [DocsController::class, 'show']);
 
 Route::get('/', function () {
     return view('welcome');

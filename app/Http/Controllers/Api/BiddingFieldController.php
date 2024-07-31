@@ -140,7 +140,7 @@ class BiddingFieldController extends Controller
     {
         $id = $request->route('id');
 
-        $biddingField = BiddingField::findBiddingFieldById($id);
+        $biddingField = BiddingField::findBiddingFieldByIdToggleStatus($id);
 
         if (!$biddingField) {
             return response()->json([

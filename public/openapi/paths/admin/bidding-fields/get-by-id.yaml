@@ -6,7 +6,7 @@ get:
     - bearerAuth: [ ]
   parameters:
     - name: id
-      in: query
+      in: path
       required: true
       description: Id of Bidding Field
       schema:
@@ -27,7 +27,7 @@ patch:
     - bearerAuth: [ ]
   parameters:
     - name: id
-      in: query
+      in: path
       required: true
       description: Id of Bidding Field
       schema:
@@ -63,7 +63,7 @@ delete:
     - bearerAuth: [ ]
   parameters:
     - name: id
-      in: query
+      in: path
       required: true
       description: Id of Bidding Field
       schema:

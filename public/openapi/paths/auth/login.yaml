@@ -15,10 +15,8 @@ post:
       content:
         application/json:
           schema:
-            $ref: "./schemas/login_response.yaml"
-    '400':
-      description: Invalid input
-      content:
-        application/json:
-          schema:
-            $ref: "./responses/error.yaml"
+            type: object
+            properties:
+              token:
+                type: string
+

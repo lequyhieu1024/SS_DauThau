@@ -67,6 +67,11 @@ class BiddingField extends Model
         return $biddingField;
     }
 
+    public static function findBiddingFieldByIdToggleStatus($id)
+    {
+        return self::with('parent')->find($id);
+    }
+
     public static function updateBiddingField($id, $data)
     {
         $biddingField = self::find($id);
