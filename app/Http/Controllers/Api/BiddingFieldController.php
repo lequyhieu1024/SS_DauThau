@@ -20,11 +20,25 @@ class BiddingFieldController extends Controller
 
         $biddingFields = $query->with('parent')->paginate($limit, ['*'], 'page', $page);
 
+        $transformedBiddingFields = $biddingFields->map(function ($biddingField) {
+            return [
+                'id' => $biddingField->id,
+                'name' => $biddingField->name,
+                'description' => $biddingField->description,
+                'code' => $biddingField->code,
+                'is_active' => $biddingField->is_active,
+                'created_at' => $biddingField->created_at,
+                'updated_at' => $biddingField->updated_at,
+                'parent_id' => $biddingField->parent_id,
+                'parent_name' => $biddingField->parent ? $biddingField->parent->name : null,
+            ];
+        });
+
         return response()->json([
             'result' => true,
             'message' => 'Get bidding fields successfully',
             'data' => [
-                'bidding_fields' => $biddingFields->items(),
+                'bidding_fields' => $transformedBiddingFields,
                 'page' => $biddingFields->currentPage(),
                 'limit' => $biddingFields->perPage(),
                 'total_items' => $biddingFields->total(),
@@ -104,7 +118,9 @@ class BiddingFieldController extends Controller
             ], 400);
         }
 
-        $biddingField = BiddingField::updateBiddingField($id, $updateRequest->all());
+        $updateData = $updateRequest->except('is_active');
+
+        $biddingField = BiddingField::updateBiddingField($id, $updateData);
 
         if (!$biddingField) {
             return response()->json([
@@ -117,6 +133,31 @@ class BiddingFieldController extends Controller
             'result' => true,
             'message' => 'Bidding field updated successfully',
             'data' => $biddingField,
+        ], 200);
+    }
+
+    public function toggleActiveStatus(ValidateIdRequest $request)
+    {
+        $id = $request->route('id');
+
+        $biddingField = BiddingField::findBiddingFieldById($id);
+
+        if (!$biddingField) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Bidding field not found',
+            ], 404);
+        }
+
+        $biddingField->is_active = !$biddingField->is_active;
+        $biddingField->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Bidding field status toggled successfully',
+            'data' => [
+                'is_active' => $biddingField->is_active,
+            ],
         ], 200);
     }
 

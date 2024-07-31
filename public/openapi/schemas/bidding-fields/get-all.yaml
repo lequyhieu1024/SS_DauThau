@@ -1,11 +1,8 @@
 type: object
 properties:
-  isOk:
+  result:
     type: boolean
     example: true
-  statusCode:
-    type: integer
-    example: 200
   message:
     type: string
     example: Get bidding fields successfully
@@ -43,36 +40,9 @@ properties:
             parent_id:
               type: integer
               example: 1
-            parent:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  example: 1
-                name:
-                  type: string
-                  example: Mona Aufderhar
-                description:
-                  type: string
-                  example: porro
-                code:
-                  type: integer
-                  example: 70
-                is_active:
-                  type: boolean
-                  example: true
-                created_at:
-                  type: string
-                  format: date-time
-                  example: 2024-07-31T02:06:04.000000Z
-                updated_at:
-                  type: string
-                  format: date-time
-                  example: 2024-07-31T02:06:04.000000Z
-                parent_id:
-                  type: integer
-                  nullable: true
-                  example: null
+            parent_name:
+              type: string
+              example: Prof. Kadin Reilly
       page:
         type: integer
         example: 1

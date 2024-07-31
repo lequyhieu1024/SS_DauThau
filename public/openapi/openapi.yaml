@@ -25,6 +25,8 @@ paths:
     $ref: "./paths/admin/bidding-fields/get-all.yaml"
   /admin/bidding-fields/all-ids:
     $ref: "./paths/admin/bidding-fields/get-all-ids.yaml"
+  /admin/bidding-fields/{id}/toggle-status:
+    $ref: "./paths/admin/bidding-fields/toggle-status.yaml"
   /admin/bidding-fileds/{id}:
     $ref: "./paths/admin/bidding-fields/get-by-id.yaml"
 

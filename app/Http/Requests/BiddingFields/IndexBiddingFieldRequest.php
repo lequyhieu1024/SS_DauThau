@@ -20,7 +20,7 @@ class IndexBiddingFieldRequest extends FormRequest
             'page' => 'integer|min:1',
             'name' => 'string',
             'code' => 'integer|min:1',
-            'parent' => 'string',
+            'parent_name' => 'string',
         ];
     }
 

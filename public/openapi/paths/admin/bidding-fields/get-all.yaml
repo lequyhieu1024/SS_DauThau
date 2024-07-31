@@ -29,7 +29,7 @@ get:
       description: Code of Bidding Field
       schema:
         type: number
-    - name: parent
+    - name: parent_name
       in: query
       required: false
       description: Name of Parent Bidding Field
