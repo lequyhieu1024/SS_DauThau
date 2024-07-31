@@ -12,22 +12,24 @@ servers:
 tags:
   - name: auth
     description: Operations about authentication
-  - name: users
+  - name: user
     description: Operations about user
+  - name: Bidding Field
+    description: Operations about Bidding Field
 
 paths:
   /auth/login:
     $ref: "./paths/auth/login.yaml"
+
+  /admin/bidding-fileds:
+    $ref: "./paths/admin/bidding-fields/get-all.yaml"
+  /admin/bidding-fields/all-ids:
+    $ref: "./paths/admin/bidding-fields/get-all-ids.yaml"
+  /admin/bidding-fileds/{id}:
+    $ref: "./paths/admin/bidding-fields/get-by-id.yaml"
+
+
 components:
-  parameters:
-    $ref: "./parameters/_index.yaml"
-
-  schemas:
-    $ref: "./schemas/_index.yaml"
-
-  responses:
-    $ref: "./responses/_index.yaml"
-
   securitySchemes:
     bearerAuth:
       type: http
