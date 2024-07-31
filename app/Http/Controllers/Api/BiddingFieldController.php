@@ -14,7 +14,6 @@ class BiddingFieldController extends Controller
      */
     public function index(Request $request)
     {
-        // Define validation rules
         $rules = [
             'limit' => 'integer|min:1',
             'page' => 'integer|min:1',
@@ -22,52 +21,41 @@ class BiddingFieldController extends Controller
             'code' => 'integer|min:1',
             'parent' => 'string',
         ];
-
-        // Validate the request parameters
         $validator = Validator::make($request->all(), $rules);
 
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
             ], 400);
         }
 
-
         $query = BiddingField::query();
 
-        // Search by name
         if ($request->has('name')) {
             $query->where('name', 'like', '%'.$request->input('name').'%');
         }
 
-        // Search by code
         if ($request->has('code')) {
             $query->where('code', $request->input('code'));
         }
 
-        // Search by parent name
         if ($request->has('parent')) {
             $query->whereHas('parent', function ($q) use ($request) {
                 $q->where('name', 'like', '%'.$request->input('parent').'%');
             });
         }
 
-        // Sorting by id in ascending order
         $query->orderBy('id', 'desc');
 
-        // Pagination with dynamic limit and page
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
 
         $biddingFields = $query->with('parent')->paginate($limit, ['*'], 'page', $page);
 
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 200,
+            'result' => true,
             'message' => 'Get bidding fields successfully',
             'data' => [
                 'bidding_fields' => $biddingFields->items(),
@@ -78,20 +66,6 @@ class BiddingFieldController extends Controller
             ],
         ], 200);
     }
-
-//    public function getAllIds()
-//    {
-//        // Lấy tất cả các id và name từ bảng BiddingField
-//        $biddingFields = BiddingField::select('id', 'name')->get();
-//
-//        // Trả về phản hồi thành công với dữ liệu
-//        return response()->json([
-//            'isOk' => true,
-//            'statusCode' => 200,
-//            'message' => 'Get all successful bidding field ids',
-//            'data' => $biddingFields,
-//        ], 200);
-//    }
 
     public function getAllIds()
     {
@@ -119,16 +93,12 @@ class BiddingFieldController extends Controller
             return $branch;
         }
 
-        // Lấy tất cả các bản ghi từ bảng BiddingField, chỉ bao gồm id, name và parent_id
         $biddingFields = BiddingField::select('id', 'name', 'parent_id')->get()->toArray();
 
-        // Xây dựng cấu trúc cây
         $tree = buildTree($biddingFields);
 
-        // Trả về phản hồi thành công với dữ liệu
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 200,
+            'result' => true,
             'message' => 'Get all successful bidding field ids in tree structure',
             'data' => $tree,
         ], 200);
@@ -139,7 +109,6 @@ class BiddingFieldController extends Controller
      */
     public function store(Request $request)
     {
-        // Define validation rules
         $rules = [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -148,26 +117,21 @@ class BiddingFieldController extends Controller
             'parent_id' => 'nullable|exists:bidding_fields,id',
         ];
 
-        // Validate the request parameters
         $validator = Validator::make($request->all(), $rules);
 
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
             ], 400);
         }
 
-        // Create a new BiddingField record
         $biddingField = BiddingField::create($request->all());
 
         // Return success response
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 201,
+            'result' => true,
             'message' => 'Bidding field created successfully',
             'data' => $biddingField,
         ], 201);
@@ -178,31 +142,24 @@ class BiddingFieldController extends Controller
      */
     public function show($id)
     {
-        // Validate the id parameter
         if (!is_numeric($id) || $id <= 0) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Invalid ID parameter',
             ], 400);
         }
 
-        // Retrieve the BiddingField record by id
         $biddingField = BiddingField::with('parent')->find($id);
 
-        // If the record is not found, return a not found error response
         if (!$biddingField) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 404,
+                'result' => false,
                 'message' => 'Bidding field not found',
             ], 404);
         }
 
-        // Return success response with the record data
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 200,
+            'result' => true,
             'message' => 'Bidding field retrieved successfully',
             'data' => $biddingField,
         ], 200);
@@ -217,19 +174,15 @@ class BiddingFieldController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the BiddingField record by id
         $biddingField = BiddingField::find($id);
 
-        // If the record is not found, return a not found error response
         if (!$biddingField) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 404,
+                'result' => false,
                 'message' => 'Bidding field not found',
             ], 404);
         }
 
-        // Define validation rules
         $rules = [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
@@ -238,35 +191,27 @@ class BiddingFieldController extends Controller
             'parent_id' => 'nullable|exists:bidding_fields,id',
         ];
 
-        // Validate the request parameters
         $validator = Validator::make($request->all(), $rules);
 
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
             ], 400);
         }
 
-        // Check if parent_id is the same as id
         if ($request->input('parent_id') == $id) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Parent ID cannot be the same as the ID being updated',
             ], 400);
         }
 
-        // Update the BiddingField record with validated data
         $biddingField->update($request->all());
 
-        // Return success response with the updated record data
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 200,
+            'result' => true,
             'message' => 'Bidding field updated successfully',
             'data' => $biddingField,
         ], 200);
@@ -280,34 +225,26 @@ class BiddingFieldController extends Controller
      */
     public function destroy(string $id)
     {
-        // Validate the id parameter
         if (!is_numeric($id) || $id <= 0) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 400,
+                'result' => false,
                 'message' => 'Invalid ID parameter',
             ], 400);
         }
 
-        // Find the BiddingField record by id
         $biddingField = BiddingField::find($id);
 
-        // If the record is not found, return a not found error response
         if (!$biddingField) {
             return response()->json([
-                'isOk' => false,
-                'statusCode' => 404,
+                'result' => false,
                 'message' => 'Bidding field not found',
             ], 404);
         }
 
-        // Delete the BiddingField record
         $biddingField->delete();
 
-        // Return success response
         return response()->json([
-            'isOk' => true,
-            'statusCode' => 200,
+            'result' => true,
             'message' => 'Bidding field deleted successfully',
         ], 200);
     }
