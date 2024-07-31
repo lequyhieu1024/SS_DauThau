@@ -180,16 +180,4 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function getAllIds1()
-    {
-        // Logic to get all IDs
-        return response()->json(['ids' => [1, 2, 3]]);
-    }
-
-    public function getById($id)
-    {
-        // Logic to get bidding field by ID
-        return response()->json(['id' => $id, 'name' => 'Sample Bidding Field']);
-    }
-
 }
