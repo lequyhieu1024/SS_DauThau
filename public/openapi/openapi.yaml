@@ -12,12 +12,17 @@ servers:
 tags:
   - name: auth
     description: Operations about authentication
-  - name: users
+  - name: user
     description: Operations about user
+  - name: Bidding Field
+    description: Operations about Bidding Field
 
 paths:
   /auth/login:
     $ref: "./paths/auth/login.yaml"
+
+  /admin/bidding-fileds:
+    $ref: "./paths/admin/bidding-fields.yaml"
 components:
   parameters:
     $ref: "./parameters/_index.yaml"
