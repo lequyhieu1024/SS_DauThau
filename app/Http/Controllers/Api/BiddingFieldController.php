@@ -3,48 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BiddingFields\IndexBiddingFieldRequest;
+use App\Http\Requests\BiddingFields\StoreBiddingFieldRequest;
+use App\Http\Requests\BiddingFields\UpdateBiddingFieldRequest;
+use App\Http\Requests\ValidateIdRequest;
 use App\Models\BiddingField;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BiddingFieldController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexBiddingFieldRequest $request)
     {
-        $rules = [
-            'limit' => 'integer|min:1',
-            'page' => 'integer|min:1',
-            'name' => 'string',
-            'code' => 'integer|min:1',
-            'parent' => 'string',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        $query = BiddingField::query();
-
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%'.$request->input('name').'%');
-        }
-
-        if ($request->has('code')) {
-            $query->where('code', $request->input('code'));
-        }
-
-        if ($request->has('parent')) {
-            $query->whereHas('parent', function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->input('parent').'%');
-            });
-        }
-
-        $query->orderBy('id', 'desc');
+        $query = BiddingField::getFilteredBiddingFields($request->all());
 
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
@@ -64,35 +33,28 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function getAllIds()
+    private function buildTree($elements, $parentId = null)
     {
-        /**
-         * Đệ quy xây dựng cấu trúc cây từ một mảng phẳng các phần tử.
-         *
-         * @param  array  $elements  Mảng phẳng gồm các phần tử, mỗi phần tử phải có khóa 'id', 'name' và 'parent_id'.
-         * @param  int|null  $parentId  ID cha để bắt đầu xây dựng cây. Mặc định là null cho cấp gốc.
-         * @return array Cấu trúc cây dưới dạng một mảng lồng nhau.
-         */
-        function buildTree($elements, $parentId = null)
-        {
-            $branch = [];
+        $branch = [];
 
-            foreach ($elements as $element) {
-                if ($element['parent_id'] == $parentId) {
-                    $children = buildTree($elements, $element['id']);
-                    if ($children) {
-                        $element['children'] = $children;
-                    }
-                    $branch[] = $element;
+        foreach ($elements as $element) {
+            if ($element['parent_id'] == $parentId) {
+                $children = $this->buildTree($elements, $element['id']);
+                if ($children) {
+                    $element['children'] = $children;
                 }
+                $branch[] = $element;
             }
-
-            return $branch;
         }
 
-        $biddingFields = BiddingField::select('id', 'name', 'parent_id')->get()->toArray();
+        return $branch;
+    }
 
-        $tree = buildTree($biddingFields);
+    public function getAllIds()
+    {
+        $biddingFields = BiddingField::getAllBiddingFieldIds();
+
+        $tree = $this->buildTree($biddingFields);
 
         return response()->json([
             'result' => true,
@@ -101,29 +63,10 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(StoreBiddingFieldRequest $request)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'code' => 'required|integer|min:1|unique:bidding_fields,code',
-            'is_active' => 'required|boolean',
-            'parent_id' => 'nullable|exists:bidding_fields,id',
-        ];
+        $biddingField = BiddingField::createBiddingField($request->all());
 
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        $biddingField = BiddingField::create($request->all());
-
-        // Return success response
         return response()->json([
             'result' => true,
             'message' => 'Bidding field created successfully',
@@ -131,16 +74,9 @@ class BiddingFieldController extends Controller
         ], 201);
     }
 
-    public function show($id)
+    public function show(ValidateIdRequest $request, $id)
     {
-        if (!is_numeric($id) || $id <= 0) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Invalid ID parameter',
-            ], 400);
-        }
-
-        $biddingField = BiddingField::with('parent')->find($id);
+        $biddingField = BiddingField::findBiddingFieldById($id);
 
         if (!$biddingField) {
             return response()->json([
@@ -156,9 +92,18 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, string $id)
+    public function update(ValidateIdRequest $request, UpdateBiddingFieldRequest $updateRequest)
     {
-        $biddingField = BiddingField::find($id);
+        $id = $request->route('id');
+
+        if ($updateRequest->input('parent_id') === $id) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Parent ID cannot be the same as the ID being updated',
+            ], 400);
+        }
+
+        $biddingField = BiddingField::updateBiddingField($id, $updateRequest->all());
 
         if (!$biddingField) {
             return response()->json([
@@ -166,33 +111,6 @@ class BiddingFieldController extends Controller
                 'message' => 'Bidding field not found',
             ], 404);
         }
-
-        $rules = [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'code' => 'sometimes|required|integer|min:1|unique:bidding_fields,code,'.$id,
-            'is_active' => 'sometimes|required|boolean',
-            'parent_id' => 'nullable|exists:bidding_fields,id',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        if ($request->input('parent_id') == $id) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Parent ID cannot be the same as the ID being updated',
-            ], 400);
-        }
-
-        $biddingField->update($request->all());
 
         return response()->json([
             'result' => true,
@@ -201,16 +119,9 @@ class BiddingFieldController extends Controller
         ], 200);
     }
 
-    public function destroy(string $id)
+    public function destroy(ValidateIdRequest $request, string $id)
     {
-        if (!is_numeric($id) || $id <= 0) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Invalid ID parameter',
-            ], 400);
-        }
-
-        $biddingField = BiddingField::find($id);
+        $biddingField = BiddingField::deleteBiddingField($id);
 
         if (!$biddingField) {
             return response()->json([
@@ -218,8 +129,6 @@ class BiddingFieldController extends Controller
                 'message' => 'Bidding field not found',
             ], 404);
         }
-
-        $biddingField->delete();
 
         return response()->json([
             'result' => true,
