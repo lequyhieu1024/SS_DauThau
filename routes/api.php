@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BiddingFieldController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
@@ -42,7 +43,7 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 //API cần đăng nhập
-Route::group(['prefix' => 'admin','middleware' => ['auth.jwt']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // system
     Route::resource('system', SystemController::class);
     // Roles
@@ -51,4 +52,10 @@ Route::group(['prefix' => 'admin','middleware' => ['auth.jwt']], function () {
     Route::resource('staff', StaffController::class);
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
+
+    Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
+    Route::resource('bidding-fields', BiddingFieldController::class)->except(['show', 'update', 'destroy']);
+    Route::get('bidding-fields/{id}', [BiddingFieldController::class, 'show']);
+    Route::patch('bidding-fields/{id}', [BiddingFieldController::class, 'update']);
+    Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
 });

@@ -1,0 +1,87 @@
+type: object
+properties:
+  isOk:
+    type: boolean
+    example: true
+  statusCode:
+    type: integer
+    example: 200
+  message:
+    type: string
+    example: Get bidding fields successfully
+  data:
+    type: object
+    properties:
+      bidding_fields:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 49
+            name:
+              type: string
+              example: Prof. Kadin Reilly
+            description:
+              type: string
+              example: est
+            code:
+              type: integer
+              example: 21
+            is_active:
+              type: boolean
+              example: false
+            created_at:
+              type: string
+              format: date-time
+              example: 2024-07-31T02:06:04.000000Z
+            updated_at:
+              type: string
+              format: date-time
+              example: 2024-07-31T02:06:04.000000Z
+            parent_id:
+              type: integer
+              example: 1
+            parent:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Mona Aufderhar
+                description:
+                  type: string
+                  example: porro
+                code:
+                  type: integer
+                  example: 70
+                is_active:
+                  type: boolean
+                  example: true
+                created_at:
+                  type: string
+                  format: date-time
+                  example: 2024-07-31T02:06:04.000000Z
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: 2024-07-31T02:06:04.000000Z
+                parent_id:
+                  type: integer
+                  nullable: true
+                  example: null
+      page:
+        type: integer
+        example: 1
+      limit:
+        type: integer
+        example: 1
+      total_items:
+        type: integer
+        example: 3
+      total_pages:
+        type: integer
+        example: 3
