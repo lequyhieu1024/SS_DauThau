@@ -39,11 +39,15 @@ class BiddingFieldController extends Controller
             'result' => true,
             'message' => 'Get bidding fields successfully',
             'data' => [
-                'bidding_fields' => $transformedBiddingFields,
-                'page' => $biddingFields->currentPage(),
-                'limit' => $biddingFields->perPage(),
-                'total_items' => $biddingFields->total(),
-                'total_pages' => $biddingFields->lastPage(),
+                'biddingFields' => $transformedBiddingFields,
+                'pagination' => [
+                    'currentPage' => $biddingFields->currentPage(),
+                    'pageSize' => $biddingFields->perPage(),
+                    'totalItems' => $biddingFields->total(),
+                    'totalPages' => $biddingFields->lastPage(),
+                    'hasNextPage' => $biddingFields->hasMorePages(),
+                    'hasPreviousPage' => $biddingFields->currentPage() > 1,
+                ],
             ],
         ], 200);
     }
