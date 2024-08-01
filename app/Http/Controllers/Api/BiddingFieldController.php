@@ -55,7 +55,7 @@ class BiddingFieldController extends Controller
      *     description="Code of bidding field",
      *     required=false,
      *     @OA\Schema(
-     *     type="string"
+     *     type="number"
      *   )
      * ),
      *     @OA\Parameter(
@@ -521,7 +521,7 @@ class BiddingFieldController extends Controller
             'result' => true,
             'message' => 'Bidding field retrieved successfully',
             'data' => $biddingField,
-        ], 201);
+        ], 200);
     }
 
     /**
