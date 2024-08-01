@@ -1,0 +1,634 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "APIs Bidding",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/admin/bidding-fields": {
+            "get": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Get all bidding fields",
+                "description": "Get all bidding fields",
+                "operationId": "6b4ecada9b3b7d8b9a16fe673e6c93b5",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of bidding field",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of bidding field",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_name",
+                        "in": "query",
+                        "description": "Parent name of bidding field",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get bidding fields successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get bidding fields successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "biddingFields": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Bidding Field 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Description of bidding field 1"
+                                                            },
+                                                            "code": {
+                                                                "type": "string",
+                                                                "example": "BF1"
+                                                            },
+                                                            "is_active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "parent_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "parent_name": {
+                                                                "type": "string",
+                                                                "example": "Parent Bidding Field 1"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Create a new bidding field",
+                "description": "Create a new bidding field",
+                "operationId": "e94eb396b04d391086837b91fb33bc34",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "code",
+                                    "is_active"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Bidding Field 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of bidding field 1"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": "666"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "parent_id": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object",
+                                "nullable": [
+                                    "parent_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bidding field created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bidding field created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Bidding Field 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of bidding field 1"
+                                                },
+                                                "code": {
+                                                    "type": "number",
+                                                    "example": "666"
+                                                },
+                                                "is_active": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "parent_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bidding-fields/all-ids": {
+            "get": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Get all bidding field ids",
+                "description": "Get all bidding field ids",
+                "operationId": "4b5c9673cdfe7f4219f2657d6423359e",
+                "responses": {
+                    "200": {
+                        "description": "Get all successful bidding field ids in tree structure",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get all successful bidding field ids in tree structure"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bidding-fields/{id}": {
+            "get": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Get bidding field by ID",
+                "description": "Get bidding field by ID",
+                "operationId": "3b4285c4a892b7b2ed35ab4d2c76b090",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bidding field",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bidding field retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bidding field retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Bidding Field 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of bidding field 1"
+                                                },
+                                                "code": {
+                                                    "type": "number",
+                                                    "example": "666"
+                                                },
+                                                "is_active": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "parent_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "parent_name": {
+                                                    "type": "string",
+                                                    "example": "Parent Bidding Field 1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Delete bidding field by ID",
+                "description": "Delete bidding field by ID",
+                "operationId": "99e2b5cd29a0287a6607854177f1799d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bidding field",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bidding field deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Update bidding field by ID",
+                "description": "Update bidding field by ID",
+                "operationId": "68a9ce0409a628a73ed6d00afe464300",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bidding field",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Bidding Field 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of bidding field 1"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": "666"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "parent_id": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object",
+                                "nullable": [
+                                    "parent_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bidding field updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bidding-fields/{id}/toggle-status": {
+            "patch": {
+                "tags": [
+                    "Bidding Field"
+                ],
+                "summary": "Toggle active status of bidding field by ID",
+                "description": "Toggle active status of bidding field by ID",
+                "operationId": "5bcb73da9088c62a261deedee1cae53e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bidding field",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bidding field status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "lequyhieu1024@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"
+                                                },
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth"
+        },
+        {
+            "name": "Bidding Field",
+            "description": "Bidding Field"
+        }
+    ]
+}
