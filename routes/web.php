@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\DocsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +12,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/docs', [DocsController::class, 'show']);
 
 Route::get('/', function () {
     return view('welcome');
