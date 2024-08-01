@@ -7,6 +7,7 @@ use App\Http\Requests\BiddingFields\IndexBiddingFieldRequest;
 use App\Http\Requests\BiddingFields\StoreBiddingFieldRequest;
 use App\Http\Requests\BiddingFields\UpdateBiddingFieldRequest;
 use App\Http\Requests\ValidateIdRequest;
+use Illuminate\Support\Facades\DB;
 use App\Models\BiddingField;
 
 class BiddingFieldController extends Controller
@@ -79,13 +80,27 @@ class BiddingFieldController extends Controller
 
     public function store(StoreBiddingFieldRequest $request)
     {
-        $biddingField = BiddingField::createBiddingField($request->all());
+        DB::beginTransaction();
 
-        return response()->json([
-            'result' => true,
-            'message' => 'Bidding field created successfully',
-            'data' => $biddingField,
-        ], 201);
+        try {
+            $biddingField = BiddingField::createBiddingField($request->all());
+
+            DB::commit();
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Bidding field created successfully',
+                'data' => $biddingField,
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'result' => false,
+                'message' => 'Failed to create bidding field',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function show(ValidateIdRequest $request)
@@ -118,66 +133,111 @@ class BiddingFieldController extends Controller
             ], 400);
         }
 
-        $updateData = $updateRequest->except('is_active');
+        DB::beginTransaction();
 
-        $biddingField = BiddingField::updateBiddingField($id, $updateData);
+        try {
+            $updateData = $updateRequest->except('is_active');
 
-        if (!$biddingField) {
+            $biddingField = BiddingField::updateBiddingField($id, $updateData);
+
+            if (!$biddingField) {
+                DB::rollBack();
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Bidding field not found',
+                ], 404);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Bidding field updated successfully',
+                'data' => $biddingField,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Bidding field not found',
-            ], 404);
+                'message' => 'Failed to update bidding field',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'result' => true,
-            'message' => 'Bidding field updated successfully',
-            'data' => $biddingField,
-        ], 200);
     }
 
     public function toggleActiveStatus(ValidateIdRequest $request)
     {
         $id = $request->route('id');
 
-        $biddingField = BiddingField::findBiddingFieldByIdToggleStatus($id);
+        DB::beginTransaction();
 
-        if (!$biddingField) {
+        try {
+            $biddingField = BiddingField::findBiddingFieldByIdToggleStatus($id);
+
+            if (!$biddingField) {
+                DB::rollBack();
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Bidding field not found',
+                ], 404);
+            }
+
+            $biddingField->is_active = !$biddingField->is_active;
+            $biddingField->save();
+
+            DB::commit();
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Bidding field status toggled successfully',
+                'data' => [
+                    'is_active' => $biddingField->is_active,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Bidding field not found',
-            ], 404);
+                'message' => 'Failed to toggle bidding field status',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $biddingField->is_active = !$biddingField->is_active;
-        $biddingField->save();
-
-        return response()->json([
-            'result' => true,
-            'message' => 'Bidding field status toggled successfully',
-            'data' => [
-                'is_active' => $biddingField->is_active,
-            ],
-        ], 200);
     }
 
     public function destroy(ValidateIdRequest $request)
     {
         $id = $request->route('id');
 
-        $biddingField = BiddingField::deleteBiddingField($id);
+        DB::beginTransaction();
 
-        if (!$biddingField) {
+        try {
+            $biddingField = BiddingField::deleteBiddingField($id);
+
+            if (!$biddingField) {
+                DB::rollBack();
+                return response()->json([
+                    'result' => false,
+                    'message' => 'Bidding field not found',
+                ], 404);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Bidding field deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Bidding field not found',
-            ], 404);
+                'message' => 'Failed to delete bidding field',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'result' => true,
-            'message' => 'Bidding field deleted successfully',
-        ], 200);
     }
 
 }
