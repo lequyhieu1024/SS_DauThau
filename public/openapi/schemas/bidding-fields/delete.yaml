@@ -1,8 +1,0 @@
-type: object
-properties:
-  result:
-    type: boolean
-    example: true
-  message:
-    type: string
-    example: "Bidding field deleted successfully"
