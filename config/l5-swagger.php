@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'API Documentation - Bidding ',
+                'title' => 'API Documentation - Bidding',
             ],
 
             'routes' => [
