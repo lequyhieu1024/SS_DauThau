@@ -8,15 +8,45 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use OpenApi\Annotations as OA;
 
 class AuthController extends Controller
 {
-    public function notYetAuthenticated(){
+    public function notYetAuthenticated()
+    {
         return response()->json(['message' => 'Vui lòng đăng nhập để tiếp tục.'], 401);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login",
+     *     operationId="login",
+     *     @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *     required={"email", "password"},
+     *     @OA\Property(property="email", type="string", format="email", example="lequyhieu1024@gmail.com"),
+     *     @OA\Property(property="password", type="string", format="password", example="123456"),
+     *     )
+     *    ),
+     *     @OA\Response(
+     *     response=200,
+     *     description="Login successfully",
+     *     @OA\JsonContent(
+     *     @OA\Property(property="result", type="boolean", example=true),
+     *     @OA\Property(property="data", type="object",
+     *     @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"),
+     *     @OA\Property(property="refresh_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"),
+     *     )
+     *    )
+     *   ),
+     *  )
+     */
     public function login(Request $request)
     {
-        if(isset($request->taxcode)){
+        if (isset($request->taxcode)) {
             $messages = [
                 'taxcode.required' => 'Mã số thuế không được để trống',
                 'password.required' => 'Mật khẩu không được để trống',
@@ -30,7 +60,8 @@ class AuthController extends Controller
                         if (!preg_match($emailPattern, $value)) {
                             $fail('Mã số thuế không đúng định dạng');
                         }
-                    }],
+                    }
+                ],
                 'password' => 'required',
             ], $messages);
 
@@ -40,7 +71,7 @@ class AuthController extends Controller
 
             $credentials = $request->only('taxcode', 'password');
         }
-        if(isset($request->email)){
+        if (isset($request->email)) {
             $messages = [
                 'email.required' => 'Email không được để trống',
                 'password.required' => 'Mật khẩu không được để trống',
@@ -54,7 +85,8 @@ class AuthController extends Controller
                         if (!preg_match($emailPattern, $value)) {
                             $fail('Email không đúng định dạng');
                         }
-                    }],
+                    }
+                ],
                 'password' => 'required',
             ], $messages);
 
@@ -67,7 +99,8 @@ class AuthController extends Controller
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
+                return response()->json(['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'],
+                    401);
             }
         } catch (JWTException $e) {
             return response()->json(['result' => false, 'message' => 'Không thể tạo token'], 500);
@@ -87,23 +120,24 @@ class AuthController extends Controller
 //     return response()->json(['error' => 'Unauthorized'], 401);
 // }
 
-protected function respondWithToken($token)
-{
-    return response()->json([
-        'data' => [
-            'access_token' => $token,
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'data' => [
+                'access_token' => $token,
 //            'token_type' => 'bearer',
 //            'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
-        ]
-    ]);
-}
+                'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
+            ]
+        ]);
+    }
 
-    public function profile(){
+    public function profile()
+    {
         $user = JWTAuth::user();
         return response()->json([
             'result' => true,
-             'data' => [
+            'data' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'taxcode' => $user->taxcode,
@@ -322,8 +356,6 @@ protected function respondWithToken($token)
     //         return $this->loginSuccess($existing_or_new_user);
     //     }
     // }
-
-
 
 
     // public function account_deletion()
