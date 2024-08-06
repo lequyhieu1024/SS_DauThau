@@ -15,11 +15,11 @@
 # Disable index view
 Options -Indexes
 
-# Hide specific files
-<Files ~ "\.(env|json|config.js|md|gitignore|gitattributes|lock)$">
+# Hide specific files except for api-docs.json
+<FilesMatch "^(?!api-docs\.json$)(.*\.(env|json|config\.js|md|gitignore|gitattributes|lock))$">
     Order allow,deny
     Deny from all
-</Files>
+</FilesMatch>
 
 ## EXPIRES CACHING ##
 <IfModule mod_expires.c>
