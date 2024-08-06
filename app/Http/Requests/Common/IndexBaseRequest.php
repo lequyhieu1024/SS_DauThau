@@ -1,37 +1,41 @@
 <?php
 
-namespace App\Http\Requests\BiddingFields;
+namespace App\Http\Requests\Common;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class IndexBiddingFieldRequest extends FormRequest
+class IndexBaseRequest extends FormRequest
 {
-    public function authorize()
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
     {
         return true;
     }
 
-    public function rules()
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
     {
         return [
-            'limit' => 'nullable|integer|min:1',
+            'size' => 'nullable|integer|min:1',
             'page' => 'nullable|integer|min:1',
             'name' => 'nullable|string',
-            'code' => 'nullable|integer|min:1',
-            'parent_name' => 'nullable|string',
         ];
     }
 
     protected function prepareForValidation()
     {
         $this->merge([
-            'limit' => $this->query('limit'),
+            'size' => $this->query('size'),
             'page' => $this->query('page'),
             'name' => $this->query('name'),
-            'code' => $this->query('code'),
-            'parent_name' => $this->query('parent_name'),
         ]);
     }
 

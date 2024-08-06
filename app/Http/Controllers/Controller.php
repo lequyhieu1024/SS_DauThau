@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *    version="1.0.0",
  * ),
  * @OA\Tag(
+ *     name="Business Activity Type",
  *     name="Bidding Field",
  *     name="Auth",
  * ),

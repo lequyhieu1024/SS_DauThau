@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BiddingFields\IndexBiddingFieldRequest;
 use App\Http\Requests\BiddingFields\StoreBiddingFieldRequest;
 use App\Http\Requests\BiddingFields\UpdateBiddingFieldRequest;
-use App\Http\Requests\ValidateIdRequest;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Common\ValidateIdRequest;
 use App\Models\BiddingField;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Annotations as OA;
 
 class BiddingFieldController extends Controller
@@ -183,8 +183,8 @@ class BiddingFieldController extends Controller
     {
         $query = BiddingField::getFilteredBiddingFields($request->all());
 
-        $limit = $request->input('limit', 10);
-        $page = $request->input('page', 1);
+        $limit = $request->query('limit', 10);
+        $page = $request->query('page', 1);
 
         $biddingFields = $query->with('parent')->paginate($limit, ['*'], 'page', $page);
 
