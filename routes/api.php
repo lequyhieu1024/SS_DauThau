@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BiddingFieldController;
+use App\Http\Controllers\Api\BusinessActivityTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
@@ -53,10 +54,22 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
 
+    // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
     Route::resource('bidding-fields', BiddingFieldController::class)->except(['show', 'update', 'destroy']);
     Route::get('bidding-fields/{id}', [BiddingFieldController::class, 'show']);
     Route::patch('bidding-fields/{id}', [BiddingFieldController::class, 'update']);
     Route::patch('bidding-fields/{id}/toggle-status', [BiddingFieldController::class, 'toggleActiveStatus']);
     Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
+
+
+    // Business Activity Types
+    Route::resource('business-activity-types', BusinessActivityTypeController::class)->except([
+        'show', 'update', 'destroy'
+    ]);
+    Route::get('business-activity-types/{id}', [BusinessActivityTypeController::class, 'show']);
+    Route::patch('business-activity-types/{id}', [BusinessActivityTypeController::class, 'update']);
+    Route::patch('business-activity-types/{id}/toggle-status',
+        [BusinessActivityTypeController::class, 'toggleActiveStatus']);
+    Route::delete('business-activity-types/{id}', [BusinessActivityTypeController::class, 'destroy']);
 });
