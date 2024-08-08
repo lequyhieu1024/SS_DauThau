@@ -30,5 +30,17 @@
     "Create Package": "Thêm hạng mục đấu thầu",
     "Update Package": "Sửa hạng mục đấu thầu",
     "Detail Package": "Chi tiết hạng mục đấu thầu",
-    "Destroy Package": "Xóa hạng mục đấu thầu"
+    "Destroy Package": "Xóa hạng mục đấu thầu",
+    "List Business Activity Type": "Xem loại hình doanh nghiệp",
+    "Detail Business Activity Type": "Chi tiết loại hình doanh nghiệp",
+    "Create Business Activity Type": "Thêm loại hình doanh nghiệp",
+    "Update Business Activity Type": "Sửa loại hình doanh nghiệp",
+    "Destroy Business Activity Type": "Xóa loại hình doanh nghiệp",
+    "Business Activity Type": "Loại hình doanh nghiệp",
+    "List Bidding Field": "Xem lĩnh vực đấu thầu",
+    "Detail Bidding Field": "Chi tiết lĩnh vực đấu thầu",
+    "Create Bidding Field": "Thêm lĩnh vực đấu thầu",
+    "Update Bidding Field": "Sửa lĩnh vực đấu thầu",
+    "Destroy Bidding Field": "Xóa lĩnh vực đấu thầu",
+    "Bidding Field": "Lĩnh vực đấu thầu"
 }

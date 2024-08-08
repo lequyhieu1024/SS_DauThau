@@ -16,7 +16,7 @@ class IndexBiddingFieldRequest extends FormRequest
     public function rules()
     {
         return [
-            'limit' => 'nullable|integer|min:1',
+            'size' => 'nullable|integer|min:1',
             'page' => 'nullable|integer|min:1',
             'name' => 'nullable|string',
             'code' => 'nullable|integer|min:1',
@@ -27,7 +27,7 @@ class IndexBiddingFieldRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'limit' => $this->query('limit'),
+            'size' => $this->query('size'),
             'page' => $this->query('page'),
             'name' => $this->query('name'),
             'code' => $this->query('code'),
