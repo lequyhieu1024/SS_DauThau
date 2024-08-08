@@ -9,13 +9,15 @@ use App\Http\Requests\Industries\StoreIndustryRequest;
 use App\Http\Requests\Industries\UpdateIndustryRequest;
 use App\Http\Resources\Common\IndexBaseCollection;
 use App\Models\Industry;
+use Illuminate\Support\Facades\DB;
+
 
 class IndustryController extends Controller
 {
     /**
      * @OA\Get (
      *     path="/api/admin/industries",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Get industries",
      *     description="Get industries",
      *     operationId="getIndustries",
@@ -102,7 +104,7 @@ class IndustryController extends Controller
     /**
      * @OA\Post(
      *     path="/api/admin/industries",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Create a new industry",
      *     description="Create a new industry",
      *     operationId="createIndustry",
@@ -179,17 +181,21 @@ class IndustryController extends Controller
      *     )
      * )
      */
+
     public function store(StoreIndustryRequest $request)
     {
+        DB::beginTransaction();
 
         try {
             $industry = Industry::createNew($request->all());
+            DB::commit();
             return response()->json([
                 'result' => true,
                 'message' => 'Tạo ngành nghề thành công',
                 'data' => $industry,
             ], 201);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi tạo ngành nghề',
@@ -201,7 +207,7 @@ class IndustryController extends Controller
     /**
      * @OA\Get(
      *     path="/api/admin/industries/{id}",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Get industry by ID",
      *     description="Retrieve a specific industry by its ID",
      *     operationId="getIndustryById",
@@ -309,7 +315,7 @@ class IndustryController extends Controller
     /**
      * @OA\Patch (
      *     path="/api/admin/industries/{id}",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Update industry by ID",
      *     description="Update a specific industry by its ID",
      *     operationId="updateIndustry",
@@ -416,22 +422,27 @@ class IndustryController extends Controller
     {
         $id = $request->route('id');
 
+        DB::beginTransaction();
+
         try {
             $industry = Industry::updateIndustry($id, $request->all());
 
             if (!$industry) {
+                DB::rollBack();
                 return response()->json([
                     'result' => false,
                     'message' => 'Ngành nghề không tồn tại',
                 ], 404);
             }
 
+            DB::commit();
             return response()->json([
                 'result' => true,
                 'message' => 'Cập nhật ngành nghề thành công',
                 'data' => $industry,
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi cập nhật ngành nghề',
@@ -443,7 +454,7 @@ class IndustryController extends Controller
     /**
      * @OA\Patch(
      *     path="/api/admin/industries/{id}/toggle-status",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Toggle active status of industry by ID",
      *     description="Toggle active status of industry by ID",
      *     operationId="toggleIndustryActiveStatus",
@@ -528,16 +539,20 @@ class IndustryController extends Controller
     {
         $id = $request->route('id');
 
+        DB::beginTransaction();
+
         try {
             $industry = Industry::toggleActiveStatus($id);
 
             if (!$industry) {
+                DB::rollBack();
                 return response()->json([
                     'result' => false,
                     'message' => 'Ngành nghề không tồn tại',
                 ], 404);
             }
 
+            DB::commit();
             return response()->json([
                 'result' => true,
                 'message' => 'Trạng thái hoạt động của ngành nghề đã được cập nhật thành công',
@@ -546,6 +561,7 @@ class IndustryController extends Controller
                 ],
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi cập nhật trạng thái hoạt động của ngành nghề',
@@ -558,7 +574,7 @@ class IndustryController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/admin/industries/{id}",
-     *     tags={"Industries"},
+     *     tags={"Industry"},
      *     summary="Delete industry by ID",
      *     description="Delete a specific industry by its ID",
      *     operationId="deleteIndustry",
@@ -634,21 +650,26 @@ class IndustryController extends Controller
     {
         $id = $request->route('id');
 
+        DB::beginTransaction();
+
         try {
             $deleted = Industry::deleteIndustryById($id);
 
             if (!$deleted) {
+                DB::rollBack();
                 return response()->json([
                     'result' => false,
                     'message' => 'Ngành nghề không tồn tại',
                 ], 404);
             }
 
+            DB::commit();
             return response()->json([
                 'result' => true,
                 'message' => 'Ngành nghề đã được xóa thành công',
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi xóa ngành nghề',

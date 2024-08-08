@@ -42,16 +42,7 @@ class Industry extends Model
 
     public static function createNew(array $data)
     {
-        DB::beginTransaction();
-
-        try {
-            $industry = self::create($data);
-            DB::commit();
-            return $industry;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return self::create($data);
     }
 
     public static function findIndustryById(int $id): ?Industry
@@ -61,66 +52,39 @@ class Industry extends Model
 
     public static function updateIndustry(int $id, array $data): ?Industry
     {
-        DB::beginTransaction();
+        $industry = self::find($id);
 
-        try {
-            $industry = self::find($id);
-
-            if (!$industry) {
-                DB::rollBack();
-                return null;
-            }
-
-            $industry->update($data);
-            DB::commit();
-            return $industry;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+        if (!$industry) {
+            return null;
         }
+
+        $industry->update($data);
+        return $industry;
     }
 
     public static function toggleActiveStatus(int $id): ?Industry
     {
-        DB::beginTransaction();
+        $industry = self::find($id);
 
-        try {
-            $industry = self::find($id);
-
-            if (!$industry) {
-                DB::rollBack();
-                return null;
-            }
-
-            $industry->is_active = !$industry->is_active;
-            $industry->save();
-            DB::commit();
-            return $industry;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+        if (!$industry) {
+            return null;
         }
+
+        $industry->is_active = !$industry->is_active;
+        $industry->save();
+        return $industry;
     }
 
     public static function deleteIndustryById(int $id): bool
     {
-        DB::beginTransaction();
+        $industry = self::find($id);
 
-        try {
-            $industry = self::find($id);
-
-            if (!$industry) {
-                DB::rollBack();
-                return false;
-            }
-
-            $industry->delete();
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+        if (!$industry) {
+            return false;
         }
+
+        $industry->delete();
+        return true;
     }
 
     /**
