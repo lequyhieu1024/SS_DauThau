@@ -89,7 +89,7 @@ class BusinessActivityTypeController extends Controller
 
         return response()->json([
             'result' => true,
-            'message' => 'Get business activity types successfully',
+            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
             'data' => $data,
         ], 200);
     }
@@ -202,7 +202,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Business activity type created successfully',
+                'message' => 'Tạo loại hoạt động kinh doanh thành công',
                 'data' => $businessActivityType,
             ], 201);
         } catch (\Exception $e) {
@@ -210,7 +210,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to create business activity type',
+                'message' => 'Lỗi khi tạo loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -302,13 +302,13 @@ class BusinessActivityTypeController extends Controller
         if (!$businessActivityType) {
             return response()->json([
                 'result' => false,
-                'message' => 'Business activity type not found',
+                'message' => 'Loại hoạt động kinh doanh không tồn tại',
             ], 404);
         }
 
         return response()->json([
             'result' => true,
-            'message' => 'Business activity type retrieved successfully',
+            'message' => 'Lấy thông tin loại hoạt động kinh doanh thành công',
             'data' => $businessActivityType,
         ], 200);
     }
@@ -443,14 +443,14 @@ class BusinessActivityTypeController extends Controller
         DB::beginTransaction();
 
         try {
-            $updateData = $updateRequest->except('is_active');
+            $updateData = $updateRequest->all();
             $businessActivityType = BusinessActivityType::updateBusinessActivityTypeById($id, $updateData);
 
             if (!$businessActivityType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Business activity type not found',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
@@ -458,7 +458,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Business activity type updated successfully',
+                'message' => 'Loại hoạt động kinh doanh đã được cập nhật thành công',
                 'data' => $businessActivityType,
             ], 200);
         } catch (\Exception $e) {
@@ -466,7 +466,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to update business activity type',
+                'message' => 'Lỗi khi cập nhật loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -569,7 +569,7 @@ class BusinessActivityTypeController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Business activity type not found',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
@@ -577,7 +577,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Business activity type status toggled successfully',
+                'message' => 'Trạng thái loại hoạt động kinh doanh đã được cập nhật thành công',
                 'data' => [
                     'is_active' => $businessActivityType->is_active,
                 ],
@@ -587,7 +587,7 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to toggle business activity type status',
+                'message' => 'Lỗi khi cập nhật trạng thái loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -681,7 +681,7 @@ class BusinessActivityTypeController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Business activity type not found',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
@@ -689,14 +689,14 @@ class BusinessActivityTypeController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Business activity type deleted successfully',
+                'message' => 'Loại hoạt động kinh doanh đã được xóa thành công',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to delete business activity type',
+                'message' => 'Lỗi khi xóa loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }

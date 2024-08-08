@@ -26,6 +26,7 @@ class UpdateBaseRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'is_active' => 'sometimes|required|boolean',
         ];
     }
 

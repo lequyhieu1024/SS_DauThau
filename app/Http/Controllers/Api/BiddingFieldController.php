@@ -10,6 +10,7 @@ use App\Http\Requests\Common\ValidateIdRequest;
 use App\Models\BiddingField;
 use Illuminate\Support\Facades\DB;
 use OpenApi\Annotations as OA;
+use function Laravel\Prompts\error;
 
 class BiddingFieldController extends Controller
 {
@@ -21,9 +22,9 @@ class BiddingFieldController extends Controller
      *     description="Get all bidding fields",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
-     *     name="limit",
+     *     name="size",
      *     in="query",
-     *     description="Limit items per page",
+     *     description="Size items per page",
      *     required=false,
      *     @OA\Schema(
      *     type="integer",
@@ -183,10 +184,10 @@ class BiddingFieldController extends Controller
     {
         $query = BiddingField::getFilteredBiddingFields($request->all());
 
-        $limit = $request->query('limit', 10);
+        $size = $request->query('size', 10);
         $page = $request->query('page', 1);
 
-        $biddingFields = $query->with('parent')->paginate($limit, ['*'], 'page', $page);
+        $biddingFields = $query->with('parent')->paginate($size, ['*'], 'page', $page);
 
         $transformedBiddingFields = $biddingFields->map(function ($biddingField) {
             return [
@@ -202,19 +203,32 @@ class BiddingFieldController extends Controller
             ];
         });
 
+//        return response()->json([
+//            'result' => true,
+//            'message' => 'Get bidding fields successfully',
+//            'data' => [
+//                'biddingFields' => $transformedBiddingFields,
+//                'pagination' => [
+//                    'currentPage' => $biddingFields->currentPage(),
+//                    'pageSize' => $biddingFields->perPage(),
+//                    'totalItems' => $biddingFields->total(),
+//                    'totalPages' => $biddingFields->lastPage(),
+//                    'hasNextPage' => $biddingFields->hasMorePages(),
+//                    'hasPreviousPage' => $biddingFields->currentPage() > 1,
+//                ],
+//            ],
+//        ], 200);
+
         return response()->json([
             'result' => true,
-            'message' => 'Get bidding fields successfully',
+            'message' => 'Lấy danh sách các lĩnh vực đấu thầu thành công',
             'data' => [
-                'biddingFields' => $transformedBiddingFields,
-                'pagination' => [
-                    'currentPage' => $biddingFields->currentPage(),
-                    'pageSize' => $biddingFields->perPage(),
-                    'totalItems' => $biddingFields->total(),
-                    'totalPages' => $biddingFields->lastPage(),
-                    'hasNextPage' => $biddingFields->hasMorePages(),
-                    'hasPreviousPage' => $biddingFields->currentPage() > 1,
-                ],
+                'data' => $transformedBiddingFields,
+                'total_elements' => $biddingFields->total(),
+                'total_pages' => $biddingFields->lastPage(),
+                'page_size' => $biddingFields->perPage(),
+                'number_of_elements' => $biddingFields->count(),
+                'current_page' => $biddingFields->currentPage(),
             ],
         ], 200);
     }
@@ -283,7 +297,7 @@ class BiddingFieldController extends Controller
 
         return response()->json([
             'result' => true,
-            'message' => 'Get all successful bidding field ids in tree structure',
+            'message' => 'Lấy danh sách các ID lĩnh vực đấu thầu thành công',
             'data' => $tree,
         ], 200);
     }
@@ -406,7 +420,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Bidding field created successfully',
+                'message' => 'Tạo lĩnh vực đấu thầu thành công',
                 'data' => $biddingField,
             ], 201);
         } catch (\Exception $e) {
@@ -414,7 +428,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to create bidding field',
+                'message' => 'Lỗi khi tạo lĩnh vực đấu thầu',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -513,13 +527,13 @@ class BiddingFieldController extends Controller
         if (!$biddingField) {
             return response()->json([
                 'result' => false,
-                'message' => 'Bidding field not found',
+                'message' => 'Lĩnh vực đấu thầu không tồn tại',
             ], 404);
         }
 
         return response()->json([
             'result' => true,
-            'message' => 'Bidding field retrieved successfully',
+            'message' => 'Lấy thông tin lĩnh vực đấu thầu thành công',
             'data' => $biddingField,
         ], 200);
     }
@@ -581,17 +595,20 @@ class BiddingFieldController extends Controller
     {
         $id = $request->route('id');
 
-        if ($updateRequest->input('parent_id') === $id) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Parent ID cannot be the same as the ID being updated',
-            ], 400);
-        }
+//        if ($updateRequest->input('parent_id') === $id) {
+//            return response()->json([
+//                'result' => false,
+//                'message' => 'Failed to update bidding field',
+//                'errors' => [
+//                    'parent_id' => ['Parent ID cannot be the same as the ID being updated'],
+//                ],
+//            ], 400);
+//        }
 
         DB::beginTransaction();
 
         try {
-            $updateData = $updateRequest->except('is_active');
+            $updateData = $updateRequest->all();
 
             $biddingField = BiddingField::updateBiddingField($id, $updateData);
 
@@ -599,7 +616,7 @@ class BiddingFieldController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Bidding field not found',
+                    'message' => 'Lĩnh vực đấu thầu không tồn tại',
                 ], 404);
             }
 
@@ -607,7 +624,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Bidding field updated successfully',
+                'message' => 'Cập nhật lĩnh vực đấu thầu thành công',
                 'data' => $biddingField,
             ], 200);
         } catch (\Exception $e) {
@@ -615,7 +632,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to update bidding field',
+                'message' => 'Lỗi khi cập nhật lĩnh vực đấu thầu',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -656,7 +673,7 @@ class BiddingFieldController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Bidding field not found',
+                    'message' => 'Lĩnh vực đấu thầu không tồn tại',
                 ], 404);
             }
 
@@ -667,7 +684,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Bidding field status toggled successfully',
+                'message' => 'Cập nhật trạng thái lĩnh vực đấu thầu thành công',
                 'data' => [
                     'is_active' => $biddingField->is_active,
                 ],
@@ -677,7 +694,7 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to toggle bidding field status',
+                'message' => 'Lỗi khi cập nhật trạng thái lĩnh vực đấu thầu',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -718,7 +735,7 @@ class BiddingFieldController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Bidding field not found',
+                    'message' => 'Lĩnh vực đấu thầu không tồn tại',
                 ], 404);
             }
 
@@ -726,14 +743,14 @@ class BiddingFieldController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Bidding field deleted successfully',
+                'message' => 'Xóa lĩnh vực đấu thầu thành công',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Failed to delete bidding field',
+                'message' => 'Lỗi khi xóa lĩnh vực đấu thầu',
                 'error' => $e->getMessage(),
             ], 500);
         }

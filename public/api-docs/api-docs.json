@@ -15,9 +15,9 @@
                 "operationId": "6b4ecada9b3b7d8b9a16fe673e6c93b5",
                 "parameters": [
                     {
-                        "name": "limit",
+                        "name": "size",
                         "in": "query",
-                        "description": "Limit items per page",
+                        "description": "Size items per page",
                         "required": false,
                         "schema": {
                             "type": "integer",
