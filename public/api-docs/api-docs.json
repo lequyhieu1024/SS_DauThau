@@ -1197,7 +1197,7 @@
         "/api/admin/industries": {
             "get": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Get industries",
                 "description": "Get industries",
@@ -1276,7 +1276,7 @@
             },
             "post": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Create a new industry",
                 "description": "Create a new industry",
@@ -1369,7 +1369,7 @@
         "/api/admin/industries/{id}": {
             "get": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Get industry by ID",
                 "description": "Retrieve a specific industry by its ID",
@@ -1463,7 +1463,7 @@
             },
             "delete": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Delete industry by ID",
                 "description": "Delete a specific industry by its ID",
@@ -1553,7 +1553,7 @@
             },
             "patch": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Update industry by ID",
                 "description": "Update a specific industry by its ID",
@@ -1677,7 +1677,7 @@
         "/api/admin/industries/{id}/toggle-status": {
             "patch": {
                 "tags": [
-                    "Industries"
+                    "Industry"
                 ],
                 "summary": "Toggle active status of industry by ID",
                 "description": "Toggle active status of industry by ID",
@@ -1866,8 +1866,8 @@
             "description": "Business Activity Type"
         },
         {
-            "name": "Industries",
-            "description": "Industries"
+            "name": "Industry",
+            "description": "Industry"
         }
     ]
 }
