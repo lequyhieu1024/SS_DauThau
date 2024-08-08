@@ -28,7 +28,7 @@ class StoreBiddingFieldRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'result' => false,
-            'message' => 'Validation error',
+            'message' => 'Lỗi xác thực',
             'errors' => $validator->errors(),
         ], 400));
     }

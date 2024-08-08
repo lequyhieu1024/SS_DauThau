@@ -95,6 +95,50 @@ class BusinessActivityTypeController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/admin/business-activity-types/all-ids",
+     *     tags={"Business Activity Type"},
+     *     summary="Get all business activity type IDs",
+     *     description="Get all business activity type IDs",
+     *     operationId="getAllBusinessActivityTypeIds",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *     response=200,
+     *     description="Get all business activity type IDs successfully",
+     *     @OA\JsonContent(
+     *     type="object",
+     *     @OA\Property(
+     *     property="result",
+     *     type="boolean",
+     *     example=true
+     *     ),
+     *     @OA\Property(
+     *     property="message",
+     *     type="string",
+     *     example="Get all business activity type IDs successfully"
+     *    ),
+     *     @OA\Property(
+     *     property="data",
+     *     type="array",
+     *     example=[]
+     *     )
+     * )
+     * )
+     * )
+     * )
+     */
+    public function getAllIds()
+    {
+        $businessActivityTypes = BusinessActivityType::getAllBusinessActivityTypes();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
+            'data' => $businessActivityTypes,
+        ], 200);
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/admin/business-activity-types",
      *     tags={"Business Activity Type"},
