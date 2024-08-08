@@ -24,8 +24,21 @@ class StoreBaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'not_regex:/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', // Prevent HTML script tags
+                'not_regex:/\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|UNION|DECLARE|GRANT|REVOKE)\b/i',
+                // Prevent SQL keywords
+            ],
+            'description' => [
+                'nullable',
+                'string',
+                'not_regex:/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', // Prevent HTML script tags
+                'not_regex:/\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|UNION|DECLARE|GRANT|REVOKE)\b/i',
+                // Prevent SQL keywords
+            ],
             'is_active' => 'required|boolean',
         ];
     }
@@ -34,7 +47,7 @@ class StoreBaseRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'result' => false,
-            'message' => 'Validation error',
+            'message' => 'Lỗi xác thực',
             'errors' => $validator->errors(),
         ], 400));
     }
