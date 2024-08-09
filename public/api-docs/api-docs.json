@@ -53,12 +53,12 @@
                         }
                     },
                     {
-                        "name": "parent_name",
+                        "name": "parent_id",
                         "in": "query",
-                        "description": "Parent name of bidding field",
+                        "description": "Parent id of bidding field",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "number"
                         }
                     }
                 ],
@@ -1233,12 +1233,12 @@
                         }
                     },
                     {
-                        "name": "business_activity_type_name",
+                        "name": "business_activity_type_id",
                         "in": "query",
-                        "description": "Name of business activity type",
+                        "description": "Id of business activity type",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "number"
                         }
                     }
                 ],

@@ -52,12 +52,12 @@ class IndustryController extends Controller
      *    )
      *   ),
      *     @OA\Parameter (
-     *      name="business_activity_type_name",
+     *      name="business_activity_type_id",
      *      in="query",
-     *      description="Name of business activity type",
+     *      description="Id of business activity type",
      *      required=false,
      *      @OA\Schema(
-     *      type="string"
+     *      type="number"
      *     )
      *    ),
      *    @OA\Response(
@@ -88,7 +88,7 @@ class IndustryController extends Controller
     {
         $industries = Industry::searchIndustries(
             $request->query('name'),
-            $request->query('business_activity_type_name'),
+            $request->query('business_activity_type_id'),
             $request->query('page', 1),
             $request->query('size', 10)
         );

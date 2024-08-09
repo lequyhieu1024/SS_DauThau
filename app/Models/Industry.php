@@ -22,7 +22,25 @@ class Industry extends Model
     /**
      * Search industries with pagination and filter by name and business activity type name.
      */
-    public static function searchIndustries($name, $businessActivityTypeName, $page, $size)
+//    public static function searchIndustries($name, $businessActivityTypeName, $page, $size)
+//    {
+//        $query = self::query();
+//
+//        if ($name) {
+//            $query->where('name', 'like', '%'.$name.'%');
+//        }
+//
+//        if ($businessActivityTypeName) {
+//            $query->whereHas('businessActivityType', function ($q) use ($businessActivityTypeName) {
+//                $q->where('name', 'like', '%'.$businessActivityTypeName.'%');
+//            });
+//        }
+//
+//        return $query->with(['businessActivityType:id,name'])->orderBy('id', 'desc')->paginate($size, ['*'], 'page',
+//            $page);
+//    }
+
+    public static function searchIndustries($name, $businessActivityTypeId, $page, $size)
     {
         $query = self::query();
 
@@ -30,15 +48,14 @@ class Industry extends Model
             $query->where('name', 'like', '%'.$name.'%');
         }
 
-        if ($businessActivityTypeName) {
-            $query->whereHas('businessActivityType', function ($q) use ($businessActivityTypeName) {
-                $q->where('name', 'like', '%'.$businessActivityTypeName.'%');
-            });
+        if ($businessActivityTypeId) {
+            $query->where('business_activity_type_id', $businessActivityTypeId);
         }
 
         return $query->with(['businessActivityType:id,name'])->orderBy('id', 'desc')->paginate($size, ['*'], 'page',
             $page);
     }
+
 
     public static function createNew(array $data)
     {

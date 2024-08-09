@@ -14,6 +14,29 @@ class BiddingField extends Model
         'is_active' => 'boolean'
     ];
 
+//    public static function getFilteredBiddingFields($filters)
+//    {
+//        $query = self::query();
+//
+//        if (isset($filters['name'])) {
+//            $query->where('name', 'like', '%'.$filters['name'].'%');
+//        }
+//
+//        if (isset($filters['code'])) {
+//            $query->where('code', $filters['code']);
+//        }
+//
+//        if (isset($filters['parent_name'])) {
+//            $query->whereHas('parent', function ($q) use ($filters) {
+//                $q->where('name', 'like', '%'.$filters['parent_name'].'%');
+//            });
+//        }
+//
+//        $query->orderBy('id', 'desc');
+//
+//        return $query;
+//    }
+
     public static function getFilteredBiddingFields($filters)
     {
         $query = self::query();
@@ -26,10 +49,8 @@ class BiddingField extends Model
             $query->where('code', $filters['code']);
         }
 
-        if (isset($filters['parent_name'])) {
-            $query->whereHas('parent', function ($q) use ($filters) {
-                $q->where('name', 'like', '%'.$filters['parent_name'].'%');
-            });
+        if (isset($filters['parent_id'])) {
+            $query->where('parent_id', $filters['parent_id']);
         }
 
         $query->orderBy('id', 'desc');

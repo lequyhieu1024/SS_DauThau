@@ -60,12 +60,12 @@ class BiddingFieldController extends Controller
      *   )
      * ),
      *     @OA\Parameter(
-     *     name="parent_name",
+     *     name="parent_id",
      *     in="query",
-     *     description="Parent name of bidding field",
+     *     description="Parent id of bidding field",
      *     required=false,
      *     @OA\Schema(
-     *     type="string"
+     *     type="number"
      *  )
      * ),
      *     @OA\Response(
@@ -189,7 +189,7 @@ class BiddingFieldController extends Controller
 
         $biddingFields = $query->with('parent')->paginate($size, ['*'], 'page', $page);
 
-        $transformedBiddingFields = $biddingFields->map(function ($biddingField) {
+        $transformedBiddingFields = $biddingFields?->map(function ($biddingField) {
             return [
                 'id' => $biddingField->id,
                 'name' => $biddingField->name,
@@ -198,8 +198,10 @@ class BiddingFieldController extends Controller
                 'is_active' => $biddingField->is_active,
                 'created_at' => $biddingField->created_at,
                 'updated_at' => $biddingField->updated_at,
-                'parent_id' => $biddingField->parent_id,
-                'parent_name' => $biddingField->parent ? $biddingField->parent->name : null,
+                'parent' => $biddingField->parent ? [
+                    'id' => $biddingField->parent_id,
+                    'name' => $biddingField->parent->name,
+                ] : null,
             ];
         });
 
