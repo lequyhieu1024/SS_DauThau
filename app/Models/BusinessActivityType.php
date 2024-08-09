@@ -30,6 +30,11 @@ class BusinessActivityType extends Model
         return $query;
     }
 
+    public static function getAllBusinessActivityTypes()
+    {
+        return self::select('id', 'name')->get();
+    }
+
     public static function createNew(array $data)
     {
         return self::create($data);
@@ -79,6 +84,14 @@ class BusinessActivityType extends Model
         $businessActivityType->delete();
 
         return $businessActivityType;
+    }
+
+    /**
+     * Get the industries for the business activity type.
+     */
+    public function industries()
+    {
+        return $this->hasMany(Industry::class, 'business_activity_type_id');
     }
 
 }

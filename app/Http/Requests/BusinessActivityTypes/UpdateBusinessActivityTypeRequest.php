@@ -20,7 +20,7 @@ class UpdateBusinessActivityTypeRequest extends UpdateBaseRequest
 
             if (!empty($invalidFields)) {
                 foreach ($invalidFields as $field) {
-                    $validator->errors()->add($field, 'The '.$field.' field is not a valid field.');
+                    $validator->errors()->add($field, $field.' không phải trường hợp lệ.');
                 }
             }
         });
