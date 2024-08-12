@@ -52,7 +52,8 @@ class Industry extends Model
             $query->where('business_activity_type_id', $businessActivityTypeId);
         }
 
-        return $query->with(['businessActivityType:id,name'])->orderBy('id', 'desc')->paginate($size, ['*'], 'page',
+        return $query->with(['businessActivityType:id,name,is_active'])->orderBy('id', 'desc')->paginate($size, ['*'],
+            'page',
             $page);
     }
 
