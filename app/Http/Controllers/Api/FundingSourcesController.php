@@ -343,13 +343,13 @@ class FundingSourcesController extends Controller
      * @OA\Get(
      *     path="/api/admin/funding_sources/{id}",
      *     tags={"Funding Sources"},
-     *     summary="Get funding Sources by ID",
-     *     description="Get funding Sources by ID",
+     *     summary="Get funding sources by ID",
+     *     description="Get funding sources by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of funding Sources",
+     *         description="ID of funding sources",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -588,7 +588,7 @@ class FundingSourcesController extends Controller
      * @OA\Patch(
      *     path="/api/admin/funding_sources/{id}/toggle-status",
      *     tags={"Funding Sources"},
-     *     summary="Toggle active status of funding aources by ID",
+     *     summary="Toggle active status of funding sources by ID",
      *     description="Toggle active status of funding sources by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
@@ -602,7 +602,7 @@ class FundingSourcesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Funding Sources status toggled successfully"
+     *         description="Funding sources status toggled successfully"
      *     )
      * )
      */
