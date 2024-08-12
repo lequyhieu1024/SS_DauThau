@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
+use App\Http\Controllers\Api\FundingSourcesController;
 use App\Http\Controllers\Api\IndustryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('staff', StaffController::class);
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
+
+    // Funding Sources
+    Route::resource('funding_sources', FundingSourcesController::class);
+    Route::patch('funding_sources/{id}/toggle-status', [FundingSourcesController::class, 'toggleActiveStatus']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);

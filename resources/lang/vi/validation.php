@@ -22,12 +22,14 @@ return [
             'same_as_current' => 'ID cha không thể trùng với ID hiện tại.',
         ],
     ],
+    'in'=>':attribute phải là một trong các giá trị :values.',
     'attributes' => [
         'name' => 'Tên',
         'description' => 'Mô tả',
         'code' => 'Mã',
         'is_active' => 'Trạng thái',
         'parent_id' => 'ID cha',
+        'type' => 'Loại nguồn vốn',
         "business_activity_type_name" => "Tên loại hoạt động kinh doanh",
     ],
 ];

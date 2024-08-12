@@ -48,5 +48,12 @@
     "Detail Industry": "Chi tiết ngành nghề",
     "Create Industry": "Thêm ngành nghề",
     "Update Industry": "Sửa ngành nghề",
-    "Destroy Industry": "Xóa ngành nghề"
+    "Destroy Industry": "Xóa ngành nghề",
+    
+    "Funding Source": "Nguồn tài trợ",
+    "List Funding Source": "Xem nguồn tài trợ",
+    "Detail Funding Source": "Chi tiết nguồn tài trợ",
+    "Create Funding Source": "Thêm nguồn tài trợ",
+    "Update Funding Source": "Sửa nguồn tài trợ",
+    "Destroy Funding Source": "Xóa nguồn tài trợ"
 }
