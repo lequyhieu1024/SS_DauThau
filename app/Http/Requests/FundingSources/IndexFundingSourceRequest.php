@@ -24,8 +24,8 @@ class IndexFundingSourceRequest extends FormRequest
         return [
             'size' => 'nullable|integer|min:1',
             'page' => 'nullable|integer|min:1',
-            'name' => 'nullable|string',
-            'code' => 'nullable|integer|min:1',
+            'name' => 'nullable|string|min:1',
+            'code' => 'nullable|string|min:1',
         ];
     }
 }

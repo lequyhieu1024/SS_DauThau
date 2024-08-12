@@ -35,7 +35,7 @@ class UpdateFundingSourceRequest extends FormRequest
                 'required',
                 'string',
                 'max:100',
-                function ($value, $fail) use ($id, $currentCode) {
+                function ($attribute, $value, $fail) use ($id, $currentCode) {
                     if ($value !== $currentCode && DB::table('funding_sources')->where('code', $value)->where('id', '!=', $id)->exists()) {
                         $fail(__('validation.custom.code.unique'));
                     }
@@ -50,7 +50,7 @@ class UpdateFundingSourceRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'result' => false,
-            'message' => 'Validation error',
+            'message' => 'Lỗi xác thực',
             'errors' => $validator->errors(),
         ], 400));
     }

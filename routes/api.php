@@ -58,6 +58,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Funding Sources
     Route::resource('funding_sources', FundingSourcesController::class);
+    Route::patch('funding_sources/{id}/toggle-status', [FundingSourcesController::class, 'toggleActiveStatus']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
