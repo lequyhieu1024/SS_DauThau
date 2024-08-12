@@ -41,7 +41,7 @@ class RoleController extends Controller
         $data = new RoleCollection($roles);
 
         // Trả về dữ liệu JSON
-        return response()->json([
+        return response([
             'result' => true,
             'status' => 200,
             'message' => 'Lấy danh sách vai trò thành công',
@@ -66,13 +66,13 @@ class RoleController extends Controller
         }
 
         if ($permissions->isEmpty()) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 404,
                 'message' => 'Không tìm thấy permission',
             ], 404);
         }
-        return response()->json([
+        return response([
             'result' => true,
             'status' => 200,
             'message' => 'Lấy danh sách permission thành công',
@@ -146,13 +146,13 @@ class RoleController extends Controller
         $role = Role::with('permissions')->find($id);
 
         if (!$role) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'message' => 'Không tìm thấy vai trò',
             ], 404);
         }
 
-        return response()->json([
+        return response([
             'result' => true,
             'message' => 'Lấy chi tiết vai trò thành công',
             'data' => new RoleResource($role)
@@ -160,19 +160,11 @@ class RoleController extends Controller
     }
     public function edit($id)
     {
-        $permission_groups = Permission::all();
-        foreach($permission_groups as $permission) {
-            // dd($permission);
-            $permission->name = __(convertText($permission->name));
-            $permission->section = __(convertText($permission->section));
-        }
-        // $permission_groups = Permission::get()->groupBy('section');
         $role = Role::findOrFail($id);
         $permission_checked = RoleHasPermission::where('role_id', $id)->pluck('permission_id')->toArray();
         return response()->json([
             'result' => true,
             'role' => $role,
-            'permissions' => $permission_groups,
             'id_permission_checked' => $permission_checked,
         ], 200);
     }
@@ -225,7 +217,7 @@ class RoleController extends Controller
                 ->whereNotIn('permission_id', $permissions)
                 ->delete();
             DB::commit();
-            return response()->json([
+            return response([
                 'result' => true,
                 'message' => 'Cập nhật quyền thành công',
                 'data' => $role,
@@ -257,23 +249,23 @@ class RoleController extends Controller
                 }
                 $role->delete();
 
-                return response()->json([
+                return response([
                     "message" => "Xóa quyền thành công",
                     "status" => 200
                 ], 200);
             } else {
-                return response()->json([
+                return response([
                     "message" => "Không thể xóa quyền vì đã có người dùng",
                     "status" => 400
                 ], 400);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json([
+            return response([
                 "message" => "Không tìm thấy quyền cần xóa",
                 "status" => 400
             ], 400);
         } catch (\Exception $e) {
-            return response()->json([
+            return response([
                 "message" => $e->getMessage(),
                 "status" => 400
             ], 400);

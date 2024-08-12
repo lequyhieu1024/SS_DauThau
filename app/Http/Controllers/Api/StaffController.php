@@ -256,7 +256,6 @@ class StaffController extends Controller
                 'taxcode' => 'required|unique:users,taxcode,' . $staff->user_id,
                 'email' => 'required|unique:users,email,' . $staff->user_id . '|regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
                 'phone' => 'required|unique:users,phone,' . $staff->user_id . '|regex:/^0[0-9]{9}$/',
-                'password' => 'required',
                 'role_id' => 'required'
             ];
             $message = [
@@ -269,7 +268,6 @@ class StaffController extends Controller
                 'email.unique' => 'Email đã tồn tại',
                 'email.regex' => 'Email không đúng đinh dạng',
                 'email.required' => 'Vui lòng nhập email',
-                'password.required' => 'Vui lòng nhập password',
                 'role_id.required' => 'Vui lòng chọn vai trò'
             ];
             $validator = validator($data, $rules, $message);

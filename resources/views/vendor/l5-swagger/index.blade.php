@@ -12,7 +12,7 @@
 <script>
     window.onload = function () {
         const ui = SwaggerUIBundle({
-            url: '/openapi/openapi.yaml',  // Ensure this path is correct
+            url: '/api-docs/api-docs.json',
             dom_id: '#swagger-ui',
             presets: [
                 SwaggerUIBundle.presets.apis,
