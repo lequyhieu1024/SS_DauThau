@@ -24,7 +24,7 @@ class BiddingType extends Model
 
     public static function getFilteredBiddingTypes($filters)
     {
-        $query = self::query();
+        $query = self::query()->latest('id');
 
         if (isset($filters['name'])) {
             $query->where('name', 'like', '%' . $filters['name'] . '%');
