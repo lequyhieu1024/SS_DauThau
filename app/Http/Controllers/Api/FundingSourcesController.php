@@ -16,7 +16,7 @@ class FundingSourcesController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/admin/funding_sources",
+     *     path="/api/admin/funding-sources",
      *     tags={"Funding Sources"},
      *     summary="Get all funding sources",
      *     description="Get all funding sources",
@@ -209,7 +209,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Post(
-     *     path="/api/admin/funding_sources",
+     *     path="/api/admin/funding-sources",
      *     tags={"Funding Sources"},
      *     summary="Create a new funding sources",
      *     description="Create a new funding sources",
@@ -341,7 +341,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Get funding sources by ID",
      *     description="Get funding sources by ID",
@@ -442,7 +442,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Update funding sources by ID",
      *     description="Update funding sources by ID",
@@ -532,7 +532,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Delete funding sources by ID",
      *     description="Delete funding sources by ID",
@@ -586,7 +586,7 @@ class FundingSourcesController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding_sources/{id}/toggle-status",
+     *     path="/api/admin/funding-sources/{id}/toggle-status",
      *     tags={"Funding Sources"},
      *     summary="Toggle active status of funding sources by ID",
      *     description="Toggle active status of funding sources by ID",
