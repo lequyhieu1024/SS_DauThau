@@ -493,7 +493,7 @@ class FundingSourcesController extends Controller
      *     )
      * )
      */
-    public function update($id, UpdateFundingSourceRequest $request)
+    public function update(UpdateFundingSourceRequest $request, $id)
     {
         DB::beginTransaction();
 

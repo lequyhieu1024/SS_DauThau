@@ -26,7 +26,7 @@ class FundingSource extends Model
 
     public static function getFilteredFundingSources($filters)
     {
-        $query = self::query();
+        $query = self::query()->latest('id');
 
         if (isset($filters['name'])) {
             $query->where('name', 'like', '%' . $filters['name'] . '%');
