@@ -19,7 +19,7 @@ class BiddingTypeController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/bidding_types",
+     *     path="/api/admin/bidding-types",
      *     tags={"Bidding Types"},
      *     summary="Get all bidding types",
      *     description="Get all bidding types",
@@ -188,7 +188,7 @@ class BiddingTypeController extends Controller
      */
     /**
      * @OA\Post(
-     *     path="/api/admin/bidding_types",
+     *     path="/api/admin/bidding-types",
      *     tags={"Bidding Types"},
      *     summary="Create a new bidding type",
      *     description="Create a new bidding type",
@@ -298,7 +298,7 @@ class BiddingTypeController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/bidding_types/{id}",
+     *     path="/api/admin/bidding-types/{id}",
      *     tags={"Bidding Types"},
      *     summary="Get bidding type by ID",
      *     description="Get bidding type by ID",
@@ -388,7 +388,7 @@ class BiddingTypeController extends Controller
      */
     /**
      * @OA\Patch(
-     *     path="/api/admin/bidding_types/{id}",
+     *     path="/api/admin/bidding-types/{id}",
      *     tags={"Bidding Types"},
      *     summary="Update bidding type by ID",
      *     description="Update bidding type by ID",
@@ -468,7 +468,7 @@ class BiddingTypeController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/admin/bidding_types/{id}",
+     *     path="/api/admin/bidding-types/{id}",
      *     tags={"Bidding Types"},
      *     summary="Delete bidding type by ID",
      *     description="Delete bidding type by ID",
@@ -522,7 +522,7 @@ class BiddingTypeController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/bidding_types/{id}/toggle-status",
+     *     path="/api/admin/bidding-types/{id}/toggle-status",
      *     tags={"Bidding Types"},
      *     summary="Toggle active status of bidding type by ID",
      *     description="Toggle active status of bidding type by ID",

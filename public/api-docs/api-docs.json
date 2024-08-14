@@ -544,14 +544,14 @@
                 ]
             }
         },
-        "/api/admin/bidding_types": {
+        "/api/admin/bidding-types": {
             "get": {
                 "tags": [
                     "Bidding Types"
                 ],
                 "summary": "Get all bidding types",
                 "description": "Get all bidding types",
-                "operationId": "7015b4123625b9e5a71664731607ca11",
+                "operationId": "dba022d6ab4b53051ea60f6ddd41604d",
                 "parameters": [
                     {
                         "name": "size",
@@ -683,7 +683,7 @@
                 ],
                 "summary": "Create a new bidding type",
                 "description": "Create a new bidding type",
-                "operationId": "72af3cc300a2735e6f4494db42a4b5b3",
+                "operationId": "83ad84e2b711d54812de4f749d19e55f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -771,14 +771,14 @@
                 ]
             }
         },
-        "/api/admin/bidding_types/{id}": {
+        "/api/admin/bidding-types/{id}": {
             "get": {
                 "tags": [
                     "Bidding Types"
                 ],
                 "summary": "Get bidding type by ID",
                 "description": "Get bidding type by ID",
-                "operationId": "28d50447baf49f97572dcceca18c4ca3",
+                "operationId": "c96e7b9581ceaa92c39bde2d50d4684f",
                 "parameters": [
                     {
                         "name": "id",
@@ -853,7 +853,7 @@
                 ],
                 "summary": "Delete bidding type by ID",
                 "description": "Delete bidding type by ID",
-                "operationId": "4b653a1c7c74339f4b253ff1c3fcb6f5",
+                "operationId": "78af2258983a047eda2fcec4afb8511a",
                 "parameters": [
                     {
                         "name": "id",
@@ -882,7 +882,7 @@
                 ],
                 "summary": "Update bidding type by ID",
                 "description": "Update bidding type by ID",
-                "operationId": "bb5da4c1a9481826e614dc28755e96cc",
+                "operationId": "f337d375bd3f6987cf66db0ac30ff172",
                 "parameters": [
                     {
                         "name": "id",
@@ -930,14 +930,14 @@
                 ]
             }
         },
-        "/api/admin/bidding_types/{id}/toggle-status": {
+        "/api/admin/bidding-types/{id}/toggle-status": {
             "patch": {
                 "tags": [
                     "Bidding Types"
                 ],
                 "summary": "Toggle active status of bidding type by ID",
                 "description": "Toggle active status of bidding type by ID",
-                "operationId": "e1700eda2e2060b0e95b9514d321bc21",
+                "operationId": "fbbdbfa570bb8f79ed9b45f5c0c72f14",
                 "parameters": [
                     {
                         "name": "id",
@@ -1611,14 +1611,14 @@
                 ]
             }
         },
-        "/api/admin/funding_sources": {
+        "/api/admin/funding-sources": {
             "get": {
                 "tags": [
                     "Funding Sources"
                 ],
                 "summary": "Get all funding sources",
                 "description": "Get all funding sources",
-                "operationId": "07061278209e9cdb07009c621b1d7480",
+                "operationId": "ef1d9f98071552a0001bda0f1b19eabc",
                 "parameters": [
                     {
                         "name": "size",
@@ -1772,7 +1772,7 @@
                 ],
                 "summary": "Create a new funding sources",
                 "description": "Create a new funding sources",
-                "operationId": "b0ed414e4a2a0b4b9d8d1521605a451a",
+                "operationId": "c396e6af19d969d89532e636fd30bbe8",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1888,14 +1888,14 @@
                 ]
             }
         },
-        "/api/admin/funding_sources/{id}": {
+        "/api/admin/funding-sources/{id}": {
             "get": {
                 "tags": [
                     "Funding Sources"
                 ],
                 "summary": "Get funding sources by ID",
                 "description": "Get funding sources by ID",
-                "operationId": "1a725956f820e48a36195cb603d3e7c5",
+                "operationId": "f8bd15a745d762905ca18690632d206a",
                 "parameters": [
                     {
                         "name": "id",
@@ -1983,7 +1983,7 @@
                 ],
                 "summary": "Delete funding sources by ID",
                 "description": "Delete funding sources by ID",
-                "operationId": "4ac6e23b1a00af48377001b3956b45f5",
+                "operationId": "0f27f82bcefce5e050c35b65e949c868",
                 "parameters": [
                     {
                         "name": "id",
@@ -2012,7 +2012,7 @@
                 ],
                 "summary": "Update funding sources by ID",
                 "description": "Update funding sources by ID",
-                "operationId": "9eee69b02fdd1d8bd0774ab786dbd58f",
+                "operationId": "a6b65a2eb7a7e38f73e005bd2565537c",
                 "parameters": [
                     {
                         "name": "id",
@@ -2073,14 +2073,14 @@
                 ]
             }
         },
-        "/api/admin/funding_sources/{id}/toggle-status": {
+        "/api/admin/funding-sources/{id}/toggle-status": {
             "patch": {
                 "tags": [
                     "Funding Sources"
                 ],
                 "summary": "Toggle active status of funding sources by ID",
                 "description": "Toggle active status of funding sources by ID",
-                "operationId": "2e2d6a5c60f01aae1ebb25d86212f919",
+                "operationId": "d1403151f6f15da581b50404302838fa",
                 "parameters": [
                     {
                         "name": "id",
