@@ -11,13 +11,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
-     /**
+    /**
      * Lấy giá trị xác định sẽ được lưu trong subject claim của JWT.
      *
      * @return mixed
@@ -36,6 +37,34 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Mặc định hash password bằng Hash, đây là Accessor, có thể tìm hiểu Accessor và Mulator trên docs Laravel nhé.
+     * Với những trường cần Hash thì chỉ cần $request->data thay vì Hash::make($request->data)
+     */
+
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
+
+
+    /**
+     * Chỗ này để viết relationship
+     */
+
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
+    public function enterprise()
+    {
+        return $this->hasOne(Enterprise::class);
+    }
+
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -70,7 +99,7 @@ class User extends Authenticatable implements JWTSubject
     public function getAllPermissions($user_id, $type)
     {
         $role_id = "";
-        if($type == 'staff') {
+        if ($type == 'staff') {
             $role_id = Staff::where('user_id', $user_id)->pluck('role_id')->first();
         }
         $permissions = DB::table('role_has_permissions')
