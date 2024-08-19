@@ -4,7 +4,7 @@ namespace App\Http\Requests\BusinessActivityTypes;
 
 use App\Http\Requests\Common\BaseFormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Support\Facades\Schema;
+use App\Validators\FieldValidator;
 
 class BusinessActivityTypeFormRequest extends BaseFormRequest
 {
@@ -13,16 +13,6 @@ class BusinessActivityTypeFormRequest extends BaseFormRequest
      */
     protected function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
-            $table = 'business_activity_types';
-            $columns = Schema::getColumnListing($table);
-            $invalidFields = array_diff(array_keys($this->all()), $columns);
-
-            if (!empty($invalidFields)) {
-                foreach ($invalidFields as $field) {
-                    $validator->errors()->add($field, $field.' không phải trường hợp lệ.');
-                }
-            }
-        });
+        FieldValidator::validateFields($validator, 'business_activity_types');
     }
 }
