@@ -49,13 +49,14 @@ class BusinessActivityTypeRepository extends BaseRepository
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
-    public function getAllIds()
+    public function getBusinessActivityTypesWithIndustries()
     {
-        return $this->model
+        return $this->model->select('id', 'name')
             ->where('is_active', true)
-            ->get(['id', 'name'])
-            ->toArray();
+            ->with(['industries:id,name,business_activity_type_id'])
+            ->get();
     }
+
 
     public function delete($id)
     {

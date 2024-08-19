@@ -279,7 +279,8 @@ class BusinessActivityTypeController extends Controller
      */
     public function getAllIds()
     {
-        $businessActivityTypes = $this->businessActivityTypeRepository->getAllIds();
+//        $businessActivityTypes = $this->businessActivityTypeRepository->getAllIds();
+        $businessActivityTypes = $this->businessActivityTypeRepository->getBusinessActivityTypesWithIndustries();
 
         if (!$businessActivityTypes) {
             return response()->json([
@@ -549,7 +550,7 @@ class BusinessActivityTypeController extends Controller
             return response()->json([
                 'result' => true,
                 'message' => 'Loại hoạt động kinh doanh đã được cập nhật thành công',
-                'data' => $businessActivityType,
+                'data' => $this->businessActivityTypeRepository->find($id),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();

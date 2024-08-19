@@ -26,7 +26,13 @@ class IndexBaseRequest extends FormRequest
         return [
             'size' => 'nullable|integer|min:1',
             'page' => 'nullable|integer|min:1',
-            'name' => 'nullable|string',
+            'name' => [
+                'nullable',
+                'string',
+                'not_regex:/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', // Prevent HTML script tags
+                'not_regex:/\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|UNION|DECLARE|GRANT|REVOKE)\b/i',
+                // Prevent SQL keywords
+            ],
         ];
     }
 
@@ -43,7 +49,7 @@ class IndexBaseRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'result' => false,
-            'message' => 'Validation error',
+            'message' => 'Lỗi xác thực',
             'errors' => $validator->errors(),
         ], 400));
     }
