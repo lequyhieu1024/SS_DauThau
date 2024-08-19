@@ -13,13 +13,12 @@ return new class extends Migration {
         Schema::create('bidding_fields', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->integer('code')->unique();
             $table->boolean('is_active')->default(1);
+            $table->integer('parent_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
-            $table->unsignedBigInteger('parent_id')->nullable();
-
-            $table->foreign('parent_id')->references('id')->on('bidding_fields')->onDelete('set null');
         });
     }
 

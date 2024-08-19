@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BiddingField extends Model
+class FundingSource extends Model
 {
     use HasFactory;
 }

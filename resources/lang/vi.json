@@ -42,5 +42,25 @@
     "Create Bidding Field": "Thêm lĩnh vực đấu thầu",
     "Update Bidding Field": "Sửa lĩnh vực đấu thầu",
     "Destroy Bidding Field": "Xóa lĩnh vực đấu thầu",
-    "Bidding Field": "Lĩnh vực đấu thầu"
+    "Bidding Field": "Lĩnh vực đấu thầu",
+    "Industry": "Ngành nghề",
+    "List Industry": "Xem ngành nghề",
+    "Detail Industry": "Chi tiết ngành nghề",
+    "Create Industry": "Thêm ngành nghề",
+    "Update Industry": "Sửa ngành nghề",
+    "Destroy Industry": "Xóa ngành nghề",
+
+    "Funding Source": "Nguồn tài trợ",
+    "List Funding Source": "Xem nguồn tài trợ",
+    "Detail Funding Source": "Chi tiết nguồn tài trợ",
+    "Create Funding Source": "Thêm nguồn tài trợ",
+    "Update Funding Source": "Sửa nguồn tài trợ",
+    "Destroy Funding Source": "Xóa nguồn tài trợ",
+
+    "Bidding Type": "Loại hình đấu thầu",
+    "List Bidding Type": "Xem loại hình đấu thầu",
+    "Detail Bidding Type": "Chi tiết loại hình đấu thầu",
+    "Create Bidding Type": "Thêm loại hình đấu thầu",
+    "Update Bidding Type": "Sửa loại hình đấu thầu",
+    "Destroy Bidding Type": "Xóa loại hình đấu thầu"
 }
