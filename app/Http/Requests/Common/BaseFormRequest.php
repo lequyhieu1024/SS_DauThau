@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateBaseRequest extends FormRequest
+class BaseFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,9 @@ class UpdateBaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'is_active' => 'sometimes|required|boolean',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'is_active' => 'required|boolean',
         ];
     }
 
@@ -34,7 +34,7 @@ class UpdateBaseRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'result' => false,
-            'message' => 'Validation error',
+            'message' => 'Lỗi xác thực',
             'errors' => $validator->errors(),
         ], 400));
     }
