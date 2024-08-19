@@ -20,7 +20,7 @@ class IndexBiddingFieldRequest extends FormRequest
             'page' => 'nullable|integer|min:1',
             'name' => 'nullable|string',
             'code' => 'nullable|integer|min:1',
-            'parent_name' => 'nullable|string',
+            'parent_id' => 'nullable|integer|min:1',
         ];
     }
 
@@ -31,7 +31,7 @@ class IndexBiddingFieldRequest extends FormRequest
             'page' => $this->query('page'),
             'name' => $this->query('name'),
             'code' => $this->query('code'),
-            'parent_name' => $this->query('parent_name'),
+            'parent_name' => $this->query('parent_id'),
         ]);
     }
 
