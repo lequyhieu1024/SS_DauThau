@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
+use App\Http\Controllers\Api\IndustryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
@@ -63,7 +64,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
 
 
-    // Business Activity Types
+    /// Business Activity Types
+    Route::get('business-activity-types/all-ids', [BusinessActivityTypeController::class, 'getAllIds']);
     Route::resource('business-activity-types', BusinessActivityTypeController::class)->except([
         'show', 'update', 'destroy'
     ]);
@@ -72,4 +74,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('business-activity-types/{id}/toggle-status',
         [BusinessActivityTypeController::class, 'toggleActiveStatus']);
     Route::delete('business-activity-types/{id}', [BusinessActivityTypeController::class, 'destroy']);
+
+    // Industries
+    Route::resource('industries', IndustryController::class)->except([
+        'show', 'update', 'destroy'
+    ]);
+    Route::get('industries/{id}', [IndustryController::class, 'show']);
+    Route::patch('industries/{id}', [IndustryController::class, 'update']);
+    Route::patch('industries/{id}/toggle-status',
+        [IndustryController::class, 'toggleActiveStatus']);
+    Route::delete('industries/{id}', [IndustryController::class, 'destroy']);
 });
