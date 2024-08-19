@@ -4,19 +4,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\ValidateIdRequest;
-use App\Http\Requests\FundingSources\IndexFundingSourceRequest;
 use App\Http\Requests\FundingSources\StoreFundingSourceRequest;
 use App\Http\Requests\FundingSources\UpdateFundingSourceRequest;
-use App\Models\FundingSource;
+use App\Http\Resources\FundingSourceCollection;
+use App\Repositories\FundingSourceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
-class FundingSourcesController extends Controller
+class FundingSourceController extends Controller
 {
+    protected $fundingSourceRepository;
+
+    public function __construct(FundingSourceRepository $fundingSourceRepository){
+        $this->fundingSourceRepository = $fundingSourceRepository;
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
     /**
      * @OA\Get(
-     *     path="/api/admin/funding_sources",
+     *     path="/api/admin/funding-sources",
      *     tags={"Funding Sources"},
      *     summary="Get all funding sources",
      *     description="Get all funding sources",
@@ -60,7 +68,7 @@ class FundingSourcesController extends Controller
      *         description="Code of funding source",
      *         required=false,
      *         @OA\Schema(
-     *             type="number"
+     *             type="string"
      *         )
      *     ),
      * 
@@ -169,38 +177,17 @@ class FundingSourcesController extends Controller
      *     )
      * )
      */
-    public function index(IndexFundingSourceRequest $request)
+    public function index(Request $request)
     {
-        $query = FundingSource::getFilteredFundingSources($request->all());
+        $fundingSources=$this->fundingSourceRepository->filter($request->all());
 
-        $size = $request->query('size', 10);
-        $page = $request->query('page', 1);
+        $data= new FundingSourceCollection($fundingSources);
 
-        $fundingSources = $query->paginate($size, ['*'], 'page', $page);
-
-        $transformedFundingSources = $fundingSources->map(function ($fundingSource) {
-            return [
-                'id' => $fundingSource->id,
-                'name' => $fundingSource->name,
-                'description' => $fundingSource->description,
-                'code' => $fundingSource->code,
-                'type' => $fundingSource->type,
-                'is_active' => $fundingSource->is_active,
-                'created_at' => $fundingSource->created_at,
-                'updated_at' => $fundingSource->updated_at,
-            ];
-        });
-        return response()->json([
+        return response([
             'result' => true,
-            'message' => 'Lấy danh sách các nguồn tài trợ thành công.',
-            'data' => [
-                'data' => $transformedFundingSources,
-                'total_elements' => $fundingSources->total(),
-                'total_pages' => $fundingSources->lastPage(),
-                'page_size' => $fundingSources->perPage(),
-                // 'number_of_elements' => $fundingSources->count(),
-                'current_page' => $fundingSources->currentPage(),
-            ],
+            'status' => 200,
+            'message' => 'Lấy danh sách các nguồn tài trợ thành công',
+            'data' => $data
         ], 200);
     }
 
@@ -209,7 +196,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Post(
-     *     path="/api/admin/funding_sources",
+     *     path="/api/admin/funding-sources",
      *     tags={"Funding Sources"},
      *     summary="Create a new funding sources",
      *     description="Create a new funding sources",
@@ -316,7 +303,7 @@ class FundingSourcesController extends Controller
         DB::beginTransaction();
 
         try {
-            $fundingSource = FundingSource::createFundingSource($request->all());
+            $fundingSource = $this->fundingSourceRepository->createFundingSource($request->all());
 
             DB::commit();
 
@@ -341,7 +328,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Get funding sources by ID",
      *     description="Get funding sources by ID",
@@ -419,9 +406,9 @@ class FundingSourcesController extends Controller
      *     )
      * )
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $fundingSource = FundingSource::findFundingSourceById($id);
+        $fundingSource = $this->fundingSourceRepository->findFundingSourceById($id);
 
         if (!$fundingSource) {
             return response()->json([
@@ -442,7 +429,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Update funding sources by ID",
      *     description="Update funding sources by ID",
@@ -500,7 +487,7 @@ class FundingSourcesController extends Controller
         try {
             $data = $request->all();
 
-            $fundingSource = FundingSource::updateFundingSource($id, $data);
+            $fundingSource = $this->fundingSourceRepository->updateFundingSource($data, $id);
 
             if (!$fundingSource) {
                 DB::rollBack();
@@ -532,7 +519,7 @@ class FundingSourcesController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/admin/funding_sources/{id}",
+     *     path="/api/admin/funding-sources/{id}",
      *     tags={"Funding Sources"},
      *     summary="Delete funding sources by ID",
      *     description="Delete funding sources by ID",
@@ -557,7 +544,7 @@ class FundingSourcesController extends Controller
         DB::beginTransaction();
 
         try {
-            $fundingSource = FundingSource::deleteFundingSource($id);
+            $fundingSource = $this->fundingSourceRepository->deleteFundingSource($id);
 
             if (!$fundingSource) {
                 DB::rollBack();
@@ -586,7 +573,7 @@ class FundingSourcesController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding_sources/{id}/toggle-status",
+     *     path="/api/admin/funding-sources/{id}/toggle-status",
      *     tags={"Funding Sources"},
      *     summary="Toggle active status of funding sources by ID",
      *     description="Toggle active status of funding sources by ID",
@@ -613,7 +600,7 @@ class FundingSourcesController extends Controller
         DB::beginTransaction();
 
         try {
-            $fundingSource = FundingSource::findFundingSourceById($id);
+            $fundingSource = $this->fundingSourceRepository->findFundingSourceById($id);
 
             if (!$fundingSource) {
                 DB::rollBack();

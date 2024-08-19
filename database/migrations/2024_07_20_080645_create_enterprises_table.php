@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('description');
             $table->date('establish_date');
             $table->integer('avg_document_rating'); //điểm đánh giá hồ sơ trung bình
-            $table->integer('field_active_id');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_blacklist')->default(false);
             $table->timestamps();

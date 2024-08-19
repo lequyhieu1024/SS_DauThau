@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('account_ban_at')->nullable()->after('email_verified_at');
+        Schema::create('bidding_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name',255)->unique();
+            $table->text('description');
+            $table->boolean('is_active')->default(1);;
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('account_ban_at');
-        });
+        Schema::dropIfExists('bidding_types');
     }
 };

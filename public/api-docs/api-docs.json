@@ -1194,14 +1194,14 @@
                 ]
             }
         },
-        "/api/admin/funding_sources": {
+        "/api/admin/funding-sources": {
             "get": {
                 "tags": [
                     "Funding Sources"
                 ],
                 "summary": "Get all funding sources",
                 "description": "Get all funding sources",
-                "operationId": "07061278209e9cdb07009c621b1d7480",
+                "operationId": "4f00effba94f9a190c0a3beebf90cc46",
                 "parameters": [
                     {
                         "name": "size",
@@ -1238,7 +1238,7 @@
                         "description": "Code of funding source",
                         "required": false,
                         "schema": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1355,7 +1355,7 @@
                 ],
                 "summary": "Create a new funding sources",
                 "description": "Create a new funding sources",
-                "operationId": "b0ed414e4a2a0b4b9d8d1521605a451a",
+                "operationId": "c4ceafca313ff079dae727f779f77028",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1471,19 +1471,19 @@
                 ]
             }
         },
-        "/api/admin/funding_sources/{id}": {
+        "/api/admin/funding-sources/{id}": {
             "get": {
                 "tags": [
                     "Funding Sources"
                 ],
-                "summary": "Get funding Sources by ID",
-                "description": "Get funding Sources by ID",
-                "operationId": "1a725956f820e48a36195cb603d3e7c5",
+                "summary": "Get funding sources by ID",
+                "description": "Get funding sources by ID",
+                "operationId": "a4c88f4a7000b1911a7d629b9ebd43c0",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of funding Sources",
+                        "description": "ID of funding sources",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1566,7 +1566,7 @@
                 ],
                 "summary": "Delete funding sources by ID",
                 "description": "Delete funding sources by ID",
-                "operationId": "4ac6e23b1a00af48377001b3956b45f5",
+                "operationId": "84394bd9d2ffd5034cde807c7fb23cef",
                 "parameters": [
                     {
                         "name": "id",
@@ -1595,7 +1595,7 @@
                 ],
                 "summary": "Update funding sources by ID",
                 "description": "Update funding sources by ID",
-                "operationId": "9eee69b02fdd1d8bd0774ab786dbd58f",
+                "operationId": "cf44eb67ca9a8e8dbd96e754d2a63716",
                 "parameters": [
                     {
                         "name": "id",
@@ -1656,14 +1656,14 @@
                 ]
             }
         },
-        "/api/admin/funding_sources/{id}/toggle-status": {
+        "/api/admin/funding-sources/{id}/toggle-status": {
             "patch": {
                 "tags": [
                     "Funding Sources"
                 ],
-                "summary": "Toggle active status of funding aources by ID",
+                "summary": "Toggle active status of funding sources by ID",
                 "description": "Toggle active status of funding sources by ID",
-                "operationId": "2e2d6a5c60f01aae1ebb25d86212f919",
+                "operationId": "7492417398ec693346a6449fc83e0f45",
                 "parameters": [
                     {
                         "name": "id",
@@ -1677,588 +1677,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Funding Sources status toggled successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/industries": {
-            "get": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Get industries",
-                "description": "Get industries",
-                "operationId": "getIndustries",
-                "parameters": [
-                    {
-                        "name": "size",
-                        "in": "query",
-                        "description": "Number of records per page",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Name of business activity type",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "business_activity_type_name",
-                        "in": "query",
-                        "description": "Name of business activity type",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get industries successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Get industries successfully"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "example": []
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Create a new industry",
-                "description": "Create a new industry",
-                "operationId": "createIndustry",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Industry Name"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Industry Description"
-                                    },
-                                    "is_active": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "business_activity_type_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Industry created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Create industry successfully"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "example": []
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to create industry",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Failed to create industry"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error message"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/industries/{id}": {
-            "get": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Get industry by ID",
-                "description": "Retrieve a specific industry by its ID",
-                "operationId": "getIndustryById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the industry",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Industry retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Get industry successfully"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "example": []
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Industry not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Industry not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to retrieve industry",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Failed to retrieve industry"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error message"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Delete industry by ID",
-                "description": "Delete a specific industry by its ID",
-                "operationId": "deleteIndustry",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the industry",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Industry deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Industry has been deleted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Industry not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Industry not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to delete industry",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Failed to delete industry"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error message"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Update industry by ID",
-                "description": "Update a specific industry by its ID",
-                "operationId": "updateIndustry",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the industry",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Updated Industry Name"
-                                    },
-                                    "description": {
-                                        "type": "text",
-                                        "example": "Updated Industry Description"
-                                    },
-                                    "is_active": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "business_activity_type_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Industry updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Update industry successfully"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "example": []
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Industry not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Industry not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to update industry",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Failed to update industry"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error message"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/industries/{id}/toggle-status": {
-            "patch": {
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Toggle active status of industry by ID",
-                "description": "Toggle active status of industry by ID",
-                "operationId": "toggleIndustryActiveStatus",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the industry",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Industry active status toggled successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Status of industry has been updated successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "is_active": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Industry not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Industry not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to toggle industry active status",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Failed to toggle industry active status"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Error message"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Funding sources status toggled successfully"
                     }
                 },
                 "security": [
@@ -2361,10 +1780,6 @@
         {
             "name": "Funding Sources",
             "description": "Funding Sources"
-        },
-        {
-            "name": "Industry",
-            "description": "Industry"
         }
     ]
 }

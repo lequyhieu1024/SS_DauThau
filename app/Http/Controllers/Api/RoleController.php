@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\RoleResource;
 use App\Models\Staff;
 use Illuminate\Http\Request;
-use App\Models\RoleHasPermission;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RoleFormRequest;
+use App\Http\Resources\RoleResource;
+use App\Repositories\RoleRepository;
 use App\Http\Resources\RoleCollection;
-use App\Models\Permission;
-// use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\PermissionCollection;
 
 class RoleController extends Controller
 {
-    public function __construct()
+    protected $roleRepository;
+    public function __construct(RoleRepository $roleRepository)
     {
+        $this->roleRepository = $roleRepository;
         $this->middleware(['permission:list_role'])->only('index');
         $this->middleware(['permission:create_role'])->only(['create', 'store']);
         $this->middleware(['permission:update_role'])->only(['edit', 'update']);
@@ -31,16 +31,10 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        // Lấy tham số 'size' từ request, mặc định là 10 nếu không có
-        $pageSize = $request->query('size', 10);
+        $roles = $this->roleRepository->filter($request->all());
 
-        // Lấy dữ liệu từ model Role và phân trang
-        $roles = Role::paginate($pageSize);
-
-        // Tạo collection để trả về
         $data = new RoleCollection($roles);
 
-        // Trả về dữ liệu JSON
         return response([
             'result' => true,
             'status' => 200,
@@ -57,15 +51,14 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
-        foreach($permissions as $permission) {
-            // dd($permission);
-            $permission->name = __(convertText($permission->name));
-            $permission->value = $permission->section;
-            $permission->section = __(convertText($permission->section));
-        }
+        $permissions = $this->roleRepository->getPermissions();
 
-        if ($permissions->isEmpty()) {
+        $permissions = $permissions->flatMap(function ($group) {
+            return $group;
+        });
+
+        $data = new PermissionCollection($permissions);
+        if (!$permissions) {
             return response([
                 'result' => false,
                 'status' => 404,
@@ -76,60 +69,22 @@ class RoleController extends Controller
             'result' => true,
             'status' => 200,
             'message' => 'Lấy danh sách permission thành công',
-            'permissions' => $permissions
+            'permissions' => $data,
         ], 200);
     }
-    public function store(Request $request)
+    public function store(RoleFormRequest $request)
     {
         try {
-            // lưu tất cả dữ liệu gửi đi từ phương thức post vào $data
-            $data = $request->all();
-            // tạo rule để validate dữ liệu
-            $rules = [
-                'name' => 'required',
-                'permissions' => 'required'
-            ];
-            // tạo message tương ứng với rule để báo lỗi
-            $message = [
-                'name.required' => 'Vui lòng nhập tên quyền',
-                'permissions.required' => 'Chọn ít nhất 1 quyền'
-            ];
-            // tạo đối tượng validater với dữ liệu $data, $rules, $message
-            $validator = Validator::make($data, $rules, $message);
-            // kiểm tra dữ liệu với đối tượng validater, nếu fails thì return message báo lỗi bằng json, không fails thì chạy xuống else, thực hiện transaction
-            if ($validator->fails()) {
-                return response()->json(
-                    [
-                        'result' => false,
-                        'status' => 400,
-                        'message' => $validator->errors()
-                    ],
-                    400
-                );
-            } else {
-                // bắt đầu transaction
-                DB::beginTransaction();
-                // insert name role vào bảng role, từ input có name là : "name", guard_name mặc định "api", created_at và updated_at là thời điểm hiện tại
-                $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'created_at' => now(), 'updated_at' => now()]);
-                // lặp dữ liệu permissions từ form gửi lên rồi insert vào bảng role_has_permissions
-                foreach ($request->permissions as $permission) {
-                    $roleHasPermission = new RoleHasPermission();
-                    $roleHasPermission->permission_id = $permission;
-                    $roleHasPermission->role_id = $role->id;
-                    $roleHasPermission->save();
-                }
-                // không có lỗi thì commit với transaction
-                DB::commit();
-                // sau khi commit thì return message thông báo bằng json
-                return response()->json([
-                    'result' => true,
-                    'message' => 'Tạo vai trò thành công',
-                    'status' => 201,
-                    'data' => $role
-                ], 201);
-            }
+            DB::beginTransaction();
+            $role = $this->roleRepository->createRole($request->all());
+            DB::commit();
+            return response()->json([
+                'result' => true,
+                'message' => 'Tạo vai trò thành công',
+                'status' => 201,
+                'data' => $role
+            ], 201);
         } catch (\Exception $e) {
-            //có lỗi thì rollback + message báo lỗi
             DB::rollBack();
             return response()->json($e->getMessage(), 400);
         }
@@ -143,15 +98,13 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $role = Role::with('permissions')->find($id);
-
+        $role = $this->roleRepository->showRole($id);
         if (!$role) {
             return response([
                 'result' => false,
                 'message' => 'Không tìm thấy vai trò',
             ], 404);
         }
-
         return response([
             'result' => true,
             'message' => 'Lấy chi tiết vai trò thành công',
@@ -160,12 +113,12 @@ class RoleController extends Controller
     }
     public function edit($id)
     {
-        $role = Role::findOrFail($id);
-        $permission_checked = RoleHasPermission::where('role_id', $id)->pluck('permission_id')->toArray();
+        $role = $this->roleRepository->showRole($id);
+        $permissionIds = $role->permissions->pluck('id');
         return response()->json([
             'result' => true,
             'role' => $role,
-            'id_permission_checked' => $permission_checked,
+            'id_permission_checked' => $permissionIds,
         ], 200);
     }
     /**
@@ -175,53 +128,16 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RoleFormRequest $request, $id)
     {
         try {
-            $data = $request->all();
-            $rules = [
-                'name' => 'required|unique:roles,name,' . $id,
-                'permissions' => 'required'
-            ];
-            $message = [
-                'name.required' => 'Vui lòng nhập tên quyền',
-                'name.unique' => 'Tên quyền đã tồn tại',
-                'permissions.required' => 'Chọn ít nhất 1 quyền'
-            ];
-            $validator = Validator::make($data, $rules, $message);
-            if ($validator->fails()) {
-                return response()->json($validator->errors(), 400);
-            }
-
             DB::beginTransaction();
-            $role = Role::findOrFail($id);
-            $role->name = $request->name;
-            $role->save();
-            $permissions = $request->permissions;
-            foreach ($permissions as $permission) {
-                // Tìm kiếm bản ghi RoleHasPermission tương ứng với role_id và permission_id
-                $roleHasPermission = RoleHasPermission::where('role_id', $role->id)
-                    ->where('permission_id', $permission)
-                    ->first();
-                if ($roleHasPermission !== null) {
-                    continue;
-                }
-
-                RoleHasPermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission
-                ]);
-            }
-            // Xóa các bản ghi RoleHasPermission mà không có trong danh sách permissions từ request
-            RoleHasPermission::where('role_id', $role->id)
-                ->whereNotIn('permission_id', $permissions)
-                ->delete();
+            $role = $this->roleRepository->updateRole($request->all(), $id);
             DB::commit();
             return response([
                 'result' => true,
                 'message' => 'Cập nhật quyền thành công',
                 'data' => $role,
-                'status' => 200,
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -238,17 +154,9 @@ class RoleController extends Controller
     public function destroy($id)
     {
         try {
-            $role = Role::findOrFail($id);
-
             $staff = Staff::where('role_id', $id)->get();
-            $permissions = RoleHasPermission::where('role_id', $id)->get();
-
             if ($staff->isEmpty()) {
-                foreach ($permissions as $permission) {
-                    $permission->delete();
-                }
-                $role->delete();
-
+                $this->roleRepository->deleteRole($id);
                 return response([
                     "message" => "Xóa quyền thành công",
                     "status" => 200

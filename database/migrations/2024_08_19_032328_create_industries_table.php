@@ -10,11 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('business_activity_types', function (Blueprint $table) {
+        Schema::create('industries', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->boolean('is_active')->default(1);
+            $table->integer('business_activity_type_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('business_activity_types');
+        Schema::dropIfExists('industries');
     }
 };
