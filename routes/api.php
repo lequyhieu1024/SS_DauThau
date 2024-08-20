@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BiddingFieldController;
+use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
 use App\Http\Controllers\Api\FundingSourceController;
 use App\Http\Controllers\Api\FundingSourcesController;
@@ -70,6 +71,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('bidding-fields/{id}/toggle-status', [BiddingFieldController::class, 'toggleActiveStatus']);
     Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
 
+    // Bidding Types
+    Route::resource('bidding-types', BiddingTypeController::class)->except('update');
+    Route::patch('bidding-types/{id}', [BiddingTypeController::class, 'update']);
+    Route::patch('bidding-types/{id}/toggle-status', [BiddingTypeController::class, 'toggleActiveStatus']);
 
     // Business Activity Types
     Route::get('business-activity-types/all-ids', [BusinessActivityTypeController::class, 'getAllIds']);
