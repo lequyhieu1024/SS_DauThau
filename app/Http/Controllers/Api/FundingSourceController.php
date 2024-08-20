@@ -17,6 +17,11 @@ class FundingSourceController extends Controller
 
     public function __construct(FundingSourceRepository $fundingSourceRepository){
         $this->fundingSourceRepository = $fundingSourceRepository;
+        $this->middleware(['permission:list_funding_source'])->only('index');
+        $this->middleware(['permission:create_funding_source'])->only(['store']);
+        $this->middleware(['permission:update_funding_source'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_funding_source'])->only('show');
+        $this->middleware(['permission:destroy_funding_source'])->only('destroy');
     }
 
     /**
