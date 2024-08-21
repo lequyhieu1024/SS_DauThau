@@ -56,6 +56,7 @@ class EnterpriseController extends Controller
                 "data" => $enterprise
             ], 201);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 "result" => false,
                 "message" => "Tạo doanh nghiệp không thành công." . $th,
@@ -106,6 +107,7 @@ class EnterpriseController extends Controller
                 "data" => new EnterpriseResource($this->enterpriseRepository->findOrFail($id))
             ], 201);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 "result" => false,
                 "message" => "Cập nhật doanh nghiệp không thành công." . $th,
@@ -128,6 +130,7 @@ class EnterpriseController extends Controller
                 'message' => 'Xóa doanh nghiệp thành công'
             ], 200);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'result' => false,
                 'status' => 400,
