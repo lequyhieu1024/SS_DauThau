@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enterprise_industry', function (Blueprint $table) {
+        Schema::create('funding_sources', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('enterprise_id');
-            $table->unsignedBigInteger('industry_id');
+            $table->string('name',255);
+            $table->text('description');
+            $table->string('code')->unique();
+            $table->enum('type', ['Chính phủ', 'Tư nhân', 'Quốc tế']);
+            $table->boolean('is_active')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('enterprise_industry');
+        Schema::dropIfExists('funding_sources');
     }
 };

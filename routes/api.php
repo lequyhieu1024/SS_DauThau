@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\Api\FundingSourceController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
@@ -58,6 +61,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('enterprises', EnterpriseController::class);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
+
+    // Funding Sources
+    Route::resource('funding-sources', FundingSourceController::class)->except('update');
+    Route::patch('funding-sources/{id}', [FundingSourceController::class, 'update']);
+    Route::patch('funding-sources/{id}/toggle-status', [FundingSourceController::class, 'toggleActiveStatus']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);

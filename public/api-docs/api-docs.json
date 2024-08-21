@@ -53,12 +53,12 @@
                         }
                     },
                     {
-                        "name": "parent_id",
+                        "name": "parent_name",
                         "in": "query",
-                        "description": "Parent id of bidding field",
+                        "description": "Parent name of bidding field",
                         "required": false,
                         "schema": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 ],
@@ -535,423 +535,6 @@
                 "responses": {
                     "200": {
                         "description": "Bidding field status toggled successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/bidding-types": {
-            "get": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Get all bidding types",
-                "description": "Get all bidding types",
-                "operationId": "dba022d6ab4b53051ea60f6ddd41604d",
-                "parameters": [
-                    {
-                        "name": "size",
-                        "in": "query",
-                        "description": "Size items per page",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Name of bidding type",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get bidding types successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Get bidding types successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "biddingTypes": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "Bidding types 1"
-                                                            },
-                                                            "description": {
-                                                                "type": "string",
-                                                                "example": "Description of bidding types 1"
-                                                            },
-                                                            "is_active": {
-                                                                "type": "boolean",
-                                                                "example": true
-                                                            },
-                                                            "created_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            },
-                                                            "updated_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "pagination": {
-                                                    "properties": {
-                                                        "currentPage": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "pageSize": {
-                                                            "type": "integer",
-                                                            "example": 10
-                                                        },
-                                                        "totalItems": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "totalPages": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "hasNextPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        },
-                                                        "hasPreviousPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Create a new bidding type",
-                "description": "Create a new bidding type",
-                "operationId": "83ad84e2b711d54812de4f749d19e55f",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "description",
-                                    "is_active"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Bidding type 1"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Description of bidding type 1"
-                                    },
-                                    "is_active": {
-                                        "type": "number",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Bidding type created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bidding type created successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "Bidding type 1"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Description of bidding type 1"
-                                                },
-                                                "is_active": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/bidding-types/{id}": {
-            "get": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Get bidding type by ID",
-                "description": "Get bidding type by ID",
-                "operationId": "c96e7b9581ceaa92c39bde2d50d4684f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of bidding type",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Bidding type retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bidding type retrieved successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "bidding type 1"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Description of bidding type 1"
-                                                },
-                                                "is_active": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Delete bidding type by ID",
-                "description": "Delete bidding type by ID",
-                "operationId": "78af2258983a047eda2fcec4afb8511a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of bidding type",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Bidding type deleted successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Update bidding type by ID",
-                "description": "Update bidding type by ID",
-                "operationId": "f337d375bd3f6987cf66db0ac30ff172",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of bidding type",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Bidding type 1"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Description of bidding type 1"
-                                    },
-                                    "is_active": {
-                                        "type": "number",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Bidding type updated successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/bidding-types/{id}/toggle-status": {
-            "patch": {
-                "tags": [
-                    "Bidding Types"
-                ],
-                "summary": "Toggle active status of bidding type by ID",
-                "description": "Toggle active status of bidding type by ID",
-                "operationId": "fbbdbfa570bb8f79ed9b45f5c0c72f14",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of bidding type",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Bidding type status toggled successfully"
                     }
                 },
                 "security": [
@@ -1618,7 +1201,7 @@
                 ],
                 "summary": "Get all funding sources",
                 "description": "Get all funding sources",
-                "operationId": "ef1d9f98071552a0001bda0f1b19eabc",
+                "operationId": "4f00effba94f9a190c0a3beebf90cc46",
                 "parameters": [
                     {
                         "name": "size",
@@ -1655,7 +1238,7 @@
                         "description": "Code of funding source",
                         "required": false,
                         "schema": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1772,7 +1355,7 @@
                 ],
                 "summary": "Create a new funding sources",
                 "description": "Create a new funding sources",
-                "operationId": "c396e6af19d969d89532e636fd30bbe8",
+                "operationId": "c4ceafca313ff079dae727f779f77028",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1895,7 +1478,7 @@
                 ],
                 "summary": "Get funding sources by ID",
                 "description": "Get funding sources by ID",
-                "operationId": "f8bd15a745d762905ca18690632d206a",
+                "operationId": "a4c88f4a7000b1911a7d629b9ebd43c0",
                 "parameters": [
                     {
                         "name": "id",
@@ -1983,7 +1566,7 @@
                 ],
                 "summary": "Delete funding sources by ID",
                 "description": "Delete funding sources by ID",
-                "operationId": "0f27f82bcefce5e050c35b65e949c868",
+                "operationId": "84394bd9d2ffd5034cde807c7fb23cef",
                 "parameters": [
                     {
                         "name": "id",
@@ -2012,7 +1595,7 @@
                 ],
                 "summary": "Update funding sources by ID",
                 "description": "Update funding sources by ID",
-                "operationId": "a6b65a2eb7a7e38f73e005bd2565537c",
+                "operationId": "cf44eb67ca9a8e8dbd96e754d2a63716",
                 "parameters": [
                     {
                         "name": "id",
@@ -2080,7 +1663,7 @@
                 ],
                 "summary": "Toggle active status of funding sources by ID",
                 "description": "Toggle active status of funding sources by ID",
-                "operationId": "d1403151f6f15da581b50404302838fa",
+                "operationId": "7492417398ec693346a6449fc83e0f45",
                 "parameters": [
                     {
                         "name": "id",
@@ -2770,10 +2353,6 @@
         {
             "name": "Bidding Field",
             "description": "Bidding Field"
-        },
-        {
-            "name": "Bidding Types",
-            "description": "Bidding Types"
         },
         {
             "name": "Business Activity Type",
