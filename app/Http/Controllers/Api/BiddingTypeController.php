@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BiddingTypes\BiddingTypeFormRequest;
 use App\Http\Requests\BiddingTypes\IndexBiddingTypeRequest;
-use App\Http\Requests\BiddingTypes\StoreBiddingTypeRequest;
-use App\Http\Requests\BiddingTypes\UpdateBiddingTypeRequest;
 use App\Http\Requests\Common\ValidateIdRequest;
 use App\Http\Resources\BiddingTypeCollection;
 use App\Repositories\BiddingTypeRepository;
@@ -260,7 +259,7 @@ class BiddingTypeController extends Controller
      *     )
      * )
      */
-    public function store(StoreBiddingTypeRequest $request)
+    public function store(BiddingTypeFormRequest $request)
     {
         DB::beginTransaction();
 
@@ -420,7 +419,7 @@ class BiddingTypeController extends Controller
      *     )
      * )
      */
-    public function update(UpdateBiddingTypeRequest $request, $id)
+    public function update(BiddingTypeFormRequest $request, $id)
     {
         DB::beginTransaction();
 

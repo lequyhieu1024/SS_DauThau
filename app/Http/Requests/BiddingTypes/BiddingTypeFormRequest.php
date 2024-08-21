@@ -6,25 +6,25 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreBiddingTypeRequest extends FormRequest
+class BiddingTypeFormRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
+        $id = $this->route('id');
+
         return [
-            'name' => 'required|string|unique:bidding_types|max:100',
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:bidding_types,name,'. $id,
+            ],
             'description' => 'required|string',
             'is_active' => 'required|boolean',
         ];
