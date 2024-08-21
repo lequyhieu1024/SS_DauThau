@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 
-class UpdateFundingSourceRequest extends FormRequest
+class FundingSourceFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,24 +25,18 @@ class UpdateFundingSourceRequest extends FormRequest
     public function rules(): array
     {   
         $id = $this->route('id');
-        $currentCode = $id ? DB::table('funding_sources')->where('id', $id)->value('code') : null;
 
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'code' => [
-                'sometimes',
                 'required',
                 'string',
                 'max:100',
-                function ($attribute, $value, $fail) use ($id, $currentCode) {
-                    if ($value !== $currentCode && DB::table('funding_sources')->where('code', $value)->where('id', '!=', $id)->exists()) {
-                        $fail(__('validation.custom.code.unique'));
-                    }
-                },
+                'unique:funding_sources,code,' . $id
             ],
             'type' => 'required|in:Chính phủ,Tư nhân,Quốc tế',
-            'is_active' => 'sometimes|required|boolean',
+            'is_active' => 'required|boolean',
         ];
     }
 
