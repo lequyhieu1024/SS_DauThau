@@ -193,18 +193,19 @@ class StaffController extends Controller
      */
     public function destroy($id)
     {
-        $staff = $this->staffRepository->delete($id);
-        if ($staff) {
+        try {
+            $this->userRepository->delete($this->staffRepository->findOrFail($id)->user_id);
+            $this->staffRepository->delete($id);
             return response()->json([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Xóa nhân viên thành công'
             ], 200);
-        } else {
+        } catch (\Throwable $th) {
             return response()->json([
                 'result' => false,
                 'status' => 400,
-                'message' => 'Xóa nhân viên thất bại'
+                'message' => 'Xóa nhân viên thất bại, lỗi : ' . $th
             ], 400);
         }
     }

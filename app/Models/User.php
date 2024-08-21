@@ -75,20 +75,6 @@ class User extends Authenticatable implements JWTSubject
     {
         $this->attributes['password'] = Hash::make($password);
     }
-    // public function getAllPermissions($user_id, $type)
-    // {
-    //     $role_id = "";
-    //     if ($type == 'staff') {
-    //         $role_id = Staff::where('user_id', $user_id)->pluck('role_id')->first();
-    //     }
-    //     $permissions = DB::table('role_has_permissions')
-    //         ->join('permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-    //         ->where('role_has_permissions.role_id', $role_id)
-    //         ->select('permissions.name')
-    //         ->pluck('permissions.name')
-    //         ->toArray();
-    //     return $permissions;
-    // }
     public function staff()
     {
         return $this->hasOne(Staff::class);

@@ -13,7 +13,7 @@ return [
     'boolean' => ':attribute phải là giá trị đúng hoặc sai.',
     'exists' => ':attribute không tồn tại.',
     'unique' => ':attribute đã được sử dụng.',
-    'not_regex' => ':attribute không được chứa các từ khóa SQL hoặc thẻ HTML.',
+    'not_regex' => ':attribute không được chứa các từ khóa SQL hoặc thẻ script.',
     'custom' => [
         'code' => [
             'unique' => 'Mã đã được sử dụng.',
