@@ -10,13 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('bidding_fields', function (Blueprint $table) {
+        Schema::create('industries', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->text('description')->nullable();
-            $table->integer('code')->unique();
+            $table->longText('description')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->integer('parent_id')->nullable();
+            $table->integer('business_activity_type_id')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('bidding_fields');
+        Schema::dropIfExists('industries');
     }
 };

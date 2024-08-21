@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('account_ban_at')->nullable()->after('email_verified_at');
+        Schema::table('enterprises', function (Blueprint $table) {
+            $table->decimal('avg_document_rating')->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('account_ban_at');
+        Schema::table('enterprises', function (Blueprint $table) {
+            //
         });
     }
 };

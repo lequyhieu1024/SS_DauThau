@@ -79,7 +79,8 @@ class AuthController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'email' => [
-                    'required', 'string',
+                    'required',
+                    'string',
                     function ($attribute, $value, $fail) {
                         $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
                         if (!preg_match($emailPattern, $value)) {
@@ -99,8 +100,10 @@ class AuthController extends Controller
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'],
-                    401);
+                return response()->json(
+                    ['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'],
+                    401
+                );
             }
         } catch (JWTException $e) {
             return response()->json(['result' => false, 'message' => 'Không thể tạo token'], 500);
@@ -109,24 +112,24 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-//     public function login(Request $request)
-// {
-//     $credentials = $request->only('email', 'password');
+    //     public function login(Request $request)
+    // {
+    //     $credentials = $request->only('email', 'password');
 
-//     if ($token = JWTAuth::attempt($credentials)) {
-//         return $this->respondWithToken($token);
-//     }
+    //     if ($token = JWTAuth::attempt($credentials)) {
+    //         return $this->respondWithToken($token);
+    //     }
 
-//     return response()->json(['error' => 'Unauthorized'], 401);
-// }
+    //     return response()->json(['error' => 'Unauthorized'], 401);
+    // }
 
     protected function respondWithToken($token)
     {
         return response()->json([
             'data' => [
                 'access_token' => $token,
-//            'token_type' => 'bearer',
-//            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                //            'token_type' => 'bearer',
+                //            'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
             ]
         ]);
@@ -142,11 +145,8 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'taxcode' => $user->taxcode,
                 'email' => $user->email,
-                'type' => $user->type,
-                'phone' => $user->phone,
-                'avatar' => $user->avatar,
                 'email_verified' => $user->email_verified_at != null,
-                'permissions' => $user->getAllPermissions($user->id, $user->type),
+                'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
             ]
         ]);
     }

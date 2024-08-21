@@ -16,12 +16,23 @@ class IndexBiddingFieldRequest extends FormRequest
     public function rules()
     {
         return [
-            'limit' => 'integer|min:1',
-            'page' => 'integer|min:1',
-            'name' => 'string',
-            'code' => 'integer|min:1',
-            'parent_name' => 'string',
+            'size' => 'nullable|integer|min:1',
+            'page' => 'nullable|integer|min:1',
+            'name' => 'nullable|string',
+            'code' => 'nullable|integer|min:1',
+            'parent_id' => 'nullable|integer|min:1',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'size' => $this->query('size'),
+            'page' => $this->query('page'),
+            'name' => $this->query('name'),
+            'code' => $this->query('code'),
+            'parent_name' => $this->query('parent_id'),
+        ]);
     }
 
     protected function failedValidation(Validator $validator)

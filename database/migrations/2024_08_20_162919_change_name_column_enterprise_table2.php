@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('taxcode')->nullable()->change();
+        Schema::table('enterprises', function (Blueprint $table) {
+            $table->string('representative')->after('user_id')->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('taxcode')->nullable()->change();
+        Schema::table('enterprises', function (Blueprint $table) {
+            //
         });
     }
 };

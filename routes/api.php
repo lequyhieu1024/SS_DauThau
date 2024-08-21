@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\BiddingFieldController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\IndustryController;
+use App\Http\Controllers\Api\EnterpriseController;
+use App\Http\Controllers\Api\BiddingFieldController;
+use App\Http\Controllers\Api\BusinessActivityTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,11 +54,46 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('staff', StaffController::class);
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
+    // doanh nhghieejp
+    Route::resource('enterprises', EnterpriseController::class);
+    // cấm tài khoản
+    Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
 
+    // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
     Route::resource('bidding-fields', BiddingFieldController::class)->except(['show', 'update', 'destroy']);
     Route::get('bidding-fields/{id}', [BiddingFieldController::class, 'show']);
     Route::patch('bidding-fields/{id}', [BiddingFieldController::class, 'update']);
     Route::patch('bidding-fields/{id}/toggle-status', [BiddingFieldController::class, 'toggleActiveStatus']);
     Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
+
+
+    /// Business Activity Types
+    Route::get('business-activity-types/all-ids', [BusinessActivityTypeController::class, 'getAllIds']);
+    Route::resource('business-activity-types', BusinessActivityTypeController::class)->except([
+        'show',
+        'update',
+        'destroy'
+    ]);
+    Route::get('business-activity-types/{id}', [BusinessActivityTypeController::class, 'show']);
+    Route::patch('business-activity-types/{id}', [BusinessActivityTypeController::class, 'update']);
+    Route::patch(
+        'business-activity-types/{id}/toggle-status',
+        [BusinessActivityTypeController::class, 'toggleActiveStatus']
+    );
+    Route::delete('business-activity-types/{id}', [BusinessActivityTypeController::class, 'destroy']);
+
+    // Industries
+    Route::resource('industries', IndustryController::class)->except([
+        'show',
+        'update',
+        'destroy'
+    ]);
+    Route::get('industries/{id}', [IndustryController::class, 'show']);
+    Route::patch('industries/{id}', [IndustryController::class, 'update']);
+    Route::patch(
+        'industries/{id}/toggle-status',
+        [IndustryController::class, 'toggleActiveStatus']
+    );
+    Route::delete('industries/{id}', [IndustryController::class, 'destroy']);
 });

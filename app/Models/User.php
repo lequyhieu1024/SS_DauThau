@@ -6,18 +6,20 @@ namespace App\Models;
 use App\Models\Staff;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
-     /**
+    /**
      * Lấy giá trị xác định sẽ được lưu trong subject claim của JWT.
      *
      * @return mixed
@@ -45,6 +47,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'taxcode',
+        'account_ban_at',
     ];
     protected $guard_name = 'api';
 
@@ -67,18 +71,17 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function getAllPermissions($user_id, $type)
+    public function setPasswordAttribute($password)
     {
-        $role_id = "";
-        if($type == 'staff') {
-            $role_id = Staff::where('user_id', $user_id)->pluck('role_id')->first();
-        }
-        $permissions = DB::table('role_has_permissions')
-            ->join('permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-            ->where('role_has_permissions.role_id', $role_id)
-            ->select('permissions.name')
-            ->pluck('permissions.name')
-            ->toArray();
-        return $permissions;
+        $this->attributes['password'] = Hash::make($password);
+    }
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id')
+            ->wherePivot('model_type', self::class);
     }
 }

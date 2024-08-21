@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('staffs', function (Blueprint $table) {
-                $table->json('role_id')->nullable()->change(); // Đổi cột role_id thành kiểu JSON
+        Schema::table('enterprises', function (Blueprint $table) {
+            $table->dropColumn('representative_name');
+            $table->string('representative')->after('user_id');
+            $table->enum('organization_type', ['1', '2'])->change();
         });
     }
 
@@ -21,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('staffs', function (Blueprint $table)  {
-            $table->integer('role_id')->change();
+        Schema::table('enterprises', function (Blueprint $table) {
+            //
         });
     }
 };
