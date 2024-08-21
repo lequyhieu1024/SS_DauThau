@@ -14,7 +14,10 @@ class Industry extends Model
     protected $table = 'industries';
 
     protected $fillable = [
-        'name', 'description', 'is_active', 'business_activity_type_id'
+        'name',
+        'description',
+        'is_active',
+        'business_activity_type_id'
     ];
 
     protected $casts = [
@@ -27,5 +30,9 @@ class Industry extends Model
     public function businessActivityType()
     {
         return $this->belongsTo(BusinessActivityType::class, 'business_activity_type_id');
+    }
+    public function enterprises()
+    {
+        return $this->belongsToMany(Enterprise::class);
     }
 }
