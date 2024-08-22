@@ -48,6 +48,15 @@ abstract class BaseRepository implements RepositoryInterface
         return $student->update($data);
     }
 
+    public function toggleStatus($id)
+    {
+        $model = $this->model->findOrFail($id);
+
+        $model->update(['is_active' => !$model->is_active]);
+
+        return $model;
+    }
+
     public function delete($id)
     {
         return $this->model->find($id)->delete();

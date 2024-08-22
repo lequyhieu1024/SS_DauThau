@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\ValidateIdRequest;
+use App\Http\Requests\FundingSources\FundingSourceFormRequest;
 use App\Http\Requests\FundingSources\StoreFundingSourceRequest;
 use App\Http\Requests\FundingSources\UpdateFundingSourceRequest;
 use App\Http\Resources\FundingSourceCollection;
@@ -303,7 +304,7 @@ class FundingSourceController extends Controller
      *     )
      * )
      */
-    public function store(StoreFundingSourceRequest $request)
+    public function store(FundingSourceFormRequest $request)
     {
         DB::beginTransaction();
 
@@ -485,7 +486,7 @@ class FundingSourceController extends Controller
      *     )
      * )
      */
-    public function update($id, UpdateFundingSourceRequest $request)
+    public function update($id, FundingSourceFormRequest $request)
     {
         DB::beginTransaction();
 

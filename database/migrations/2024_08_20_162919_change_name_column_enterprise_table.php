@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bidding_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',255)->unique();
-            $table->text('description');
-            $table->boolean('is_active')->default(1);;
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('enterprises', function (Blueprint $table) {
+            $table->dropColumn('representative_name');
+            $table->string('representative')->after('user_id');
+            $table->enum('organization_type', ['1', '2'])->change();
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bidding_types');
+        Schema::table('enterprises', function (Blueprint $table) {
+            //
+        });
     }
 };

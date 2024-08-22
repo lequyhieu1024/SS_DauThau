@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name', 255);
             $table->longText('description')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->integer('business_activity_type_id')->nullable();
+            $table->integer('business_activity_type_id')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

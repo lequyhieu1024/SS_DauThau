@@ -3,18 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BusinessActivityTypes\StoreBusinessActivityTypeRequest;
-use App\Http\Requests\BusinessActivityTypes\UpdateBusinessActivityTypeRequest;
+use App\Http\Requests\BusinessActivityTypes\BusinessActivityTypeFormRequest;
 use App\Http\Requests\Common\IndexBaseRequest;
 use App\Http\Requests\Common\ValidateIdRequest;
 use App\Http\Resources\Common\IndexBaseCollection;
-use App\Models\BusinessActivityType;
+use App\Repositories\BusinessActivityTypeRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 use OpenApi\Annotations as OA;
 
 
 class BusinessActivityTypeController extends Controller
 {
+
+    protected $businessActivityTypeRepository;
+
+    public function __construct(BusinessActivityTypeRepository $businessActivityTypeRepository)
+    {
+        $this->middleware(['permission:list_business_activity_type'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:create_business_activity_type'])->only('store');
+        $this->middleware(['permission:update_business_activity_type'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_business_activity_type'])->only('show');
+        $this->middleware(['permission:destroy_business_activity_type'])->only('destroy');
+
+        $this->businessActivityTypeRepository = $businessActivityTypeRepository;
+    }
+
 
     /**
      * @OA\Get (
@@ -79,73 +93,21 @@ class BusinessActivityTypeController extends Controller
      */
     public function index(IndexBaseRequest $request)
     {
-        $query = BusinessActivityType::getFilteredBusinessActivityTypes($request->query());
+        $businessActivityTypes = $this->businessActivityTypeRepository->filter($request->all());
 
-        $size = $request->query('size', 10);
-        $page = $request->query('page', 1);
+        if ($businessActivityTypes->isEmpty()) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy loại hoạt động kinh doanh',
+            ], 404);
+        }
 
-        $businessActivityTypes = $query->paginate($size, ['*'], 'page', $page);
         $data = new IndexBaseCollection($businessActivityTypes);
 
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
             'data' => $data,
-        ], 200);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/admin/business-activity-types/all-ids",
-     *     tags={"Business Activity Type"},
-     *     summary="Get all business activity type IDs",
-     *     description="Get all business activity type IDs",
-     *     operationId="getAllBusinessActivityTypeIds",
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Response(
-     *     response=200,
-     *     description="Get all business activity type IDs successfully",
-     *     @OA\JsonContent(
-     *     type="object",
-     *     @OA\Property(
-     *     property="result",
-     *     type="boolean",
-     *     example=true
-     *     ),
-     *     @OA\Property(
-     *     property="message",
-     *     type="string",
-     *     example="Get all business activity type IDs successfully"
-     *    ),
-     *     @OA\Property(
-     *     property="data",
-     *     type="array",
-     *     @OA\Items(
-     *     type="object",
-     *     @OA\Property(
-     *     property="id",
-     *     type="integer",
-     *     example=1
-     *     ),
-     *     @OA\Property(
-     *     property="name",
-     *     type="string",
-     *     example="Consulting"
-     *    ),
-     *     )
-     * )
-     * )
-     * )
-     * )
-     */
-    public function getAllIds()
-    {
-        $businessActivityTypes = BusinessActivityType::getAllBusinessActivityTypes();
-
-        return response()->json([
-            'result' => true,
-            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
-            'data' => $businessActivityTypes,
         ], 200);
     }
 
@@ -246,12 +208,12 @@ class BusinessActivityTypeController extends Controller
      *     )
      * )
      */
-    public function store(StoreBusinessActivityTypeRequest $request)
+    public function store(BusinessActivityTypeFormRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $businessActivityType = BusinessActivityType::createNew($request->all());
+            $businessActivityType = $this->businessActivityTypeRepository->create($request->all());
 
             DB::commit();
 
@@ -269,6 +231,69 @@ class BusinessActivityTypeController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/business-activity-types/all-ids",
+     *     tags={"Business Activity Type"},
+     *     summary="Get all business activity type IDs",
+     *     description="Get all business activity type IDs",
+     *     operationId="getAllBusinessActivityTypeIds",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *     response=200,
+     *     description="Get all business activity type IDs successfully",
+     *     @OA\JsonContent(
+     *     type="object",
+     *     @OA\Property(
+     *     property="result",
+     *     type="boolean",
+     *     example=true
+     *     ),
+     *     @OA\Property(
+     *     property="message",
+     *     type="string",
+     *     example="Get all business activity type IDs successfully"
+     *    ),
+     *     @OA\Property(
+     *     property="data",
+     *     type="array",
+     *     @OA\Items(
+     *     type="object",
+     *     @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     example=1
+     *     ),
+     *     @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     example="Consulting"
+     *    ),
+     *     )
+     * )
+     * )
+     * )
+     * )
+     */
+    public function getAllIds()
+    {
+//        $businessActivityTypes = $this->businessActivityTypeRepository->getAllIds();
+        $businessActivityTypes = $this->businessActivityTypeRepository->getBusinessActivityTypesWithIndustries();
+
+        if (!$businessActivityTypes) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy loại hoạt động kinh doanh',
+            ], 404);
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
+            'data' => $businessActivityTypes,
+        ], 200);
     }
 
     /**
@@ -352,7 +377,7 @@ class BusinessActivityTypeController extends Controller
     {
         $id = $request->route('id');
 
-        $businessActivityType = BusinessActivityType::findBusinessActivityTypeById($id);
+        $businessActivityType = $this->businessActivityTypeRepository->find($id);
 
         if (!$businessActivityType) {
             return response()->json([
@@ -366,6 +391,16 @@ class BusinessActivityTypeController extends Controller
             'message' => 'Lấy thông tin loại hoạt động kinh doanh thành công',
             'data' => $businessActivityType,
         ], 200);
+    }
+
+    private function checkSpecialRecord($id)
+    {
+        if ($id == 1) {
+            throw new HttpResponseException(response()->json([
+                'result' => false,
+                'message' => 'Không thể chỉnh sửa hoặc xóa danh mục "Chưa phân loại".',
+            ], 403));
+        }
     }
 
     /**
@@ -491,15 +526,16 @@ class BusinessActivityTypeController extends Controller
      *     )
      * )
      */
-    public function update(ValidateIdRequest $request, UpdateBusinessActivityTypeRequest $updateRequest)
+    public function update(ValidateIdRequest $request, BusinessActivityTypeFormRequest $updateRequest)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
             $updateData = $updateRequest->all();
-            $businessActivityType = BusinessActivityType::updateBusinessActivityTypeById($id, $updateData);
+            $businessActivityType = $this->businessActivityTypeRepository->update($updateData, $id);
 
             if (!$businessActivityType) {
                 DB::rollBack();
@@ -514,7 +550,7 @@ class BusinessActivityTypeController extends Controller
             return response()->json([
                 'result' => true,
                 'message' => 'Loại hoạt động kinh doanh đã được cập nhật thành công',
-                'data' => $businessActivityType,
+                'data' => $this->businessActivityTypeRepository->find($id),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -614,11 +650,12 @@ class BusinessActivityTypeController extends Controller
     public function toggleActiveStatus(ValidateIdRequest $request)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $businessActivityType = BusinessActivityType::toggleActiveStatusById($id);
+            $businessActivityType = $this->businessActivityTypeRepository->toggleStatus($id);
 
             if (!$businessActivityType) {
                 DB::rollBack();
@@ -726,11 +763,12 @@ class BusinessActivityTypeController extends Controller
     public function destroy(ValidateIdRequest $request)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $businessActivityType = BusinessActivityType::deleteBusinessActivityTypeById($id);
+            $businessActivityType = $this->businessActivityTypeRepository->delete($id);
 
             if (!$businessActivityType) {
                 DB::rollBack();
