@@ -17,6 +17,12 @@ class EnterpriseResource extends JsonResource
         return [
             'id_enterprise' => $this->id,
             'id_user' => $this->user_id,
+            'industries' => $this->industries->map(function ($industry) {
+                return [
+                    'id' => $industry->id,
+                    'name' => $industry->name,
+                ];
+            }),
             'name' => $this->user->name,
             'email' => $this->user->email,
             'taxcode' => $this->user->taxcode,
