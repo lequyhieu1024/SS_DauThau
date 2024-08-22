@@ -116,6 +116,16 @@ class IndustryController extends Controller
         ], 200);
     }
 
+    public function getListIndustries()
+    {
+        $industries = $this->industryRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách ngành nghề thành công',
+            'data' => $industries,
+        ], 200);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/admin/industries",
