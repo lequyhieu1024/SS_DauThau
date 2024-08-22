@@ -48,12 +48,12 @@ class EnterpriseController extends Controller
             $user = $this->userRepository->create($data);
             $data['user_id'] = $user->id;
             $enterprise = $this->enterpriseRepository->create($data);
-            $industry = $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
+            $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
             DB::commit();
             return response()->json([
                 "result" => true,
                 "message" => "Tạo doanh nghiệp thành công",
-                "data" => $enterprise
+                "data" => new EnterpriseResource($this->enterpriseRepository->find($enterprise->id))
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
