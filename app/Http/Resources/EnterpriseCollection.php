@@ -19,6 +19,10 @@ class EnterpriseCollection extends ResourceCollection
                 return [
                     'id_enterprise' => $enterprise->id,
                     'id_user' => $enterprise->user_id,
+                    'name' => $enterprise->user->name,
+                    'email' => $enterprise->user->email,
+                    'taxcode' => $enterprise->user->taxcode,
+                    'account_ban_at' => $enterprise->user->account_ban_at,
                     'representative' => $enterprise->representative,
                     'avatar' => $enterprise->avatar,
                     'phone' => $enterprise->phone,

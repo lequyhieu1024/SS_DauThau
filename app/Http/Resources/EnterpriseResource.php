@@ -17,6 +17,10 @@ class EnterpriseResource extends JsonResource
         return [
             'id_enterprise' => $this->id,
             'id_user' => $this->user_id,
+            'name' => $this->user->name,
+            'email' => $this->user->email,
+            'taxcode' => $this->user->taxcode,
+            'account_ban_at' => $this->user->account_ban_at,
             'representative' => $this->representative,
             'avatar' => $this->avatar,
             'phone' => $this->phone,
