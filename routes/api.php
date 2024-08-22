@@ -101,6 +101,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
         'update',
         'destroy'
     ]);
+    Route::get('industries/list', [IndustryController::class, 'getListIndustries']);
     Route::get('industries/{id}', [IndustryController::class, 'show']);
     Route::patch('industries/{id}', [IndustryController::class, 'update']);
     Route::patch(
