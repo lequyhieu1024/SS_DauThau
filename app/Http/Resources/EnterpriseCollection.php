@@ -17,8 +17,8 @@ class EnterpriseCollection extends ResourceCollection
         return [
             'data' => $this->collection->map(function ($enterprise) {
                 return [
-                    'id_enterprise' => $enterprise->id,
-                    'id_user' => $enterprise->user_id,
+                    'id' => $enterprise->id,
+                    'user_id' => $enterprise->user_id,
                     'industries' => $enterprise->industries->map(function ($industry) {
                         return [
                             'id' => $industry->id,
