@@ -54,7 +54,7 @@ class StaffFormRequest extends FormRequest
         $response = [
             'result' => false,
             'status' => 400,
-            'message' => $validator->errors()
+            'errors' => $validator->errors()
         ];
 
         throw new \Illuminate\Validation\ValidationException($validator, response()->json($response, 400));
