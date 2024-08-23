@@ -15,8 +15,8 @@ class EnterpriseResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id_enterprise' => $this->id,
-            'id_user' => $this->user_id,
+            'id' => $this->id,
+            'user_id' => $this->user_id,
             'industries' => $this->industries->map(function ($industry) {
                 return [
                     'id' => $industry->id,
