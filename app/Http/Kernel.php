@@ -44,6 +44,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\LogUserActivity::class,
         ],
     ];
 
@@ -71,6 +72,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'cors' => HandleCors::class,
         'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
-        
+
     ];
 }

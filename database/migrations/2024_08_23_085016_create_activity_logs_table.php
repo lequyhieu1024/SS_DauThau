@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('funding_sources', function (Blueprint $table) {
+        Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('name',255);
-            $table->text('description');
-            $table->string('code')->unique();
-            $table->enum('type', ['Chính phủ', 'Tư nhân', 'Quốc tế']);
-            $table->boolean('is_active')->default(1);
+            $table->integer('user_id')->index();
+            $table->string('action', 255);
+            $table->string('details', 255);
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->text('payload')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('funding_sources');
+        Schema::dropIfExists('activity_logs');
     }
 };
