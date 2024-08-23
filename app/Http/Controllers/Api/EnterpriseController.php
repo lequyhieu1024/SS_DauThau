@@ -103,6 +103,8 @@ class EnterpriseController extends Controller
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
+            } else {
+                $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
             }
             $this->enterpriseRepository->update($data, $id);
             $this->enterpriseRepository->syncIndustry($data, $id);
