@@ -39,7 +39,7 @@ class EnterpriseFormRequest extends FormRequest
             'account_ban_at' => 'nullable|date',
             'password' => request()->isMethod('PUT') ? 'nullable|min:8' : 'required|min:8',
             'representative' => 'required|max:191',
-            'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'phone' =>  [
                 'required',
                 request()->isMethod('PUT') ? 'unique:enterprises,phone,' . $this->route('enterprise') . '' : 'unique:enterprises,phone',

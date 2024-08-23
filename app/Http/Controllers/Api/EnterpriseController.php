@@ -47,6 +47,9 @@ class EnterpriseController extends Controller
             $data = $request->all();
             $user = $this->userRepository->create($data);
             $data['user_id'] = $user->id;
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+            }
             $enterprise = $this->enterpriseRepository->create($data);
             $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
             DB::commit();
@@ -98,6 +101,9 @@ class EnterpriseController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+            }
             $this->enterpriseRepository->update($data, $id);
             $this->enterpriseRepository->syncIndustry($data, $id);
             DB::commit();
