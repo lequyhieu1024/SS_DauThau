@@ -4,8 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Staff;
+use App\Traits\ActivityLogOptionsTrait;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
@@ -17,7 +20,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, LogsActivity, ActivityLogOptionsTrait;
 
     /**
      * Lấy giá trị xác định sẽ được lưu trong subject claim của JWT.
@@ -83,5 +86,30 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id')
             ->wherePivot('model_type', self::class);
+    }
+
+    public function causer()
+    {
+        return $this->belongsTo(User::class, 'causer_id');
+    }
+
+    protected function getModelName(): string
+    {
+        return 'Người dùng - User';
+    }
+
+    protected function getLogAttributes(): array
+    {
+        return [
+            'name',
+            'email',
+            'taxcode',
+            'account_ban_at',
+        ];
+    }
+
+    protected function getFieldName(): string
+    {
+        return $this->name;
     }
 }
