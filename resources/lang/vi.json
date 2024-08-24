@@ -61,5 +61,9 @@
     "Detail Bidding Type": "Chi tiết loại hình đấu thầu",
     "Create Bidding Type": "Thêm loại hình đấu thầu",
     "Update Bidding Type": "Sửa loại hình đấu thầu",
-    "Destroy Bidding Type": "Xóa loại hình đấu thầu"
+    "Destroy Bidding Type": "Xóa loại hình đấu thầu",
+
+    "Activity Log": "Nhật ký hoạt động",
+    "List Activity Log": "Xem nhật ký hoạt động",
+    "Detail Activity Log": "Chi tiết nhật ký hoạt động"
 }

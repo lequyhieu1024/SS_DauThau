@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\FundingSourceController;
 use Illuminate\Http\Request;
@@ -109,4 +110,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
         [IndustryController::class, 'toggleActiveStatus']
     );
     Route::delete('industries/{id}', [IndustryController::class, 'destroy']);
+
+    // Activity Logs
+    Route::resource('activity-logs', ActivityLogController::class);
 });
