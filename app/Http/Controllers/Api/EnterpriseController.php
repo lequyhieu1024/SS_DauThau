@@ -74,7 +74,6 @@ class EnterpriseController extends Controller
     public function show(string $id)
     {
         $enterprise = $this->enterpriseRepository->find($id);
-        $industries = $this->industryRepository->getAllNotPaginate();
         if (!$enterprise) {
             return response()->json([
                 'result' => false,
@@ -87,7 +86,6 @@ class EnterpriseController extends Controller
                 'status' => 200,
                 'message' => 'Lấy doanh nghiệp thành công',
                 'data' => new EnterpriseResource($enterprise),
-                'industries' => $industries,
             ], 200);
         }
     }
