@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Request;
 
 trait ActivityLogOptionsTrait
 {
-    public function tapActivity(Activity $activity, string $eventName)
+    public function tapActivity(Activity $activity, string $eventName): void
     {
-        $activity->ip_address = request()->ip();
+        $activity->ip_address = Request::ip();
         $activity->user_agent = Request::header('User-Agent');
         $activity->path = Request::path();
     }
 
-    public function getActivitylogOptions(): LogOptions
+    public function getActivityLogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly($this->getLogAttributes())
@@ -30,13 +30,13 @@ trait ActivityLogOptionsTrait
                 ];
 
                 $nameField = $this->getFieldName();
-                $description = $this->getModelName().": \"".$nameField."\" ".($eventDescriptions[$eventName] ?? $eventName).':';
+                $description = $this->getModelName() . ": \"" . $nameField . "\" " . ($eventDescriptions[$eventName] ?? $eventName) . ':';
                 if ($eventName === 'updated') {
                     $dirtyAttributes = $this->getDirty();
                     unset($dirtyAttributes['updated_at']);
                     if (isset($dirtyAttributes['name'])) {
                         $oldName = $this->getOriginal('name');
-                        $description = $this->getModelName().": \"".$oldName."\" đã được cập nhật:";
+                        $description = $this->getModelName() . ": \"" . $oldName . "\" đã được cập nhật:";
                     }
                     foreach ($dirtyAttributes as $attribute => $newValue) {
                         $oldValue = $this->getOriginal($attribute);
