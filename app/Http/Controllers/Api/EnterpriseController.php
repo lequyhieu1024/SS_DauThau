@@ -74,7 +74,6 @@ class EnterpriseController extends Controller
     public function show(string $id)
     {
         $enterprise = $this->enterpriseRepository->find($id);
-        $industries = $this->industryRepository->getAllNotPaginate();
         if (!$enterprise) {
             return response()->json([
                 'result' => false,
@@ -87,7 +86,6 @@ class EnterpriseController extends Controller
                 'status' => 200,
                 'message' => 'Lấy doanh nghiệp thành công',
                 'data' => new EnterpriseResource($enterprise),
-                'industries' => $industries,
             ], 200);
         }
     }
@@ -113,12 +111,12 @@ class EnterpriseController extends Controller
                 "result" => true,
                 "message" => "Cập nhật doanh nghiệp thành công",
                 "data" => new EnterpriseResource($this->enterpriseRepository->findOrFail($id))
-            ], 201);
+            ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Cập nhật doanh nghiệp không thành công." . $th,
+                "message" => "Cập nhật doanh nghiệp không thành công. Error : " . $th,
                 "data" => $request->all(),
             ], 500);
         }

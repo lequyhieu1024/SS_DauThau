@@ -22,27 +22,28 @@ class EnterpriseFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = request()->isMethod('PUT') ? Enterprise::where('id', $this->route('enterprise'))->pluck('user_id')->first() : '';
+        $isPutOrPatch = request()->isMethod('PUT') || request()->isMethod('PATCH');
+        $userId = $isPutOrPatch ? Enterprise::where('id', $this->route('enterprise'))->pluck('user_id')->first() : '';
         return [
             'name' => 'required|max:50',
             'taxcode' => [
                 'required',
                 'regex:/^[0-9]{10,14}$/',
-                request()->isMethod('PUT') ? 'unique:users,taxcode,' . $userId : 'unique:users,taxcode'
+                $isPutOrPatch ? 'unique:users,taxcode,' . $userId : 'unique:users,taxcode'
             ],
             'email' => [
                 'required',
                 'email',
-                request()->isMethod('PUT') ? 'unique:users,email,' . $userId : 'unique:users,email',
+                $isPutOrPatch ? 'unique:users,email,' . $userId : 'unique:users,email',
                 'regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/'
             ],
             'account_ban_at' => 'nullable|date',
-            'password' => request()->isMethod('PUT') ? 'nullable|min:8' : 'required|min:8',
+            'password' => $isPutOrPatch ? 'nullable|min:8' : 'required|min:8',
             'representative' => 'required|max:191',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'phone' =>  [
                 'required',
-                request()->isMethod('PUT') ? 'unique:enterprises,phone,' . $this->route('enterprise') . '' : 'unique:enterprises,phone',
+                $isPutOrPatch ? 'unique:enterprises,phone,' . $this->route('enterprise') : 'unique:enterprises,phone',
                 'regex:/^0\d{9}$/'
             ],
             'address' => 'required|max:191',
@@ -53,7 +54,7 @@ class EnterpriseFormRequest extends FormRequest
             'organization_type' => 'required|in:1,2',
             'is_active' => 'required|in:1,0',
             'is_blacklist' => 'required|in:1,0',
-            'industry_id' => 'required|array'
+            'industry_id' => 'required|array|exists:industries,id',
         ];
     }
     public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

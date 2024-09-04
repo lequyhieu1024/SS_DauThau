@@ -19,11 +19,8 @@ class EnterpriseCollection extends ResourceCollection
                 return [
                     'id' => $enterprise->id,
                     'user_id' => $enterprise->user_id,
-                    'industries' => $enterprise->industries->map(function ($industry) {
-                        return [
-                            'id' => $industry->id,
-                            'name' => $industry->name,
-                        ];
+                    'industry_id' => $enterprise->industries->map(function ($industry) {
+                        return $industry->id;
                     }),
                     'name' => $enterprise->user->name,
                     'email' => $enterprise->user->email,
