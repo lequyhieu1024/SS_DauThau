@@ -111,12 +111,12 @@ class EnterpriseController extends Controller
                 "result" => true,
                 "message" => "Cập nhật doanh nghiệp thành công",
                 "data" => new EnterpriseResource($this->enterpriseRepository->findOrFail($id))
-            ], 201);
+            ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Cập nhật doanh nghiệp không thành công." . $th,
+                "message" => "Cập nhật doanh nghiệp không thành công. Error : " . $th,
                 "data" => $request->all(),
             ], 500);
         }
