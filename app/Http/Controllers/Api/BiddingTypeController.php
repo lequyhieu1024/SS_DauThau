@@ -479,7 +479,7 @@ class BiddingTypeController extends Controller
      *     )
      * )
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         DB::beginTransaction();
 
