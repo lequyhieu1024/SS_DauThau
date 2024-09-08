@@ -98,15 +98,21 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+
+            $enterprise = $this->enterpriseRepository->findOrFail($id);
+            $this->userRepository->update($data, $enterprise->user_id);
+
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
             } else {
-                $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
+                // Nếu không có file mới, giữ nguyên giá trị avatar cũ
+                $data['avatar'] = $enterprise->avatar;
             }
+
             $this->enterpriseRepository->update($data, $id);
             $this->enterpriseRepository->syncIndustry($data, $id);
             DB::commit();
+
             return response()->json([
                 "result" => true,
                 "message" => "Cập nhật doanh nghiệp thành công",

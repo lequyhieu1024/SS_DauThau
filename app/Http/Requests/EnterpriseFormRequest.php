@@ -4,46 +4,40 @@ namespace App\Http\Requests;
 
 use App\Models\Enterprise;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class EnterpriseFormRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        $isPutOrPatch = request()->isMethod('PUT') || request()->isMethod('PATCH');
-        $userId = $isPutOrPatch ? Enterprise::where('id', $this->route('enterprise'))->pluck('user_id')->first() : '';
-        return [
+        $userId = request()->isMethod('PUT') ? Enterprise::where('id', $this->route('enterprise'))->pluck('user_id')->first() : '';
+        $enterpriseId = $this->route('enterprise');
+
+        $rules = [
             'name' => 'required|max:50',
             'taxcode' => [
                 'required',
                 'regex:/^[0-9]{10,14}$/',
-                $isPutOrPatch ? 'unique:users,taxcode,' . $userId : 'unique:users,taxcode'
+                request()->isMethod('PUT') ? 'unique:users,taxcode,' . $userId : 'unique:users,taxcode'
             ],
             'email' => [
                 'required',
                 'email',
-                $isPutOrPatch ? 'unique:users,email,' . $userId : 'unique:users,email',
+                request()->isMethod('PUT') ? 'unique:users,email,' . $userId : 'unique:users,email',
                 'regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/'
             ],
             'account_ban_at' => 'nullable|date',
-            'password' => $isPutOrPatch ? 'nullable|min:8' : 'required|min:8',
+            'password' => request()->isMethod('PUT') ? 'nullable|min:8' : 'required|min:8',
             'representative' => 'required|max:191',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'phone' =>  [
                 'required',
-                $isPutOrPatch ? 'unique:enterprises,phone,' . $this->route('enterprise') : 'unique:enterprises,phone',
+                request()->isMethod('PUT') ? 'unique:enterprises,phone,' . $enterpriseId : 'unique:enterprises,phone',
                 'regex:/^0\d{9}$/'
             ],
             'address' => 'required|max:191',
@@ -54,9 +48,41 @@ class EnterpriseFormRequest extends FormRequest
             'organization_type' => 'required|in:1,2',
             'is_active' => 'required|in:1,0',
             'is_blacklist' => 'required|in:1,0',
-            'industry_id' => 'required|array|exists:industries,id',
+            'industry_id' => 'required|array'
         ];
+
+        // Xử lý đặc biệt cho trường avatar
+        $rules['avatar'] = [
+            'nullable',
+            function ($attribute, $value, $fail) use ($enterpriseId) {
+                if (request()->isMethod('PUT')) {
+                    $enterprise = Enterprise::find($enterpriseId);
+                    if ($enterprise && $value !== $enterprise->avatar) {
+                        // Chỉ áp dụng validation khi avatar thay đổi
+                        $validator = Validator::make(
+                            ['avatar' => $value],
+                            ['avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']
+                        );
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first('avatar'));
+                        }
+                    }
+                } else {
+                    // Đối với phương thức POST, áp dụng validation mặc định
+                    $validator = Validator::make(
+                        ['avatar' => $value],
+                        ['avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']
+                    );
+                    if ($validator->fails()) {
+                        $fail($validator->errors()->first('avatar'));
+                    }
+                }
+            },
+        ];
+
+        return $rules;
     }
+
     public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $response = [
