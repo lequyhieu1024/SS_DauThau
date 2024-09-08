@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\ActivityLogOptionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class BusinessActivityType extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    use LogsActivity;
+    use ActivityLogOptionsTrait;
+    protected $table = 'business_activity_types';
 
     protected $fillable = [
         'name', 'description', 'is_active'
@@ -17,75 +25,6 @@ class BusinessActivityType extends Model
         'is_active' => 'boolean'
     ];
 
-    public static function getFilteredBusinessActivityTypes($filters)
-    {
-        $query = self::query();
-
-        if (isset($filters['name'])) {
-            $query->where('name', 'like', '%'.$filters['name'].'%');
-        }
-
-        $query->orderBy('id', 'desc');
-
-        return $query;
-    }
-
-    public static function getAllBusinessActivityTypes()
-    {
-        return self::select('id', 'name')->get();
-    }
-
-    public static function createNew(array $data)
-    {
-        return self::create($data);
-    }
-
-    public static function findBusinessActivityTypeById($id)
-    {
-        return self::find($id);
-    }
-
-    public static function updateBusinessActivityTypeById($id, $data)
-    {
-        $businessActivityType = self::find($id);
-
-        if (!$businessActivityType) {
-            return null;
-        }
-
-        $businessActivityType->fill($data);
-        $businessActivityType->save();
-
-        return $businessActivityType;
-    }
-
-    public static function toggleActiveStatusById($id)
-    {
-        $businessActivityType = self::find($id);
-
-        if (!$businessActivityType) {
-            return null;
-        }
-
-        $businessActivityType->is_active = !$businessActivityType->is_active;
-        $businessActivityType->save();
-
-        return $businessActivityType;
-    }
-
-    public static function deleteBusinessActivityTypeById($id)
-    {
-        $businessActivityType = self::find($id);
-
-        if (!$businessActivityType) {
-            return null;
-        }
-
-        $businessActivityType->delete();
-
-        return $businessActivityType;
-    }
-
     /**
      * Get the industries for the business activity type.
      */
@@ -94,4 +33,18 @@ class BusinessActivityType extends Model
         return $this->hasMany(Industry::class, 'business_activity_type_id');
     }
 
+    protected function getModelName(): string
+    {
+        return 'Loại hình kinh doanh - Business Activity Type';
+    }
+
+    protected function getLogAttributes(): array
+    {
+        return ['name', 'description', 'is_active'];
+    }
+
+    protected function getFieldName(): string
+    {
+        return $this->name;
+    }
 }

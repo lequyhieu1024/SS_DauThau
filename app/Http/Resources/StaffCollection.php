@@ -17,21 +17,24 @@ class StaffCollection extends ResourceCollection
         return [
             'data' => $this->collection->map(function ($staff) {
                 return [
-                    'id_staff' => $staff->staff_id,
-                    'id_user' => $staff->user_id,
-                    'id_role' => $staff->role_id,
-                    'role_name' => $staff->role_name,
-//                    'code_staff' => $staff->code,
-                    'name' => $staff->name,
+                    'id' => $staff->id,
+                    'user_id' => $staff->user_id,
+                    'name' => $staff->user->name,
                     'avatar' => $staff->avatar,
-                    'email' => $staff->email,
+                    'email' => $staff->user->email,
                     'phone' => $staff->phone,
-                    // 'total_bought' => $staff->total_bought,
-                    'type' => $staff->type,
-                    'account_ban_at' => $staff->account_ban_at,
-                    // 'guard_name' => $staff->guard_name,
-                    'created_at' => $staff->created_at,
-                    'updated_at' => $staff->updated_at,
+                    'birthday' => $staff->birthday,
+                    'gender' => $staff->gender,
+                    'account_ban_at' => $staff->user->account_ban_at,
+                    'created_at' => $staff->user->created_at,
+                    'updated_at' => $staff->user->updated_at,
+                    'roles' => $staff->user->roles->map(function ($role) {
+                        return [
+                            'id' => $role->id,
+                            'name' => $role->name,
+                            'guard_name' => $role->guard_name,
+                        ];
+                    }),
                 ];
             }),
             'total_elements' => $this->total(),

@@ -3,17 +3,31 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BiddingFields\BiddingFieldFormRequest;
 use App\Http\Requests\BiddingFields\IndexBiddingFieldRequest;
-use App\Http\Requests\BiddingFields\StoreBiddingFieldRequest;
-use App\Http\Requests\BiddingFields\UpdateBiddingFieldRequest;
 use App\Http\Requests\Common\ValidateIdRequest;
-use App\Models\BiddingField;
+use App\Http\Resources\BiddingFieldCollection;
+use App\Repositories\BiddingFieldRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 use OpenApi\Annotations as OA;
 use function Laravel\Prompts\error;
 
 class BiddingFieldController extends Controller
 {
+    protected $biddingFieldRepository;
+
+    public function __construct(BiddingFieldRepository $biddingFieldRepository)
+    {
+        $this->middleware(['permission:list_bidding_field'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:create_bidding_field'])->only('store');
+        $this->middleware(['permission:update_bidding_field'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_bidding_field'])->only('show');
+        $this->middleware(['permission:destroy_bidding_field'])->only('destroy');
+
+        $this->biddingFieldRepository = $biddingFieldRepository;
+    }
+
     /**
      * @OA\Get(
      *     path="/api/admin/bidding-fields",
@@ -182,56 +196,21 @@ class BiddingFieldController extends Controller
      */
     public function index(IndexBiddingFieldRequest $request)
     {
-        $query = BiddingField::getFilteredBiddingFields($request->all());
+        $biddingFields = $this->biddingFieldRepository->filter($request->all());
 
-        $size = $request->query('size', 10);
-        $page = $request->query('page', 1);
+        if($biddingFields->isEmpty()) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không có lĩnh vực đấu thầu nào',
+            ], 404);
+        }
 
-        $biddingFields = $query->with('parent')->paginate($size, ['*'], 'page', $page);
-
-        $transformedBiddingFields = $biddingFields?->map(function ($biddingField) {
-            return [
-                'id' => $biddingField->id,
-                'name' => $biddingField->name,
-                'description' => $biddingField->description,
-                'code' => $biddingField->code,
-                'is_active' => $biddingField->is_active,
-                'created_at' => $biddingField->created_at,
-                'updated_at' => $biddingField->updated_at,
-                'parent' => $biddingField->parent ? [
-                    'id' => $biddingField->parent_id,
-                    'name' => $biddingField->parent->name,
-                ] : null,
-            ];
-        });
-
-//        return response()->json([
-//            'result' => true,
-//            'message' => 'Get bidding fields successfully',
-//            'data' => [
-//                'biddingFields' => $transformedBiddingFields,
-//                'pagination' => [
-//                    'currentPage' => $biddingFields->currentPage(),
-//                    'pageSize' => $biddingFields->perPage(),
-//                    'totalItems' => $biddingFields->total(),
-//                    'totalPages' => $biddingFields->lastPage(),
-//                    'hasNextPage' => $biddingFields->hasMorePages(),
-//                    'hasPreviousPage' => $biddingFields->currentPage() > 1,
-//                ],
-//            ],
-//        ], 200);
+        $data = new BiddingFieldCollection($biddingFields);
 
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách các lĩnh vực đấu thầu thành công',
-            'data' => [
-                'data' => $transformedBiddingFields,
-                'total_elements' => $biddingFields->total(),
-                'total_pages' => $biddingFields->lastPage(),
-                'page_size' => $biddingFields->perPage(),
-                'number_of_elements' => $biddingFields->count(),
-                'current_page' => $biddingFields->currentPage(),
-            ],
+            'data' => $data
         ], 200);
     }
 
@@ -293,9 +272,15 @@ class BiddingFieldController extends Controller
      */
     public function getAllIds()
     {
-        $biddingFields = BiddingField::getAllBiddingFieldIds();
-
+        $biddingFields = $this->biddingFieldRepository->getAllBiddingFieldIds();
         $tree = $this->buildTree($biddingFields);
+
+        if (!$tree) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không có lĩnh vực đấu thầu nào',
+            ], 404);
+        }
 
         return response()->json([
             'result' => true,
@@ -411,12 +396,12 @@ class BiddingFieldController extends Controller
      *
      *
      */
-    public function store(StoreBiddingFieldRequest $request)
+    public function store(BiddingFieldFormRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $biddingField = BiddingField::createBiddingField($request->all());
+            $biddingField = $this->biddingFieldRepository->create($request->all());
 
             DB::commit();
 
@@ -524,7 +509,7 @@ class BiddingFieldController extends Controller
     public function show(ValidateIdRequest $request)
     {
         $id = $request->route('id');
-        $biddingField = BiddingField::findBiddingFieldById($id);
+        $biddingField = $this->biddingFieldRepository->findBiddingFieldById($id);
 
         if (!$biddingField) {
             return response()->json([
@@ -539,6 +524,17 @@ class BiddingFieldController extends Controller
             'data' => $biddingField,
         ], 200);
     }
+
+    private function checkSpecialRecord($id)
+    {
+        if ($id == 1) {
+            throw new HttpResponseException(response()->json([
+                'result' => false,
+                'message' => 'Không thể chỉnh sửa hoặc xóa danh mục "Chưa phân loại".',
+            ], 403));
+        }
+    }
+
 
     /**
      * @OA\Patch(
@@ -593,26 +589,18 @@ class BiddingFieldController extends Controller
      *     )
      * )
      */
-    public function update(ValidateIdRequest $request, UpdateBiddingFieldRequest $updateRequest)
+    public function update(ValidateIdRequest $request, BiddingFieldFormRequest $updateRequest)
     {
         $id = $request->route('id');
 
-//        if ($updateRequest->input('parent_id') === $id) {
-//            return response()->json([
-//                'result' => false,
-//                'message' => 'Failed to update bidding field',
-//                'errors' => [
-//                    'parent_id' => ['Parent ID cannot be the same as the ID being updated'],
-//                ],
-//            ], 400);
-//        }
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
             $updateData = $updateRequest->all();
 
-            $biddingField = BiddingField::updateBiddingField($id, $updateData);
+            $biddingField = $this->biddingFieldRepository->update($updateData, $id);
 
             if (!$biddingField) {
                 DB::rollBack();
@@ -627,7 +615,7 @@ class BiddingFieldController extends Controller
             return response()->json([
                 'result' => true,
                 'message' => 'Cập nhật lĩnh vực đấu thầu thành công',
-                'data' => $biddingField,
+                'data' => $this->biddingFieldRepository->findBiddingFieldById($id),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -666,10 +654,12 @@ class BiddingFieldController extends Controller
     {
         $id = $request->route('id');
 
+        $this->checkSpecialRecord($id);
+
         DB::beginTransaction();
 
         try {
-            $biddingField = BiddingField::findBiddingFieldByIdToggleStatus($id);
+            $biddingField = $this->biddingFieldRepository->toggleStatus($id);
 
             if (!$biddingField) {
                 DB::rollBack();
@@ -678,9 +668,6 @@ class BiddingFieldController extends Controller
                     'message' => 'Lĩnh vực đấu thầu không tồn tại',
                 ], 404);
             }
-
-            $biddingField->is_active = !$biddingField->is_active;
-            $biddingField->save();
 
             DB::commit();
 
@@ -727,11 +714,12 @@ class BiddingFieldController extends Controller
     public function destroy(ValidateIdRequest $request)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $biddingField = BiddingField::deleteBiddingField($id);
+            $biddingField = $this->biddingFieldRepository->delete($id);
 
             if (!$biddingField) {
                 DB::rollBack();

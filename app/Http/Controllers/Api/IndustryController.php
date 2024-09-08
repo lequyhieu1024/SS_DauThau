@@ -5,15 +5,28 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\ValidateIdRequest;
 use App\Http\Requests\Industries\IndexIndustryRequest;
-use App\Http\Requests\Industries\StoreIndustryRequest;
-use App\Http\Requests\Industries\UpdateIndustryRequest;
+use App\Http\Requests\Industries\IndustryFormRequest;
 use App\Http\Resources\Common\IndexBaseCollection;
 use App\Models\Industry;
+use App\Repositories\IndustryRepository;
 use Illuminate\Support\Facades\DB;
 
 
 class IndustryController extends Controller
 {
+    protected $industryRepository;
+
+    public function __construct(IndustryRepository $industryRepository)
+    {
+        $this->middleware(['permission:list_industry'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:create_industry'])->only('store');
+        $this->middleware(['permission:update_industry'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_industry'])->only('show');
+        $this->middleware(['permission:destroy_industry'])->only('destroy');
+
+        $this->industryRepository = $industryRepository;
+    }
+
     /**
      * @OA\Get (
      *     path="/api/admin/industries",
@@ -86,18 +99,30 @@ class IndustryController extends Controller
      */
     public function index(IndexIndustryRequest $request)
     {
-        $industries = Industry::searchIndustries(
-            $request->query('name'),
-            $request->query('business_activity_type_id'),
-            $request->query('page', 1),
-            $request->query('size', 10)
-        );
+        $industries = $this->industryRepository->filter($request->all());
         $data = new IndexBaseCollection($industries);
+
+        if ($industries->isEmpty()) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy ngành nghề',
+            ], 404);
+        }
 
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách ngành nghề thành công',
             'data' => $data,
+        ], 200);
+    }
+
+    public function getListIndustries()
+    {
+        $industries = $this->industryRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách ngành nghề thành công',
+            'data' => $industries,
         ], 200);
     }
 
@@ -182,12 +207,12 @@ class IndustryController extends Controller
      * )
      */
 
-    public function store(StoreIndustryRequest $request)
+    public function store(IndustryFormRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $industry = Industry::createNew($request->all());
+            $industry = $this->industryRepository->create($request->all());
             DB::commit();
             return response()->json([
                 'result' => true,
@@ -289,7 +314,7 @@ class IndustryController extends Controller
         $id = $request->route('id');
 
         try {
-            $industry = Industry::findIndustryById($id);
+            $industry = $this->industryRepository->find($id);
 
             if (!$industry) {
                 return response()->json([
@@ -418,14 +443,14 @@ class IndustryController extends Controller
      *     )
      * )
      */
-    public function update(ValidateIdRequest $request, UpdateIndustryRequest $updateRequest)
+    public function update(ValidateIdRequest $request, IndustryFormRequest $updateRequest)
     {
         $id = $request->route('id');
 
         DB::beginTransaction();
 
         try {
-            $industry = Industry::updateIndustry($id, $request->all());
+            $industry = $this->industryRepository->update($updateRequest->all(), $id);
 
             if (!$industry) {
                 DB::rollBack();
@@ -439,7 +464,7 @@ class IndustryController extends Controller
             return response()->json([
                 'result' => true,
                 'message' => 'Cập nhật ngành nghề thành công',
-                'data' => $industry,
+                'data' => $this->industryRepository->find($id),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -542,7 +567,7 @@ class IndustryController extends Controller
         DB::beginTransaction();
 
         try {
-            $industry = Industry::toggleActiveStatus($id);
+            $industry = $this->industryRepository->toggleStatus($id);
 
             if (!$industry) {
                 DB::rollBack();
@@ -653,7 +678,7 @@ class IndustryController extends Controller
         DB::beginTransaction();
 
         try {
-            $deleted = Industry::deleteIndustryById($id);
+            $deleted = $this->industryRepository->delete($id);
 
             if (!$deleted) {
                 DB::rollBack();

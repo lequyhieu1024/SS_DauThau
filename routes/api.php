@@ -1,15 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\BiddingFieldController;
-use App\Http\Controllers\Api\BusinessActivityTypeController;
-use App\Http\Controllers\Api\FundingSourcesController;
-use App\Http\Controllers\Api\IndustryController;
+use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\BiddingTypeController;
+use App\Http\Controllers\Api\FundingSourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\IndustryController;
+use App\Http\Controllers\Api\EnterpriseController;
+use App\Http\Controllers\Api\BiddingFieldController;
+use App\Http\Controllers\Api\BusinessActivityTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,10 +58,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('staff', StaffController::class);
     // cấm tài khoản
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
+    // doanh nhghieejp
+    Route::resource('enterprises', EnterpriseController::class);
+    // cấm tài khoản
+    Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
 
     // Funding Sources
-    Route::resource('funding_sources', FundingSourcesController::class);
-    Route::patch('funding_sources/{id}/toggle-status', [FundingSourcesController::class, 'toggleActiveStatus']);
+    Route::resource('funding-sources', FundingSourceController::class)->except('update');
+    Route::patch('funding-sources/{id}', [FundingSourceController::class, 'update']);
+    Route::patch('funding-sources/{id}/toggle-status', [FundingSourceController::class, 'toggleActiveStatus']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
@@ -68,25 +76,41 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('bidding-fields/{id}/toggle-status', [BiddingFieldController::class, 'toggleActiveStatus']);
     Route::delete('bidding-fields/{id}', [BiddingFieldController::class, 'destroy']);
 
+    // Bidding Types
+    Route::resource('bidding-types', BiddingTypeController::class)->except('update');
+    Route::patch('bidding-types/{id}', [BiddingTypeController::class, 'update']);
+    Route::patch('bidding-types/{id}/toggle-status', [BiddingTypeController::class, 'toggleActiveStatus']);
 
-    // Business Activity Types
+    /// Business Activity Types
     Route::get('business-activity-types/all-ids', [BusinessActivityTypeController::class, 'getAllIds']);
     Route::resource('business-activity-types', BusinessActivityTypeController::class)->except([
-        'show', 'update', 'destroy'
+        'show',
+        'update',
+        'destroy'
     ]);
     Route::get('business-activity-types/{id}', [BusinessActivityTypeController::class, 'show']);
     Route::patch('business-activity-types/{id}', [BusinessActivityTypeController::class, 'update']);
-    Route::patch('business-activity-types/{id}/toggle-status',
-        [BusinessActivityTypeController::class, 'toggleActiveStatus']);
+    Route::patch(
+        'business-activity-types/{id}/toggle-status',
+        [BusinessActivityTypeController::class, 'toggleActiveStatus']
+    );
     Route::delete('business-activity-types/{id}', [BusinessActivityTypeController::class, 'destroy']);
 
     // Industries
     Route::resource('industries', IndustryController::class)->except([
-        'show', 'update', 'destroy'
+        'show',
+        'update',
+        'destroy'
     ]);
+    Route::get('list-industries', [IndustryController::class, 'getListIndustries']);
     Route::get('industries/{id}', [IndustryController::class, 'show']);
     Route::patch('industries/{id}', [IndustryController::class, 'update']);
-    Route::patch('industries/{id}/toggle-status',
-        [IndustryController::class, 'toggleActiveStatus']);
+    Route::patch(
+        'industries/{id}/toggle-status',
+        [IndustryController::class, 'toggleActiveStatus']
+    );
     Route::delete('industries/{id}', [IndustryController::class, 'destroy']);
+
+    // Activity Logs
+    Route::resource('activity-logs', ActivityLogController::class);
 });

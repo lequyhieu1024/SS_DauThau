@@ -9,18 +9,22 @@ class StaffResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id_staff' => $this->id,
-            'id_user' => $this->user_id,
-            'id_role' => $this->role_id,
-            'role_name' => $this->role_name,
-            'name' => $this->name,
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'name' => $this->user->name,
             'avatar' => $this->avatar,
-            'email' => $this->email,
+            'email' => $this->user->email,
             'phone' => $this->phone,
-            'type' => $this->type,
-            'account_ban_at' => $this->account_ban_at,
+            'gender' => $this->gender,
+            'account_ban_at' => $this->user->account_ban_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'roles' => $this->user->roles->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ];
+            }),
         ];
     }
 }

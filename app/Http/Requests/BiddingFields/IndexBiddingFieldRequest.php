@@ -31,7 +31,7 @@ class IndexBiddingFieldRequest extends FormRequest
             'page' => $this->query('page'),
             'name' => $this->query('name'),
             'code' => $this->query('code'),
-            'parent_id' => $this->query('parent_id'),
+            'parent_name' => $this->query('parent_id'),
         ]);
     }
 
