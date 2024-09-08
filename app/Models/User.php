@@ -20,7 +20,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, LogsActivity, ActivityLogOptionsTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, ActivityLogOptionsTrait;
 
     /**
      * Lấy giá trị xác định sẽ được lưu trong subject claim của JWT.

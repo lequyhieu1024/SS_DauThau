@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\ActivityLogOptionsTrait;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +14,6 @@ class Staff extends Model
     use HasFactory;
     use SoftDeletes;
     use HasRoles;
-    use LogsActivity;
     use ActivityLogOptionsTrait;
 
     protected $table = 'staffs';

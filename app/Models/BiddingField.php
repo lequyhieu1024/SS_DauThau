@@ -6,13 +6,11 @@ use App\Traits\ActivityLogOptionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class BiddingField extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use LogsActivity;
     use ActivityLogOptionsTrait;
 
     protected $table = 'bidding_fields';

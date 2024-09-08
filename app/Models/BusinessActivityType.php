@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class BusinessActivityType extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use LogsActivity;
     use ActivityLogOptionsTrait;
     protected $table = 'business_activity_types';
 
     protected $fillable = [
-        'name', 'description', 'is_active'
+        'name',
+        'description',
+        'is_active'
     ];
 
     protected $casts = [
