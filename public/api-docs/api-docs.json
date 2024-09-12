@@ -2902,6 +2902,423 @@
                 ]
             }
         },
+        "/api/admin/selection-methods": {
+            "get": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Get all Selection methods",
+                "description": "Get all Selection methods",
+                "operationId": "6db814dc988d3e051fb36b9369d41681",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "method_name",
+                        "in": "query",
+                        "description": "Method name of selection method",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Selection methods successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Selection methods successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "selectionMethods": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "method_name": {
+                                                                "type": "string",
+                                                                "example": "Selection methods 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Description of Selection methods 1"
+                                                            },
+                                                            "is_active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Create a new selection method",
+                "description": "Create a new selection method",
+                "operationId": "4d69b2a730bd43bb5d2ee4345456af3c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "method_name",
+                                    "description",
+                                    "is_active"
+                                ],
+                                "properties": {
+                                    "method_name": {
+                                        "type": "string",
+                                        "example": "selection method 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of selection method 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "selection method created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "selection method created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "selection method 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of selection method 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/selection-methods/{id}": {
+            "get": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Get selection method by ID",
+                "description": "Get selection method by ID",
+                "operationId": "0261945806c202c04159b84ea2a4fbe5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of selection method",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "selection method retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "selection method retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "selection method 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of selection method 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Delete selection method by ID",
+                "description": "Delete selection method by ID",
+                "operationId": "fc12db5c217dd94a61f1500d77fdfe2f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of selection method",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "selection method deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Update selection method by ID",
+                "description": "Update selection method by ID",
+                "operationId": "87622b86df01af6e919094414b9f703b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of selection method",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "method_name": {
+                                        "type": "string",
+                                        "example": "selection method 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of selection method 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "selection method updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/selection-methods/{id}/toggle-status": {
+            "patch": {
+                "tags": [
+                    "Selection methods"
+                ],
+                "summary": "Toggle active status of selection method by ID",
+                "description": "Toggle active status of selection method by ID",
+                "operationId": "25e8e6d129558cc5d25139e89ad70fd4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of selection method",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "selection method status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -3007,6 +3424,10 @@
         {
             "name": "Industry",
             "description": "Industry"
+        },
+        {
+            "name": "Selection methods",
+            "description": "Selection methods"
         }
     ]
 }
