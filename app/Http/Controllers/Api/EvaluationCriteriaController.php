@@ -105,7 +105,7 @@ class EvaluationCriteriaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EvaluationCriteriaFormReuqest $request, string $id)
     {
         try {
             $this->evaluationCriteriaRepository->update($request->all(), $id);
