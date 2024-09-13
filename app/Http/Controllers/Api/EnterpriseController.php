@@ -166,4 +166,18 @@ class EnterpriseController extends Controller
             ], 200);
         }
     }
+
+
+    public function changeActive($id)
+    {
+        $enterprise = $this->enterpriseRepository->findOrFail($id);
+        $enterprise->is_active = !$enterprise->is_active;
+        $enterprise->save();
+        return response()->json([
+            'result' => true,
+            'status' => 200,
+            'message' => 'Thay đổi trạng thái thành công',
+            'is_active' => $enterprise->is_active
+        ], 200);
+    }
 }
