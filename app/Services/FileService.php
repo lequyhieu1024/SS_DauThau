@@ -40,7 +40,8 @@ class FileService
         $directory = "uploads/{$type}s";
         $timestamp = now()->timestamp;
         $extension = $file->getClientOriginalExtension();
-        $newFilename = "{$timestamp}.{$extension}";
+        $uniqueId = uniqid();
+        $newFilename = "{$timestamp}_{$uniqueId}.{$extension}";
 
         $file->move(public_path($directory), $newFilename);
         $relativePath = "{$directory}/{$newFilename}";
