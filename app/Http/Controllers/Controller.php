@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *    version="1.0.0",
  * ),
  * @OA\Tag(
+ *     name="Industries",
  *     name="Business Activity Type",
  *     name="Bidding Field",
  *     name="Auth",
@@ -29,4 +30,6 @@ use OpenApi\Annotations as OA;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+
+
 }

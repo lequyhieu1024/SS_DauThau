@@ -49,7 +49,6 @@
     "Create Industry": "Thêm ngành nghề",
     "Update Industry": "Sửa ngành nghề",
     "Destroy Industry": "Xóa ngành nghề",
-
     "Funding Source": "Nguồn tài trợ",
     "List Funding Source": "Xem nguồn tài trợ",
     "Detail Funding Source": "Chi tiết nguồn tài trợ",
@@ -62,5 +61,16 @@
     "Detail Bidding Type": "Chi tiết loại hình đấu thầu",
     "Create Bidding Type": "Thêm loại hình đấu thầu",
     "Update Bidding Type": "Sửa loại hình đấu thầu",
-    "Destroy Bidding Type": "Xóa loại hình đấu thầu"
+    "Destroy Bidding Type": "Xóa loại hình đấu thầu",
+
+    "Activity Log": "Nhật ký hoạt động",
+    "List Activity Log": "Xem nhật ký hoạt động",
+    "Detail Activity Log": "Chi tiết nhật ký hoạt động",
+
+    "Selection Method": "Hình thức lựa chọn nhà thầu",
+    "List Selection Method": "Xem hình thức lựa chọn nhà thầu",
+    "Detail Selection Method": "Chi tiết hình thức lựa chọn nhà thầu",
+    "Create Selection Method": "Thêm hình thức lựa chọn nhà thầu",
+    "Update Selection Method": "Sửa hình thức lựa chọn nhà thầu",
+    "Destroy Selection Method": "Xóa hình thức lựa chọn nhà thầu"
 }

@@ -47,13 +47,16 @@ class EnterpriseController extends Controller
             $data = $request->all();
             $user = $this->userRepository->create($data);
             $data['user_id'] = $user->id;
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+            }
             $enterprise = $this->enterpriseRepository->create($data);
-            $industry = $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
+            $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
             DB::commit();
             return response()->json([
                 "result" => true,
                 "message" => "Tạo doanh nghiệp thành công",
-                "data" => $enterprise
+                "data" => new EnterpriseResource($this->enterpriseRepository->find($enterprise->id))
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -71,7 +74,6 @@ class EnterpriseController extends Controller
     public function show(string $id)
     {
         $enterprise = $this->enterpriseRepository->find($id);
-        $industries = $this->industryRepository->getAllNotPaginate();
         if (!$enterprise) {
             return response()->json([
                 'result' => false,
@@ -84,7 +86,6 @@ class EnterpriseController extends Controller
                 'status' => 200,
                 'message' => 'Lấy doanh nghiệp thành công',
                 'data' => new EnterpriseResource($enterprise),
-                'industries' => $industries,
             ], 200);
         }
     }
@@ -98,6 +99,12 @@ class EnterpriseController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+                isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
+            } else {
+                $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
+            }
             $this->enterpriseRepository->update($data, $id);
             $this->enterpriseRepository->syncIndustry($data, $id);
             DB::commit();
@@ -105,12 +112,12 @@ class EnterpriseController extends Controller
                 "result" => true,
                 "message" => "Cập nhật doanh nghiệp thành công",
                 "data" => new EnterpriseResource($this->enterpriseRepository->findOrFail($id))
-            ], 201);
+            ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Cập nhật doanh nghiệp không thành công." . $th,
+                "message" => "Cập nhật doanh nghiệp không thành công. Error : " . $th,
                 "data" => $request->all(),
             ], 500);
         }
