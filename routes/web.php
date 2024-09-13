@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\FileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('files/images/{filename}', [FileController::class, 'serveImageFile']);
+Route::get('files/videos/{filename}', [FileController::class, 'serveVideoFile']);
+Route::get('files/documents/{filename}', [FileController::class, 'serveDocumentFile']);
 
 Route::get('/', function () {
     return view('welcome');
