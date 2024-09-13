@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\BiddingTypeController;
+
+use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\FundingSourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -120,4 +122,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('selection-methods/{id}', [SelectionMethodController::class, 'update']);
     Route::patch('selection-methods/{id}/toggle-status', [SelectionMethodController::class, 'toggleActiveStatus']);
 
+    // Upload file
+    Route::resource('files', FileController::class);
+//    Route::get('files/{type}/{filename}', [FileController::class, 'serveFile']);
 });
