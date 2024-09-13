@@ -101,6 +101,7 @@ class EnterpriseController extends Controller
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
+                isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
             } else {
                 $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
             }
