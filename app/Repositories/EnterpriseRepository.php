@@ -12,7 +12,7 @@ class EnterpriseRepository extends BaseRepository
     }
     public function filter($data)
     {
-        $query = $this->model->with('user', 'industries');
+        $query = $this->model;
         if (isset($data['status'])) {
             $query->whereHas('user', function ($query) use ($data) {
                 $query->where('account_ban_at', $data['account_ban_at']);

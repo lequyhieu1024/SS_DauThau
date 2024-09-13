@@ -17,7 +17,6 @@ abstract class BaseRepository implements RepositoryInterface
     {
         return $this->model->pluck('name', 'id');
     }
-
     public function getAll($data)
     {
         return $this->model->paginate($data['size'] ?? 10);

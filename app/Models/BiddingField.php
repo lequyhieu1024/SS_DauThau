@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\ActivityLogOptionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class BiddingField extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use LogsActivity;
+    use ActivityLogOptionsTrait;
 
     protected $table = 'bidding_fields';
 
@@ -33,4 +37,18 @@ class BiddingField extends Model
         return $this->hasMany(BiddingField::class, 'parent_id', 'id')->select('id', 'name', 'parent_id');
     }
 
+    protected function getModelName(): string
+    {
+        return 'Lĩnh vực đấu thầu - Bidding Field';
+    }
+
+    protected function getLogAttributes(): array
+    {
+        return ['name', 'description', 'code', 'is_active', 'parent_id'];
+    }
+
+    protected function getFieldName(): string
+    {
+        return $this->name;
+    }
 }

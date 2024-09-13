@@ -17,8 +17,8 @@ class StaffCollection extends ResourceCollection
         return [
             'data' => $this->collection->map(function ($staff) {
                 return [
-                    'id_staff' => $staff->id,
-                    'id_user' => $staff->user_id,
+                    'id' => $staff->id,
+                    'user_id' => $staff->user_id,
                     'name' => $staff->user->name,
                     'avatar' => $staff->avatar,
                     'email' => $staff->user->email,
