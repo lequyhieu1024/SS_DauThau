@@ -123,4 +123,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
 });

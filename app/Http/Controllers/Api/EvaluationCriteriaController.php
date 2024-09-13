@@ -133,4 +133,16 @@ class EvaluationCriteriaController extends Controller
             'message' => "Xóa tiêu chí đánh giá thành công",
         ], 200);
     }
+    public function changeActive($id)
+    {
+        $evaluationCriteria = $this->evaluationCriteriaRepository->findOrFail($id);
+        $evaluationCriteria->is_active = !$evaluationCriteria->is_active;
+        $evaluationCriteria->save();
+        return response()->json([
+            'result' => true,
+            'status' => 200,
+            'message' => 'Thay đổi trạng thái thành công',
+            'is_active' => $evaluationCriteria->is_active
+        ], 200);
+    }
 }
