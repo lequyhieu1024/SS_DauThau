@@ -88,7 +88,6 @@ class Enterprise extends Model
         ];
     }
 
-
     public function getEnterpriseNameByUserId($userId)
     {
         $user = $this->user()->where('id', $userId)->first();

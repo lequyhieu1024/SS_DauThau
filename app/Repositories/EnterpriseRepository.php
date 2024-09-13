@@ -12,7 +12,7 @@ class EnterpriseRepository extends BaseRepository
     }
     public function filter($data)
     {
-        $query = $this->model;
+        $query = $this->model->query();
         if (isset($data['status'])) {
             $query->whereHas('user', function ($query) use ($data) {
                 $query->where('account_ban_at', $data['account_ban_at']);
@@ -37,6 +37,17 @@ class EnterpriseRepository extends BaseRepository
         }
         if (isset($data['is_blacklist'])) {
             $query->where('is_blacklist', '=', $data['is_blacklist']);
+        }
+        if (isset($data['industry_ids']) && is_array($data['industry_ids'])) {
+            $data['industry_ids'] = array_filter($data['industry_ids'], function ($value) {
+                return $value !== null && $value !== '';
+            });
+
+            if (!empty($data['industry_ids'])) {
+                $query->whereHas('industries', function ($query) use ($data) {
+                    $query->whereIn('industry_id', $data['industry_ids']);
+                });
+            }
         }
         return $query->paginate($data['size'] ?? 10);
     }

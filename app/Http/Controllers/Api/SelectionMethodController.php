@@ -9,7 +9,6 @@ use App\Http\Resources\SelectionMethodCollection;
 use App\Repositories\SelectionMethodRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\TryCatch;
 
 class SelectionMethodController extends Controller
 {
@@ -18,11 +17,11 @@ class SelectionMethodController extends Controller
     public function __construct(SelectionMethodRepository $selectionMethodRepository)
     {
         $this->selectionMethodRepository = $selectionMethodRepository;
-        $this->middleware(['permission:list_selection_method'])->only('index');
-        $this->middleware(['permission:create_selection_method'])->only(['store']);
-        $this->middleware(['permission:update_selection_method'])->only(['update', 'toggleActiveStatus']);
-        $this->middleware(['permission:detail_selection_method'])->only('show');
-        $this->middleware(['permission:destroy_selection_method'])->only('destroy');
+        // $this->middleware(['permission:list_selection_method'])->only('index');
+        // $this->middleware(['permission:create_selection_method'])->only(['store']);
+        // $this->middleware(['permission:update_selection_method'])->only(['update', 'toggleActiveStatus']);
+        // $this->middleware(['permission:detail_selection_method'])->only('show');
+        // $this->middleware(['permission:destroy_selection_method'])->only('destroy');
     }
     /**
      * Display a listing of the resource.
