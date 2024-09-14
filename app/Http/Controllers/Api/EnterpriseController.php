@@ -101,6 +101,7 @@ class EnterpriseController extends Controller
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
+                isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
             } else {
                 $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
             }
@@ -164,5 +165,19 @@ class EnterpriseController extends Controller
                 'message' => 'Mở khóa tài khoản thành công'
             ], 200);
         }
+    }
+
+
+    public function changeActive($id)
+    {
+        $enterprise = $this->enterpriseRepository->findOrFail($id);
+        $enterprise->is_active = !$enterprise->is_active;
+        $enterprise->save();
+        return response()->json([
+            'result' => true,
+            'status' => 200,
+            'message' => 'Thay đổi trạng thái thành công',
+            'is_active' => $enterprise->is_active
+        ], 200);
     }
 }

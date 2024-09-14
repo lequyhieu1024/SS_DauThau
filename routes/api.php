@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\BiddingTypeController;
+use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
@@ -62,6 +62,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
     // doanh nhghieejp
     Route::resource('enterprises', EnterpriseController::class);
+    Route::put('enterprises/{enterprise}/changeActive', [EnterpriseController::class, 'changeActive']);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
 
@@ -124,4 +125,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Feedback Complaints
     Route::resource('feedback-complaints', FeedbackComplaintController::class);
 
+    // Evaluation citeria - Tieu chi danh gia
+    Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
 });
