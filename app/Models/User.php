@@ -112,4 +112,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->name;
     }
+
+    public function complained(){
+        return $this->hasMany(FeedbackComplaint::class, 'complaint_by');
+    }
+    
+    public function responded(){
+        return $this->hasMany(FeedbackComplaint::class,'responded_by');
+    }
 }

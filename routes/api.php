@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
+use App\Http\Controllers\Api\FeedbackComplaintController;
 use App\Http\Controllers\Api\SelectionMethodController;
 
 /*
@@ -119,5 +120,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('selection-methods', SelectionMethodController::class)->except('update');
     Route::patch('selection-methods/{id}', [SelectionMethodController::class, 'update']);
     Route::patch('selection-methods/{id}/toggle-status', [SelectionMethodController::class, 'toggleActiveStatus']);
+
+    // Feedback Complaints
+    Route::resource('feedback-complaints', FeedbackComplaintController::class);
 
 });

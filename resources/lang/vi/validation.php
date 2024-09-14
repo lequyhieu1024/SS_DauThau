@@ -144,6 +144,8 @@ return [
         'parent_id' => 'ID cha',
         'type' => 'loại nguồn vốn',
         'method_name' => 'tên hình thức lựa chọn nhà thầu',
+        'content' => 'khiếu nại',
+        'response_content' => 'phản hồi',
         "business_activity_type_name" => "tên loại hoạt động kinh doanh",
     ],
 ];
