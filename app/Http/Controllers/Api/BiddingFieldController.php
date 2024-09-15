@@ -198,7 +198,7 @@ class BiddingFieldController extends Controller
     {
         $biddingFields = $this->biddingFieldRepository->filter($request->all());
 
-        if($biddingFields->isEmpty()) {
+        if ($biddingFields->isEmpty()) {
             return response()->json([
                 'result' => false,
                 'message' => 'Không có lĩnh vực đấu thầu nào',
@@ -745,5 +745,4 @@ class BiddingFieldController extends Controller
             ], 500);
         }
     }
-
 }
