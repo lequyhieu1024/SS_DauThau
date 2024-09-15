@@ -25,7 +25,7 @@ class EnterpriseResource extends JsonResource
             'taxcode' => $this->user->taxcode,
             'account_ban_at' => $this->user->account_ban_at,
             'representative' => $this->representative,
-            'avatar' => $this->avatar,
+            'avatar' => env('APP_URL') . '/' . $this->avatar,
             'phone' => $this->phone,
             'address' => $this->address,
             'website' => $this->website,

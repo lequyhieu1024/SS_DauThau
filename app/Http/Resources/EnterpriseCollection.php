@@ -27,7 +27,7 @@ class EnterpriseCollection extends ResourceCollection
                     'taxcode' => $enterprise->user->taxcode,
                     'account_ban_at' => $enterprise->user->account_ban_at,
                     'representative' => $enterprise->representative,
-                    'avatar' => $enterprise->avatar,
+                    'avatar' => env('APP_URL') . '/' . $enterprise->avatar,
                     'phone' => $enterprise->phone,
                     'address' => $enterprise->address,
                     'website' => $enterprise->website,

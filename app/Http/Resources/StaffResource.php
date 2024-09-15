@@ -12,7 +12,7 @@ class StaffResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'name' => $this->user->name,
-            'avatar' => $this->avatar,
+            'avatar' => env('APP_URL') . '/' . $this->avatar,
             'email' => $this->user->email,
             'phone' => $this->phone,
             'gender' => $this->gender,

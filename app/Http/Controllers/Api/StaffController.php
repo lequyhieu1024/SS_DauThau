@@ -4,14 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Models\Staff;
-use App\Models\ModelHasRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StaffResource;
 use App\Repositories\StaffRepository;
 use App\Http\Requests\StaffFormRequest;
