@@ -9,7 +9,7 @@ class StaffCollection extends ResourceCollection
     /**
      * Transform the resource collection into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -20,7 +20,7 @@ class StaffCollection extends ResourceCollection
                     'id' => $staff->id,
                     'user_id' => $staff->user_id,
                     'name' => $staff->user->name,
-                    'avatar' => $staff->avatar,
+                    'avatar' => env('APP_URL') . '/' . $staff->avatar,
                     'email' => $staff->user->email,
                     'phone' => $staff->phone,
                     'birthday' => $staff->birthday,
