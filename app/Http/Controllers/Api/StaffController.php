@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\sendEmailActiveJob;
 use App\Models\User;
 use App\Models\Staff;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class StaffController extends Controller
     {
         try {
             $staffs = $this->staffRepository->filter($request->all());
-            return response()->json([
+            return response([
                 'result' => true,
                 'message' => 'Danh sách nhan vien',
                 'data' => new StaffCollection($staffs)
@@ -59,12 +60,12 @@ class StaffController extends Controller
         try {
             $roles = $this->roleRepository->getAllNotPaginate();
             if ($roles->isEmpty()) {
-                return response()->json([
+                return response([
                     'result' => false,
                     'message' => 'Chưa có vai trò nào!',
                 ], 404);
             } else {
-                return response()->json([
+                return response([
                     'result' => true,
                     'status' => 200,
                     'message' => 'Danh sách vai trò',
@@ -87,11 +88,13 @@ class StaffController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data)->assignRole($this->roleRepository->getNameById($request->role_id));
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $data['user_id'] = $user->id;
             $staff = $this->staffRepository->create($data);
+            $data['receiver'] = "nhân viên";
+            sendEmailActiveJob::dispatch($data);
             DB::commit();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Thêm nhân viên thành công',
@@ -113,13 +116,13 @@ class StaffController extends Controller
     {
         $staff = $this->staffRepository->showStaff($id);
         if (!$staff) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 404,
                 'message' => 'Không tìm thấy nhân viên'
             ], 404);
         } else {
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Lấy nhân viên thành công',
@@ -139,12 +142,12 @@ class StaffController extends Controller
         try {
             $staff = $this->staffRepository->showStaff($id);
             if (!$staff) {
-                return response()->json([
+                return response([
                     'result' => false,
                     'message' => 'Không tìm thấy nhân viên',
                 ], 404);
             }
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Lấy thông tin nhân viên thành công',
@@ -168,9 +171,10 @@ class StaffController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $this->userRepository->update($data, $this->staffRepository->showStaff($id)->user_id);
+            $this->userRepository->findOrFail($this->staffRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $this->staffRepository->update($data, $id);
             DB::commit();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Cập nhật nhân viên thành công',
@@ -193,13 +197,13 @@ class StaffController extends Controller
         try {
             $this->userRepository->delete($this->staffRepository->findOrFail($id)->user_id);
             $this->staffRepository->delete($id);
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Xóa nhân viên thành công'
             ], 200);
         } catch (\Throwable $th) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 400,
                 'message' => 'Xóa nhân viên thất bại, lỗi : ' . $th
@@ -213,7 +217,7 @@ class StaffController extends Controller
         $user = User::find($staff->user_id);
         //dd($user);
         if (!$user) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 404,
                 'message' => 'Không tìm thấy nhân viên'
@@ -222,7 +226,7 @@ class StaffController extends Controller
         if ($user->account_ban_at == null) {
             $user->account_ban_at = now();
             $user->save();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Khóa tài khoản thành công'
@@ -230,7 +234,7 @@ class StaffController extends Controller
         } else {
             $user->account_ban_at = null;
             $user->save();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Mở khóa tài khoản thành công'

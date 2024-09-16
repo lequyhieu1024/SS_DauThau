@@ -28,7 +28,7 @@ class RoleRepository extends BaseRepository
 
     public function getNameById($ids)
     {
-        return $this->model->whereIn('id', $ids)->pluck('name');
+        return $this->model->whereIn('id', $ids)->pluck('name')->toArray();
     }
     public function createRole(array $data)
     {
