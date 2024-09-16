@@ -20,6 +20,7 @@ class StaffCollection extends ResourceCollection
                     'id' => $staff->id,
                     'user_id' => $staff->user_id,
                     'name' => $staff->user->name,
+                    'taxcode' => $staff->user->taxcode,
                     'avatar' => env('APP_URL') . '/' . $staff->avatar,
                     'email' => $staff->user->email,
                     'phone' => $staff->phone,

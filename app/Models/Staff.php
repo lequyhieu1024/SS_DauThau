@@ -32,11 +32,6 @@ class Staff extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
-    }
-
     protected function getModelName(): string
     {
         return 'Nhân viên - Staff';
@@ -50,7 +45,7 @@ class Staff extends Model
             'birthday',
             'phone',
             'gender',
-            'roles.name'
+            'role_id'
         ];
     }
 

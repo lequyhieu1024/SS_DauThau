@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\sendEmailActiveJob;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -17,12 +19,14 @@ class EnterpriseController extends Controller
     public $enterpriseRepository;
     public $userRepository;
     public $industryRepository;
+    public $roleRepository;
 
-    public function __construct(EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, IndustryRepository $industryRepository)
+    public function __construct(EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, IndustryRepository $industryRepository,RoleRepository $roleRepository)
     {
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
         $this->industryRepository = $industryRepository;
+        $this->roleRepository = $roleRepository;
     }
     /**
      * Display a listing of the resource.
@@ -45,13 +49,15 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data);
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14])); //13 là doanh nghiệp nhà nước / 14 là ngoài nhà nước
             $data['user_id'] = $user->id;
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
             }
             $enterprise = $this->enterpriseRepository->create($data);
             $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
+            $data['receiver'] = 'doanh nghiệp';
+            sendEmailActiveJob::dispatch($data);
             DB::commit();
             return response()->json([
                 "result" => true,
@@ -98,7 +104,8 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            $user = $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14]));
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
                 isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
