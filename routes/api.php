@@ -129,5 +129,4 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Attachments
     Route::post('attachments', [AttachmentController::class, 'store']);
-    Route::get('documents/{filename}', [AttachmentController::class, 'serveDocumentFile']);
 });
