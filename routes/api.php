@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
@@ -123,5 +124,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
+        [EvaluationCriteriaController::class, 'changeActive']);
+
+    // Attachments
+    Route::post('attachments', [AttachmentController::class, 'store']);
+    Route::get('documents/{filename}', [AttachmentController::class, 'serveDocumentFile']);
 });
