@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
+use App\Http\Controllers\Api\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
@@ -124,7 +126,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
+        [EvaluationCriteriaController::class, 'changeActive']);
 
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
