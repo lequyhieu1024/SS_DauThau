@@ -12,10 +12,9 @@ abstract class BaseRepository implements RepositoryInterface
     }
     abstract public function getModel();
 
-
     public function getNameAndIds()
     {
-        return $this->model->pluck('name', 'id');
+        return $this->model->select('id', 'name')->get();
     }
     public function getAll($data)
     {

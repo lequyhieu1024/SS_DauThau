@@ -14,7 +14,7 @@ class RoleResource extends JsonResource
      */
     public function toArray($request)
     {
-        foreach($this->permissions as $permission) {
+        foreach ($this->permissions as $permission) {
             $permission->name = __(convertText($permission->name));
         }
         return [
@@ -24,7 +24,6 @@ class RoleResource extends JsonResource
             'permissions' => $this->permissions->pluck('name'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
         ];
     }
 }

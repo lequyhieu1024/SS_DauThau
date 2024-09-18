@@ -124,4 +124,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
+
+    // Project - Dự án
+    Route::resource('projects', ProjectController::class);
+    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    // Banner
+    Route::resource('banners', BannerController::class)->except('update');
+    Route::patch('banners/{id}', [BannerController::class, 'update']);
+    Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
 });

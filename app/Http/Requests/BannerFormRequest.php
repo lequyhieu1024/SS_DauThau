@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\HandlesValidationFailures;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SelectionMethodRequest extends FormRequest
+class BannerFormRequest extends FormRequest
 {
-    use HandlesValidationFailures;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,24 +23,25 @@ class SelectionMethodRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->isMethod('get')) {
-            return [
-                'size' => 'nullable|integer|min:1',
-                'page' => 'nullable|integer|min:1',
-                'method_name' => 'nullable|string|min:1',
-            ];
-        }
-
         $id = $this->route('id');
         return [
-            'method_name' => [
+            'name' => [
                 'required',
                 'string',
-                'max:255',
-                'unique:selection_methods,method_name,' . $id,
+                'max:191',
+                'unique:banners,name,' . $id
             ],
-            'description' => 'nullable|string',
+            'path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_active' => 'required|boolean',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'result' => false,
+            'message' => 'Lỗi xác thực',
+            'errors' => $validator->errors(),
+        ], 400));
     }
 }
