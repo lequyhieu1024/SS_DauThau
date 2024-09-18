@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
+use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SelectionMethodController;
 
 /*
@@ -124,4 +125,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
+
+    // Project - Dự án
+    Route::resource('projects', ProjectController::class);
+    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
 });

@@ -27,8 +27,6 @@ class StaffCollection extends ResourceCollection
                     'birthday' => $staff->birthday,
                     'gender' => $staff->gender,
                     'account_ban_at' => $staff->user->account_ban_at,
-                    'created_at' => $staff->user->created_at,
-                    'updated_at' => $staff->user->updated_at,
                     'roles' => $staff->user->roles->map(function ($role) {
                         return [
                             'id' => $role->id,

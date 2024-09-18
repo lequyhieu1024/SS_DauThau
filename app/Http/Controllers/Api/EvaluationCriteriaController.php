@@ -44,16 +44,6 @@ class EvaluationCriteriaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        // $projects = $this->projectRepository->getNameAndIds();
-        // return response([
-        //     'result' => true,
-        //     'message' => "Lấy danh sách dự án thành công",
-        //     'data' => $projects
-        // ], 200);
-    }
-
     /**
      * Store a newly created resource in storage.
      */

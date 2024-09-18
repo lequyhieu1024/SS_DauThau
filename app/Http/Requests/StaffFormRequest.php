@@ -3,10 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Models\Staff;
+use App\Traits\HandlesValidationFailures;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StaffFormRequest extends FormRequest
 {
+    use HandlesValidationFailures;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -47,16 +49,5 @@ class StaffFormRequest extends FormRequest
             'password' => request()->isMethod('PUT') ? '' : 'required',
             'role_id' => 'required|array|min:1|exists:roles,id',
         ];
-    }
-
-    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        $response = [
-            'result' => false,
-            'status' => 400,
-            'errors' => $validator->errors()
-        ];
-
-        throw new \Illuminate\Validation\ValidationException($validator, response()->json($response, 400));
     }
 }
