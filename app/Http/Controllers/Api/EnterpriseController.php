@@ -21,8 +21,13 @@ class EnterpriseController extends Controller
     public $industryRepository;
     public $roleRepository;
 
-    public function __construct(EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, IndustryRepository $industryRepository,RoleRepository $roleRepository)
+    public function __construct(EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, IndustryRepository $industryRepository, RoleRepository $roleRepository)
     {
+        // $this->middleware(['permission:list_staff'])->only('index');
+        // $this->middleware(['permission:create_staff'])->only(['create', 'store']);
+        // $this->middleware(['permission:update_staff'])->only(['edit', 'update']);
+        // $this->middleware(['permission:detail_staff'])->only('show');
+        // $this->middleware(['permission:destroy_staff'])->only('destroy');
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
         $this->industryRepository = $industryRepository;

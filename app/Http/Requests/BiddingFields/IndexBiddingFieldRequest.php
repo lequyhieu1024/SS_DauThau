@@ -34,13 +34,4 @@ class IndexBiddingFieldRequest extends FormRequest
             'parent_name' => $this->query('parent_id'),
         ]);
     }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'result' => false,
-            'message' => 'Lỗi xác thực',
-            'errors' => $validator->errors(),
-        ], 400));
-    }
 }

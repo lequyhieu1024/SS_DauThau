@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Project;
 use App\Traits\ActivityLogOptionsTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FundingSource extends Model
 {
@@ -26,6 +27,11 @@ class FundingSource extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'funding_source_id');
+    }
 
     protected function getModelName(): string
     {

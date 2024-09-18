@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class EvaluationCriteriaCollection extends ResourceCollection
+class BannerCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,14 +15,14 @@ class EvaluationCriteriaCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection->map(function ($data) {
+            'data' => $this->collection->map(function ($banner) {
                 return [
-                    'id' => $data->id,
-                    'project_id' => $data->project_id,
-                    'name' => $data->name,
-                    'weight' => $data->weight,
-                    'description' => $data->description,
-                    'is_active' => $data->is_active,
+                    'id' => $banner->id,
+                    'name' => $banner->name,
+                    'path' => $banner->path,
+                    'is_active' => $banner->is_active,
+                    'created_at' => $banner->created_at,
+                    'updated_at' => $banner->updated_at,
                 ];
             }),
             'total_elements' => $this->total(),

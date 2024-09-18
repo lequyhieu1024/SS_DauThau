@@ -3,10 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Models\Enterprise;
+use App\Traits\HandlesValidationFailures;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EnterpriseFormRequest extends FormRequest
 {
+    use HandlesValidationFailures;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -56,15 +58,5 @@ class EnterpriseFormRequest extends FormRequest
             'is_blacklist' => 'required|in:1,0',
             'industry_id' => 'required|array|exists:industries,id',
         ];
-    }
-    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        $response = [
-            'result' => false,
-            'status' => 400,
-            'errors' => $validator->errors()
-        ];
-
-        throw new \Illuminate\Validation\ValidationException($validator, response()->json($response, 400));
     }
 }
