@@ -39,7 +39,7 @@ class SelectionMethodRequest extends FormRequest
                 'max:255',
                 'unique:selection_methods,method_name,'. $id,
             ],
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ];
     }
