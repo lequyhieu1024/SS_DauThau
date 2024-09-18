@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('selection_methods', function (Blueprint $table) {
             $table->id();
             $table->string('method_name', 255)->unique();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
