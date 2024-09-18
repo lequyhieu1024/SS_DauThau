@@ -19,9 +19,9 @@ class EnterpriseCollection extends ResourceCollection
                 return [
                     'id' => $enterprise->id,
                     'user_id' => $enterprise->user_id,
-                    'industry_id' => $enterprise->industries->map(function ($industry) {
+                    'industry_id' => $enterprise->industries->where('is_active', true)->map(function ($industry) {
                         return $industry->id;
-                    }),
+                    })->values()->toArray(),
                     'name' => $enterprise->user->name,
                     'email' => $enterprise->user->email,
                     'taxcode' => $enterprise->user->taxcode,
@@ -39,9 +39,6 @@ class EnterpriseCollection extends ResourceCollection
                     'organization_type' => $enterprise->organization_type,
                     'is_active' => $enterprise->is_active,
                     'is_blacklist' => $enterprise->is_blacklist,
-                    'created_at' => $enterprise->created_at,
-                    'updated_at' => $enterprise->updated_at,
-                    'delete_at' => $enterprise->delete_at
                 ];
             }),
             'total_elements' => $this->total(),

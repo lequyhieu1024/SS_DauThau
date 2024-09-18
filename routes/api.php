@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
-use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
@@ -126,6 +125,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
 
+    // Project - Dự án
+    Route::resource('projects', ProjectController::class);
+    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
