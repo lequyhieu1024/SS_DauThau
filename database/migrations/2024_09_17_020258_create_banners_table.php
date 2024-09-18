@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('selection_methods', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->string('method_name', 255)->unique();
-            $table->text('description')->nullable();
-            $table->boolean('is_active')->default(1);
+            $table->string('name');
+            $table->string('path')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('selection_methods');
+        Schema::dropIfExists('banners');
     }
 };

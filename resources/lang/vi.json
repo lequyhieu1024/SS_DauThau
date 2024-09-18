@@ -72,5 +72,12 @@
     "Detail Selection Method": "Chi tiết hình thức lựa chọn nhà thầu",
     "Create Selection Method": "Thêm hình thức lựa chọn nhà thầu",
     "Update Selection Method": "Sửa hình thức lựa chọn nhà thầu",
-    "Destroy Selection Method": "Xóa hình thức lựa chọn nhà thầu"
+    "Destroy Selection Method": "Xóa hình thức lựa chọn nhà thầu",
+
+    "Banner": "Banner",
+    "List Banner": "Xem banner",
+    "Detail Banner": "Chi tiết banner",
+    "Create Banner": "Thêm banner",
+    "Update Banner": "Sửa banner",
+    "Destroy Banner": "Xóa banner"
 }

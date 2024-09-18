@@ -13,7 +13,6 @@ use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
-use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SelectionMethodController;
 
 /*
@@ -129,4 +128,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    // Banner
+    Route::resource('banners', BannerController::class)->except('update');
+    Route::patch('banners/{id}', [BannerController::class, 'update']);
+    Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
 });
