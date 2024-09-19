@@ -166,6 +166,8 @@ return [
         'approve_at' => 'ngày phê duyệt',
         'decision_number_approve' => 'số quyết định phê duyệt',
         'status' => 'trạng thái',
+        'path' => 'tệp ảnh',
+        "business_activity_type_name" => "tên loại hoạt động kinh doanh",
     ],
 
 ];
