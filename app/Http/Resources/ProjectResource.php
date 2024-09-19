@@ -27,7 +27,19 @@ class ProjectResource extends JsonResource
                     'name' => $industry->name,
                 ];
             })->values()->toArray(),
-
+            'procurement_categories' => $this->procurementCategories->where('is_active', true)->map(function ($industry) {
+                return [
+                    'id' => $industry->id,
+                    'name' => $industry->name,
+                ];
+            })->values()->toArray(),
+            'attachments' => $this->attachments->map(function ($attachment) {
+                return [
+                    'type' => $attachment->type,
+                    'path' => $attachment->path,
+                    'name' => $attachment->name,
+                ];
+            })->values()->toArray(),
             'children' => $this->children,
             'evaluation_criterias' => $this->evaluationCriterias,
             'decision_number_issued' => $this->decision_number_issued,

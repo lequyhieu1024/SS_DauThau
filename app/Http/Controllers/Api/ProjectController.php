@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\ProjectResource;
-use App\Repositories\IndustryRepository;
+use App\Repositories\AttachmentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -14,9 +14,9 @@ use App\Http\Resources\ProjectCollection;
 class ProjectController extends Controller
 {
     public $projectRepository;
-    public $industryRepository;
+    public $attachmentRepository;
 
-    public function __construct(ProjectRepository $projectRepository, IndustryRepository $industryRepository)
+    public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository)
     {
         // $this->middleware(['permission:list_staff'])->only('index');
         // $this->middleware(['permission:create_staff'])->only(['create', 'store']);
@@ -24,7 +24,7 @@ class ProjectController extends Controller
         // $this->middleware(['permission:detail_staff'])->only('show');
         // $this->middleware(['permission:destroy_staff'])->only('destroy');
         $this->projectRepository = $projectRepository;
-        $this->industryRepository = $industryRepository;
+        $this->attachmentRepository = $attachmentRepository;
     }
 
     /**
@@ -50,7 +50,10 @@ class ProjectController extends Controller
         try {
             DB::beginTransaction();
             $project = $this->projectRepository->create($data);
+            $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
+//            dd(auth()->user);
+            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
             if (isset($data['children'])) {
                 foreach ($data['children'] as $child) {
                     $child['staff_id'] = $project->staff_id;
@@ -58,14 +61,14 @@ class ProjectController extends Controller
                     $child['total_amount'] = $project->total_amount;
                     $child['is_domestic'] = $project->is_domestic;
                     $newChild = $project->children()->create($child);
-                    $this->projectRepository->syncIndustry($data, $newChild->id);
+                    $this->projectRepository->syncIndustry($child, $newChild->id);
                 }
             }
             DB::commit();
             return response([
                 'result' => true,
                 'message' => 'Tạo dự án thành công',
-                'data' => $project
+                'data' => new ProjectResource($project),
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -114,8 +117,9 @@ class ProjectController extends Controller
 
             $this->projectRepository->update($data, $id);
             $project = $this->projectRepository->findOrFail($id);
-
+            $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $id);
+            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
 
             $newChildIds = [];
 
@@ -141,10 +145,7 @@ class ProjectController extends Controller
                         ]));
                         $newChildIds[] = $newChild->id;
                     }
-                }
-
-                foreach ($newChildIds as $childId) {
-                    $this->projectRepository->syncIndustry($data, $childId);
+                    $this->projectRepository->syncIndustry($child, $child['id']);
                 }
             }
 
@@ -154,7 +155,7 @@ class ProjectController extends Controller
             return response([
                 'result' => true,
                 'message' => 'Cập nhật dự án thành công',
-                'data' => $project
+                'data' => new ProjectResource($project)
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -182,7 +183,7 @@ class ProjectController extends Controller
                 ], 409);
             }
             $project->delete();
-            $project->industries()->detach();
+//            $project->industries()->detach();// soft delete nen khong detach
             DB::commit();
             return response([
                 'result' => true,

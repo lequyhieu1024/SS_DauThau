@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\sendEmailActiveJob;
+use App\Models\Enterprise;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -191,5 +192,19 @@ class EnterpriseController extends Controller
             'message' => 'Thay đổi trạng thái thành công',
             'is_active' => $enterprise->is_active
         ], 200);
+    }
+
+    public function getnameAndIds(){
+        $enterprises = $this->enterpriseRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy danh sách doanh nghiệp thành công",
+            'data' => $enterprises->map(function ($enterprise) {
+                return [
+                    'id' => $enterprise->id,
+                    'name' => $enterprise->user->name
+                ];
+            })
+        ],200);
     }
 }
