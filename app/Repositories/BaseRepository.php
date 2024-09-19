@@ -6,16 +6,19 @@ namespace App\Repositories;
 abstract class BaseRepository implements RepositoryInterface
 {
     protected $model;
+
     public function __construct()
     {
         $this->model = app()->make($this->getModel());
     }
+
     abstract public function getModel();
 
     public function getNameAndIds()
     {
         return $this->model->select('id', 'name')->get();
     }
+
     public function getAll($data)
     {
         return $this->model->paginate($data['size'] ?? 10);

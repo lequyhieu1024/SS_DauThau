@@ -43,7 +43,7 @@ class BusinessActivityTypeRepository extends BaseRepository
         $query->where('id', '!=', 1);
 
         if (isset($data['name'])) {
-            $query->where('name', 'like', '%'.$data['name'].'%');
+            $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);

@@ -15,6 +15,7 @@ use App\Http\Resources\PermissionCollection;
 class RoleController extends Controller
 {
     protected $roleRepository;
+
     public function __construct(RoleRepository $roleRepository)
     {
         $this->roleRepository = $roleRepository;
@@ -24,6 +25,7 @@ class RoleController extends Controller
         $this->middleware(['permission:detail_role'])->only('show');
         $this->middleware(['permission:destroy_role'])->only('destroy');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +48,7 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function create()
@@ -72,6 +74,7 @@ class RoleController extends Controller
             'permissions' => $data,
         ], 200);
     }
+
     public function store(RoleFormRequest $request)
     {
         try {
@@ -93,7 +96,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -111,6 +114,7 @@ class RoleController extends Controller
             'data' => new RoleResource($role)
         ], 200);
     }
+
     public function edit($id)
     {
         $role = $this->roleRepository->showRole($id);
@@ -121,11 +125,12 @@ class RoleController extends Controller
             'id_permission_checked' => $permissionIds,
         ], 200);
     }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(RoleFormRequest $request, $id)
@@ -148,7 +153,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

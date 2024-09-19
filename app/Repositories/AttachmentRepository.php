@@ -11,6 +11,7 @@ class AttachmentRepository extends BaseRepository
     {
         return Attachment::class;
     }
+
     public function createAttachment($files, $projectId, $userId)
     {
         $attachments = [];

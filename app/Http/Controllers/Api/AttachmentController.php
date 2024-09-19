@@ -51,12 +51,12 @@ class AttachmentController extends Controller
             $attachments = [];
 
             foreach ($files as $file) {
-                $newFilename = now()->timestamp.'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                $newFilename = now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 $relativePath = "uploads/documents/{$newFilename}";
 
                 $file->move(public_path('uploads/documents'), $newFilename);
 
-                if (!file_exists(public_path('uploads/documents/'.$newFilename))) {
+                if (!file_exists(public_path('uploads/documents/' . $newFilename))) {
                     throw new \Exception('Không tìm thấy tập tin sau khi di chuyển.');
                 }
 
@@ -66,7 +66,7 @@ class AttachmentController extends Controller
                     'name' => $newFilename,
                     'path' => $relativePath,
                     'type' => $file->getClientOriginalExtension(),
-                    'size' => filesize(public_path('uploads/documents/'.$newFilename)),
+                    'size' => filesize(public_path('uploads/documents/' . $newFilename)),
                     'is_active' => true,
                 ];
 

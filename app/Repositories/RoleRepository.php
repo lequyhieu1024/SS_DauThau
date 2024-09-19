@@ -30,6 +30,7 @@ class RoleRepository extends BaseRepository
     {
         return $this->model->whereIn('id', $ids)->pluck('name')->toArray();
     }
+
     public function createRole(array $data)
     {
         $data['guard_name'] = 'api';
@@ -39,10 +40,12 @@ class RoleRepository extends BaseRepository
         }
         return $role;
     }
+
     public function showRole($id)
     {
         return $this->model->with('permissions')->findOrFail($id);
     }
+
     public function deleteRole($id)
     {
         $role = $this->model->findOrFail($id);
@@ -53,6 +56,7 @@ class RoleRepository extends BaseRepository
         $role->delete();
         return true;
     }
+
     public function updateRole(array $data, $id)
     {
         $role = $this->model->findOrFail($id);

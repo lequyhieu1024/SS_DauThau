@@ -579,6 +579,6 @@ class SelectionMethodController extends Controller
             'result' => true,
             'message' => "Lấy danh sách phương thức lựa chọn nhà thầu thành công",
             'data' => $this->selectionMethodRepository->getSelectionMethod()
-        ],200);
+        ], 200);
     }
 }

@@ -10,6 +10,7 @@ class BannerRepository extends BaseRepository
     {
         return Banner::class;
     }
+
     public function filter($data)
     {
         $query = $this->model->query();
@@ -17,7 +18,7 @@ class BannerRepository extends BaseRepository
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
         }
-        
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 

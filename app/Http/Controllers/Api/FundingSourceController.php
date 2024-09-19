@@ -16,7 +16,8 @@ class FundingSourceController extends Controller
 {
     protected $fundingSourceRepository;
 
-    public function __construct(FundingSourceRepository $fundingSourceRepository){
+    public function __construct(FundingSourceRepository $fundingSourceRepository)
+    {
         $this->fundingSourceRepository = $fundingSourceRepository;
         $this->middleware(['permission:list_funding_source'])->only('index');
         $this->middleware(['permission:create_funding_source'])->only(['store']);
@@ -185,9 +186,9 @@ class FundingSourceController extends Controller
      */
     public function index(Request $request)
     {
-        $fundingSources=$this->fundingSourceRepository->filter($request->all());
+        $fundingSources = $this->fundingSourceRepository->filter($request->all());
 
-        $data= new FundingSourceCollection($fundingSources);
+        $data = new FundingSourceCollection($fundingSources);
 
         return response([
             'result' => true,
@@ -638,11 +639,13 @@ class FundingSourceController extends Controller
             ], 500);
         }
     }
-    public function getNameAndIds(){
+
+    public function getNameAndIds()
+    {
         return response([
             'result' => true,
             'message' => 'lấy nguồn tài trợ thành công',
             'data' => $this->fundingSourceRepository->getNameAndIds()
-        ],200);
+        ], 200);
     }
 }

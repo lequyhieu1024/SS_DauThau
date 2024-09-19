@@ -35,6 +35,7 @@ class StaffRepository extends BaseRepository
         }
         return $query->paginate($data['size'] ?? 10);
     }
+
     public function showStaff($id)
     {
         return $this->model->with('user')->find($id);

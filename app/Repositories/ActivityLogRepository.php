@@ -27,22 +27,22 @@ class ActivityLogRepository extends BaseRepository
         $query = $this->model->query();
 
         if (isset($data['log_name'])) {
-            $query->where('log_name', 'like', '%'.$data['log_name'].'%');
+            $query->where('log_name', 'like', '%' . $data['log_name'] . '%');
         }
 
         if (isset($data['event'])) {
             $translatedEvent = $this->translateEvent($data['event']);
-            $query->where('event', 'like', '%'.$translatedEvent.'%');
+            $query->where('event', 'like', '%' . $translatedEvent . '%');
         }
 
         if (isset($data['action_performer'])) {
             $query->whereHas('causer', function ($q) use ($data) {
-                $q->where('name', 'like', '%'.$data['action_performer'].'%');
+                $q->where('name', 'like', '%' . $data['action_performer'] . '%');
             });
         }
 
         if (isset($data['description'])) {
-            $query->where('description', 'like', '%'.$data['description'].'%');
+            $query->where('description', 'like', '%' . $data['description'] . '%');
         }
 
 

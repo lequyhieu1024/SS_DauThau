@@ -48,6 +48,7 @@ class SelectionMethodRepository extends BaseRepository
         }
         return $selectionMethod;
     }
+
     public function getSelectionMethod()
     {
         return $this->model->select('id', 'method_name')->get();

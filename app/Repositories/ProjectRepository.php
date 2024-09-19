@@ -31,14 +31,14 @@ class ProjectRepository extends BaseRepository
             $query->whereDate('created_at', '<=', $data['upload_time_end']);
         }
 
-        if(isset($data['investor'])){
-            $query->whereHas('investor', function($q) use ($data){
+        if (isset($data['investor'])) {
+            $query->whereHas('investor', function ($q) use ($data) {
                 $q->where('id', $data['investor']);
             });
         }
 
-        if(isset($data['tenderer'])){
-            $query->whereHas('tenderer', function($q) use ($data){
+        if (isset($data['tenderer'])) {
+            $query->whereHas('tenderer', function ($q) use ($data) {
                 $q->where('id', $data['tenderer']);
             });
         }
