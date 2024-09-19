@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
@@ -14,7 +15,7 @@ use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\BiddingFieldController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
 use App\Http\Controllers\Api\SelectionMethodController;
-
+use \App\Http\Controllers\Api\ProjectController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
