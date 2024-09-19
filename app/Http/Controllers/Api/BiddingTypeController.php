@@ -33,7 +33,7 @@ class BiddingTypeController extends Controller
      *     summary="Get all bidding types",
      *     description="Get all bidding types",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -44,7 +44,7 @@ class BiddingTypeController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -55,7 +55,7 @@ class BiddingTypeController extends Controller
      *             default=1
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
@@ -65,7 +65,7 @@ class BiddingTypeController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get bidding types successfully",
@@ -184,7 +184,7 @@ class BiddingTypeController extends Controller
      *     summary="Create a new bidding type",
      *     description="Create a new bidding type",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -479,7 +479,7 @@ class BiddingTypeController extends Controller
      *     )
      * )
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         DB::beginTransaction();
 

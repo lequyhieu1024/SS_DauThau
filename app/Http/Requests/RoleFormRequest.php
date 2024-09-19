@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class RoleFormRequest extends FormRequest
 {
     use HandlesValidationFailures;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -28,6 +29,7 @@ class RoleFormRequest extends FormRequest
             'permissions' => ['required', 'array'],
         ];
     }
+
     public function messages()
     {
         return [

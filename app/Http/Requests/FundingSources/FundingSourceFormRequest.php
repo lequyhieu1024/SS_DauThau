@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class FundingSourceFormRequest extends FormRequest
 {
     use HandlesValidationFailures;
+
     /**
      * Determine if the user is authorized to make this request.
      */

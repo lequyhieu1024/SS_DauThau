@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 class EvaluationCriteriaController extends Controller
 {
     protected $evaluationCriteriaRepository;
+
     public function __construct(EvaluationCriteriaRepository $evaluationCriteriaRepository)
     {
         $this->evaluationCriteriaRepository = $evaluationCriteriaRepository;
@@ -21,6 +22,7 @@ class EvaluationCriteriaController extends Controller
         // $this->middleware(['permission:detail_evaluation_criteria'])->only('show');
         // $this->middleware(['permission:destroy_evaluation_criteria'])->only('destroy');
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -123,6 +125,7 @@ class EvaluationCriteriaController extends Controller
             'message' => "Xóa tiêu chí đánh giá thành công",
         ], 200);
     }
+
     public function changeActive($id)
     {
         $evaluationCriteria = $this->evaluationCriteriaRepository->findOrFail($id);

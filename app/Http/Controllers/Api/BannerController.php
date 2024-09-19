@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class BannerController extends Controller
 {
     public $bannerRepository;
+
     public function __construct(BannerRepository $bannerRepository)
     {
         $this->bannerRepository = $bannerRepository;
@@ -26,7 +27,7 @@ class BannerController extends Controller
      *     summary="Get all Banners",
      *     description="Get all Banners",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -37,7 +38,7 @@ class BannerController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -57,7 +58,7 @@ class BannerController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get Banners successfully",
@@ -173,33 +174,33 @@ class BannerController extends Controller
      *     summary="Create a new banner",
      *     description="Create a new banner",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\RequestBody(
-    *         required=true,
-    *         @OA\MediaType(
-    *             mediaType="multipart/form-data",
-    *             @OA\Schema(
-    *                 required={"name", "is_active"},
-    *                 @OA\Property(
-    *                     property="name",
-    *                     type="string",
-    *                     example="banner 1"
-    *                 ),
-    *                 @OA\Property(
-    *                     property="path",
-    *                     type="string",
-    *                     format="binary",
-    *                     nullable=true,
-    *                     description="The file to upload",
-    *                 ),
-    *                 @OA\Property(
-    *                     property="is_active",
-    *                     type="integer",
-    *                     example=1
-    *                 ),
-    *             )
-    *         )
-    *     ),
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "is_active"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="banner 1"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="path",
+     *                     type="string",
+     *                     format="binary",
+     *                     nullable=true,
+     *                     description="The file to upload",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="banner created successfully",

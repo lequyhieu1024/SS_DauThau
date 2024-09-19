@@ -21,6 +21,7 @@ class StaffController extends Controller
     protected $staffRepository;
     protected $userRepository;
     protected $roleRepository;
+
     public function __construct(StaffRepository $staffRepository, RoleRepository $roleRepository, UserRepository $userRepository)
     {
         $this->middleware(['permission:list_staff'])->only('index');
@@ -32,6 +33,7 @@ class StaffController extends Controller
         $this->roleRepository = $roleRepository;
         $this->userRepository = $userRepository;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -81,7 +83,7 @@ class StaffController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(StaffFormRequest $request)
@@ -110,7 +112,7 @@ class StaffController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -135,7 +137,7 @@ class StaffController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -162,8 +164,8 @@ class StaffController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(StaffFormRequest $request, $id)
@@ -190,7 +192,7 @@ class StaffController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -243,7 +245,8 @@ class StaffController extends Controller
         }
     }
 
-    public function getnameAndIds(){
+    public function getnameAndIds()
+    {
         $staffs = $this->staffRepository->getAllNotPaginate();
         return response()->json([
             'result' => true,
@@ -254,6 +257,6 @@ class StaffController extends Controller
                     'name' => $staff->user->name
                 ];
             })
-        ],200);
+        ], 200);
     }
 }
