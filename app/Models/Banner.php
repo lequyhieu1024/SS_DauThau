@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Banner extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'name',
         'path',
         'is_active',
+    ];
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 }

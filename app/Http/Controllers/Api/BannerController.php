@@ -48,6 +48,15 @@ class BannerController extends Controller
      *             default=1
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Name of banner",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      * 
      *     @OA\Response(
      *         response=200,
@@ -180,6 +189,7 @@ class BannerController extends Controller
     *                     property="path",
     *                     type="string",
     *                     format="binary",
+    *                     nullable=true,
     *                     description="The file to upload",
     *                 ),
     *                 @OA\Property(
@@ -398,7 +408,7 @@ class BannerController extends Controller
      *                 @OA\Property(
      *                     property="is_active",
      *                     type="integer",
-     *                     example=1,
+     *                     example=1
      *                 ),
      *                 @OA\Property(
      *                     property="_method",
