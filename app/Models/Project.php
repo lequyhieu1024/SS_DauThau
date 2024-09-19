@@ -74,7 +74,11 @@ class Project extends Model
     }
     public function industries()
     {
-        return $this->belongsToMany(Industry::class, 'project_industry');
+        return $this->belongsToMany(Industry::class, 'project_industry','project_id','industry_id');
+    }
+
+    public function procurementCategories(){
+        return $this->belongsToMany(ProcurementCategory::class, 'project_procurement', 'project_id', 'procurement_id');
     }
 
     public function evaluationCriterias()
@@ -83,11 +87,15 @@ class Project extends Model
     }
 
 
+
     protected function getModelName(): string
     {
         return 'Dự án - Project';
     }
 
+    public function attachments(){
+        return $this->hasMany(Attachment::class);
+    }
     protected function getLogAttributes(): array
     {
         return [

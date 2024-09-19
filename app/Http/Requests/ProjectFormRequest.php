@@ -25,6 +25,8 @@ class ProjectFormRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'files' => 'required|array|max:2000',
+            'files.*' => 'mimes:jpeg,png,jpg,gif,svg,doc,docx,pdf,zip,rar,ppt,pptx|max:2000',
             'funding_source_id' => 'required|numeric|exists:funding_sources,id',
             'tenderer_id' => 'required|numeric|exists:enterprises,id',
             'investor_id' => 'required|numeric|exists:enterprises,id',
@@ -32,6 +34,7 @@ class ProjectFormRequest extends FormRequest
             'selection_method_id' => 'nullable|numeric|exists:selection_methods,id',
             'decision_number_issued' => 'required|max:100',
             'industry_id' => 'required|array|exists:industries,id',
+            'procurement_id' => 'required|array|exists:procurement_categories,id',
             'name' => 'required|max:255',
             'is_domestic' => 'required|boolean',
             'location' => 'required|max:255',

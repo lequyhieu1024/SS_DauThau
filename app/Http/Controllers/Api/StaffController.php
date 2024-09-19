@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\sendEmailActiveJob;
+use App\Models\Enterprise;
 use App\Models\User;
 use App\Models\Staff;
 use Illuminate\Http\Request;
@@ -240,5 +241,19 @@ class StaffController extends Controller
                 'message' => 'Mở khóa tài khoản thành công'
             ], 200);
         }
+    }
+
+    public function getnameAndIds(){
+        $staffs = $this->staffRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy danh sách doanh nghiệp thành công",
+            'data' => $staffs->map(function ($staff) {
+                return [
+                    'id' => $staff->id,
+                    'name' => $staff->user->name
+                ];
+            })
+        ],200);
     }
 }

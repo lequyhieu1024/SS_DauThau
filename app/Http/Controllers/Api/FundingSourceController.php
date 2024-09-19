@@ -35,7 +35,7 @@ class FundingSourceController extends Controller
      *     summary="Get all funding sources",
      *     description="Get all funding sources",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -46,7 +46,7 @@ class FundingSourceController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -57,7 +57,7 @@ class FundingSourceController extends Controller
      *             default=1
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
@@ -67,7 +67,7 @@ class FundingSourceController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="code",
      *         in="query",
@@ -77,7 +77,7 @@ class FundingSourceController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get funding sources successfully",
@@ -129,7 +129,7 @@ class FundingSourceController extends Controller
      *                         @OA\Property(
      *                             property="type",
      *                             type="string",
-     *                             enum={"Chính phủ", "Tư nhân", "Quốc tế"}, 
+     *                             enum={"Chính phủ", "Tư nhân", "Quốc tế"},
      *                             example="Tư nhân"
      *                         ),
      *                         @OA\Property(
@@ -207,7 +207,7 @@ class FundingSourceController extends Controller
      *     summary="Create a new funding sources",
      *     description="Create a new funding sources",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -230,7 +230,7 @@ class FundingSourceController extends Controller
      *             @OA\Property(
      *                 property="type",
      *                 type="string",
-     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"}, 
+     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"},
      *                 example="Tư nhân"
      *             ),
      *             @OA\Property(
@@ -281,7 +281,7 @@ class FundingSourceController extends Controller
      *                 @OA\Property(
      *                     property="type",
      *                     type="string",
-     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"}, 
+     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"},
      *                     example="Tư nhân"
      *                 ),
      *                 @OA\Property(
@@ -389,7 +389,7 @@ class FundingSourceController extends Controller
      *                     @OA\Property(
      *                     property="type",
      *                     type="string",
-     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"}, 
+     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"},
      *                     example="Tư nhân"
      *                 ),
      *                 @OA\Property(
@@ -470,7 +470,7 @@ class FundingSourceController extends Controller
      *                 @OA\Property(
      *                 property="type",
      *                 type="string",
-     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"}, 
+     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"},
      *                 example="Tư nhân"
      *             ),
      *             @OA\Property(
@@ -637,5 +637,12 @@ class FundingSourceController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function getNameAndIds(){
+        return response([
+            'result' => true,
+            'message' => 'lấy nguồn tài trợ thành công',
+            'data' => $this->fundingSourceRepository->getNameAndIds()
+        ],200);
     }
 }
