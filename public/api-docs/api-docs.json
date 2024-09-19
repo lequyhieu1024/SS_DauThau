@@ -250,6 +250,15 @@
                             "type": "integer",
                             "default": 1
                         }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of banner",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -370,7 +379,8 @@
                                     "path": {
                                         "description": "The file to upload",
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "nullable": true
                                     },
                                     "is_active": {
                                         "type": "integer",
