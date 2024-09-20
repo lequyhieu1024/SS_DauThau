@@ -22,7 +22,6 @@ class sendEmailActiveJob implements ShouldQueue
     public function __construct($data)
     {
         $this->data = $data;
-        Log::info('job');
     }
 
     /**

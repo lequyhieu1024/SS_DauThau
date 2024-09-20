@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\sendEmailActiveJob;
-use App\Models\Enterprise;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +62,7 @@ class EnterpriseController extends Controller
             $enterprise = $this->enterpriseRepository->create($data);
             $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
             $data['receiver'] = 'doanh nghiệp';
+            unset($data['avatar']);
             sendEmailActiveJob::dispatch($data);
             DB::commit();
             return response()->json([
@@ -200,6 +200,7 @@ class EnterpriseController extends Controller
             'result' => true,
             'message' => "Lấy danh sách doanh nghiệp thành công",
             'data' => $enterprises->map(function ($enterprise) {
+//                dd($enterprise);
                 return [
                     'id' => $enterprise->id,
                     'name' => $enterprise->user->name

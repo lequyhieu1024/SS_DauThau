@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\sendEmailActiveJob;
-use App\Models\Enterprise;
 use App\Models\User;
 use App\Models\Staff;
 use Illuminate\Http\Request;
@@ -94,7 +93,9 @@ class StaffController extends Controller
             $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $data['user_id'] = $user->id;
             $staff = $this->staffRepository->create($data);
+            $data['staff_id'] = $staff->id;
             $data['receiver'] = "nhân viên";
+            unset($data['avatar']);
             sendEmailActiveJob::dispatch($data);
             DB::commit();
             return response([

@@ -156,7 +156,7 @@ class ProcurementCategoryController extends Controller
         $data->save();
         return response()->json([
             'result' => true,
-            'message' => 'Trạng thái loại hoạt động kinh doanh đã được cập nhật thành công',
+            'message' => 'Trạng thái loại hình mua sắm công đã được cập nhật thành công',
             'data' => [
                 'is_active' => $data->is_active,
             ],

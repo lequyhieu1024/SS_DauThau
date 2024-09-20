@@ -139,6 +139,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);

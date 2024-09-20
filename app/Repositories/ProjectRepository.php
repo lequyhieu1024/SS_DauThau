@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\ProjectStatus;
 use App\Models\Project;
 
 class ProjectRepository extends BaseRepository
@@ -56,5 +57,22 @@ class ProjectRepository extends BaseRepository
     {
         $project = $this->model->findOrFail($id);
         return $project->procurementCategories()->sync($data['procurement_id']);
+    }
+
+    public function approveProject($id, $decision_number_approve)
+    {
+        return $this->model->findOrFail($id)->update([
+            'approve_at' => now(),
+            'decision_number_approve' => $decision_number_approve,
+            'status' => ProjectStatus::RECEIVED->value,
+        ]);
+    }
+
+    public function rejectProject($id)
+    {
+        return $this->model->findOrFail($id)->update([
+            'approve_at' => now(),
+            'status' => ProjectStatus::REJECT->value,
+        ]);
     }
 }
