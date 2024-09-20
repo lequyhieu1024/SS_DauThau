@@ -36,7 +36,7 @@ class ProjectResource extends JsonResource
             'attachments' => $this->attachments->map(function ($attachment) {
                 return [
                     'type' => $attachment->type,
-                    'path' => $attachment->path,
+                    'path' => env('APP_URL') . '/' . $attachment->path,
                     'name' => $attachment->name,
                 ];
             })->values()->toArray(),
