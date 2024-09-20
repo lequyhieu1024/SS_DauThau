@@ -15,12 +15,13 @@ class EvaluationCriteriaController extends Controller
 
     public function __construct(EvaluationCriteriaRepository $evaluationCriteriaRepository)
     {
+        $this->middleware(['permission:list_evaluation_criteria'])->only('index');
+        $this->middleware(['permission:create_evaluation_criteria'])->only(['store']);
+        $this->middleware(['permission:update_evaluation_criteria'])->only(['update', 'changeActive']);
+        $this->middleware(['permission:detail_evaluation_criteria'])->only('edit');
+        $this->middleware(['permission:destroy_evaluation_criteria'])->only('destroy');
+
         $this->evaluationCriteriaRepository = $evaluationCriteriaRepository;
-        // $this->middleware(['permission:list_evaluation_criteria'])->only('index');
-        // $this->middleware(['permission:create_evaluation_criteria'])->only(['store']);
-        // $this->middleware(['permission:update_evaluation_criteria'])->only(['update', 'toggleActiveStatus']);
-        // $this->middleware(['permission:detail_evaluation_criteria'])->only('show');
-        // $this->middleware(['permission:destroy_evaluation_criteria'])->only('destroy');
     }
 
     /**
