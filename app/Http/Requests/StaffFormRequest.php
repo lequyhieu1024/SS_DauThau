@@ -30,7 +30,7 @@ class StaffFormRequest extends FormRequest
             'name' => 'required',
             'birthday' => 'required',
             'gender' => 'required',
-            'avatar' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'avatar' => 'nullable|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'taxcode' => [
                 'required',
                 'regex:/^[0-9]{10,14}$/',

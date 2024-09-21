@@ -92,12 +92,14 @@ class StaffController extends Controller
             $data = $request->all();
             $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $data['user_id'] = $user->id;
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+            }
             $staff = $this->staffRepository->create($data);
             $data['staff_id'] = $staff->id;
             $data['receiver'] = "nhân viên";
             unset($data['avatar']);
             sendEmailActiveJob::dispatch($data);
-            DB::commit();
             return response([
                 'result' => true,
                 'status' => 200,
@@ -176,6 +178,12 @@ class StaffController extends Controller
             $data = $request->all();
             $this->userRepository->update($data, $this->staffRepository->showStaff($id)->user_id);
             $this->userRepository->findOrFail($this->staffRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+                isset($this->staffRepository->findOrFail($id)->avatar) ? unlink($this->staffRepository->findOrFail($id)->avatar) : "";
+            } else {
+                $data['avatar'] = $this->staffRepository->findOrFail($id)->avatar;
+            }
             $this->staffRepository->update($data, $id);
             DB::commit();
             return response([
