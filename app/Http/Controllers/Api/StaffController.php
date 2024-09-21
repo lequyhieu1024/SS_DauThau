@@ -100,6 +100,7 @@ class StaffController extends Controller
             $data['receiver'] = "nhân viên";
             unset($data['avatar']);
             sendEmailActiveJob::dispatch($data);
+            DB::commit();
             return response([
                 'result' => true,
                 'status' => 200,
