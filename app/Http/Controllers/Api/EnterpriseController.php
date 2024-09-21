@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\sendEmailActiveJob;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -17,13 +19,27 @@ class EnterpriseController extends Controller
     public $enterpriseRepository;
     public $userRepository;
     public $industryRepository;
+    public $roleRepository;
 
-    public function __construct(EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, IndustryRepository $industryRepository)
-    {
+    public function __construct(
+        EnterpriseRepository $enterpriseRepository,
+        UserRepository $userRepository,
+        IndustryRepository $industryRepository,
+        RoleRepository $roleRepository
+    ) {
+        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
+        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
+        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
+        $this->middleware(['permission:detail_enterprise'])->only('show');
+        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
+
+
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
         $this->industryRepository = $industryRepository;
+        $this->roleRepository = $roleRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -45,13 +61,16 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data);
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14])); //13 là doanh nghiệp nhà nước / 14 là ngoài nhà nước
             $data['user_id'] = $user->id;
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
             }
             $enterprise = $this->enterpriseRepository->create($data);
             $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
+            $data['receiver'] = 'doanh nghiệp';
+            unset($data['avatar']);
+            sendEmailActiveJob::dispatch($data);
             DB::commit();
             return response()->json([
                 "result" => true,
@@ -62,7 +81,7 @@ class EnterpriseController extends Controller
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Tạo doanh nghiệp không thành công." . $th,
+                "message" => "Tạo doanh nghiệp không thành công.".$th,
                 "data" => $request->all(),
             ], 500);
         }
@@ -98,7 +117,8 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            $user = $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14]));
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
                 isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
@@ -117,7 +137,7 @@ class EnterpriseController extends Controller
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Cập nhật doanh nghiệp không thành công. Error : " . $th,
+                "message" => "Cập nhật doanh nghiệp không thành công. Error : ".$th,
                 "data" => $request->all(),
             ], 500);
         }
@@ -141,10 +161,11 @@ class EnterpriseController extends Controller
             return response()->json([
                 'result' => false,
                 'status' => 400,
-                'message' => 'Xóa doanh nghiệp thất bại, lỗi : ' . $th
+                'message' => 'Xóa doanh nghiệp thất bại, lỗi : '.$th
             ], 400);
         }
     }
+
     public function banEnterprise($id)
     {
         $user = $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id);
@@ -178,6 +199,22 @@ class EnterpriseController extends Controller
             'status' => 200,
             'message' => 'Thay đổi trạng thái thành công',
             'is_active' => $enterprise->is_active
+        ], 200);
+    }
+
+    public function getnameAndIds()
+    {
+        $enterprises = $this->enterpriseRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy danh sách doanh nghiệp thành công",
+            'data' => $enterprises->map(function ($enterprise) {
+//                dd($enterprise);
+                return [
+                    'id' => $enterprise->id,
+                    'name' => $enterprise->user->name
+                ];
+            })
         ], 200);
     }
 }

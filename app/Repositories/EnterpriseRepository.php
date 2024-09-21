@@ -10,6 +10,7 @@ class EnterpriseRepository extends BaseRepository
     {
         return Enterprise::class;
     }
+
     public function filter($data)
     {
         $query = $this->model->query();

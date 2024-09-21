@@ -34,11 +34,13 @@ class FundingSourceRepository extends BaseRepository
         return $this->model::create($data);
     }
 
-    public function findFundingSourceById($id){
+    public function findFundingSourceById($id)
+    {
         return $this->model->find($id);
     }
 
-    public function updateFundingSource(array $data, $id){
+    public function updateFundingSource(array $data, $id)
+    {
         $fundingSource = $this->model->find($id);
         if ($fundingSource) {
             $fundingSource->update($data);
@@ -46,7 +48,8 @@ class FundingSourceRepository extends BaseRepository
         return $fundingSource;
     }
 
-    public function deleteFundingSource($id){
+    public function deleteFundingSource($id)
+    {
         $fundingSource = $this->model->find($id);
         if ($fundingSource) {
             $fundingSource->delete();

@@ -40,6 +40,10 @@ class Industry extends Model
     {
         return $this->belongsToMany(Enterprise::class);
     }
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
 
     protected function getModelName(): string
     {

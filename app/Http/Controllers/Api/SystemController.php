@@ -13,6 +13,7 @@ class SystemController extends Controller
         $this->middleware(['permission:list_system'])->only('index');
         $this->middleware(['permission:update_system'])->only(['update']);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,13 +21,13 @@ class SystemController extends Controller
      */
     public function index()
     {
-        $data = System::where('id',1)->first();
+        $data = System::where('id', 1)->first();
         if ($data) {
             return response([
                 'result' => true,
                 "message" => "Lấy thông tin hệ thống thành công",
                 "data" => $data
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'result' => false,
@@ -49,7 +50,7 @@ class SystemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -60,7 +61,7 @@ class SystemController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -71,7 +72,7 @@ class SystemController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -82,8 +83,8 @@ class SystemController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -113,10 +114,10 @@ class SystemController extends Controller
                 'result' => false,
                 "message" => $validator->errors()
             ], 200);
-        }else{
+        } else {
             $system = System::find($id);
             $system->name = $data['name'];
-            if($request->hasFile('logo')){
+            if ($request->hasFile('logo')) {
                 $system->logo = upload_image($request->file('logo'));
             }
             $system->phone = $data['phone'];
@@ -130,10 +131,11 @@ class SystemController extends Controller
             ], 200);
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

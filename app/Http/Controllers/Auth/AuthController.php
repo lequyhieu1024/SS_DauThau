@@ -98,28 +98,33 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-
-    //     public function login(Request $request)
-    // {
-    //     $credentials = $request->only('email', 'password');
-
-    //     if ($token = JWTAuth::attempt($credentials)) {
-    //         return $this->respondWithToken($token);
-    //     }
-
-    //     return response()->json(['error' => 'Unauthorized'], 401);
-    // }
-
     protected function respondWithToken($token)
     {
         return response()->json([
             'data' => [
                 'access_token' => $token,
-                //            'token_type' => 'bearer',
-                //            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
             ]
         ]);
+    }
+
+    public function refreshToken(Request $request)
+    {
+        try {
+            $token = $request->header('Authorization');
+
+            if (!$user = JWTAuth::setToken($token)->authenticate()) {
+                return response()->json(['result' => false, 'message' => 'Token không hợp lệ'], 401);
+            }
+
+            // Tạo token mới
+            $newToken = JWTAuth::fromUser($user);
+
+            return $this->respondWithToken($newToken);
+        } catch (JWTException $e) {
+            return response()->json(['result' => false, 'message' => 'Không thể làm mới token'], 500);
+        }
     }
 
     public function profile()

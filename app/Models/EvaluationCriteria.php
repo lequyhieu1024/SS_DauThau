@@ -21,10 +21,11 @@ class EvaluationCriteria extends Model
         'is_active',
     ];
 
-    // public function project()
-    // {
-    //     return $this->belongsTo(Project::class);
-    // }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
 
     protected function getModelName(): string
     {

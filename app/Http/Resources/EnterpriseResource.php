@@ -17,9 +17,9 @@ class EnterpriseResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'industry_id' => $this->industries->map(function ($industry) {
+            'industry_id' => $this->industries->where('is_active', true)->map(function ($industry) {
                 return $industry->id;
-            }),
+            })->values()->toArray(),
             'name' => $this->user->name,
             'email' => $this->user->email,
             'taxcode' => $this->user->taxcode,
@@ -39,7 +39,6 @@ class EnterpriseResource extends JsonResource
             'is_blacklist' => $this->is_blacklist,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'delete_at' => $this->delete_at
         ];
     }
 }
