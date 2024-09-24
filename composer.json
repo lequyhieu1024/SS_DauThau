@@ -15,6 +15,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "rmunate/spell-number": "^4.2",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.9",
         "symfony/yaml": "^7.1",
