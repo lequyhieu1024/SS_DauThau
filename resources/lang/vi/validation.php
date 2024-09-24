@@ -167,6 +167,12 @@ return [
         'decision_number_approve' => 'số quyết định phê duyệt',
         'status' => 'trạng thái',
         'path' => 'tệp ảnh',
+        'project_id' => 'dự án',
+        'enterprise_id' => 'doanh nghiệp',
+        'bond_number' => 'mã bảo lãnh',
+        'bond_amount' => 'số tiền bảo lãnh',
+        'bond_type' => 'loại bảo lãnh',
+        'expiry_date' => 'ngày hết hạn bảo lãnh',
         "business_activity_type_name" => "tên loại hoạt động kinh doanh",
     ],
 

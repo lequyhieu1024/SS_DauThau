@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\BidBondController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
@@ -149,4 +150,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Attachments
     Route::post('attachments', [AttachmentController::class, 'store']);
+
+    // Bid bonds
+    Route::resource('bid-bonds', BidBondController::class)->except('update');
+    Route::patch('bid-bonds/{id}', [BidBondController::class, 'update']);
+
+
 });

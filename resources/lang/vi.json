@@ -87,5 +87,10 @@
     "Detail Procurement Categories": "Chi tiết lĩnh vực mua sắm công",
     "Create Procurement Categories": "Thêm lĩnh vực mua sắm công",
     "Update Procurement Categories": "Sửa lĩnh vực mua sắm công",
-    "Destroy Procurement Categories": "Xóa lĩnh vực mua sắm công"
+    "Destroy Procurement Categories": "Xóa lĩnh vực mua sắm công",
+    "List Bid Bond": "Xem bảo lãnh dự thầu",
+    "Detail Bid Bond": "Chi tiết bảo lãnh dự thầu",
+    "Create Bid Bond": "Thêm bảo lãnh dự thầu",
+    "Update Bid Bond": "Sửa bảo lãnh dự thầu",
+    "Destroy Bid Bond": "Xóa bảo lãnh dự thầu"
 }
