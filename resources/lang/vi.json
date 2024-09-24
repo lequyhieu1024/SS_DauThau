@@ -87,5 +87,11 @@
     "Detail Procurement Categories": "Chi tiết lĩnh vực mua sắm công",
     "Create Procurement Categories": "Thêm lĩnh vực mua sắm công",
     "Update Procurement Categories": "Sửa lĩnh vực mua sắm công",
-    "Destroy Procurement Categories": "Xóa lĩnh vực mua sắm công"
+    "Destroy Procurement Categories": "Xóa lĩnh vực mua sắm công",
+    "Bid Document": "Hồ sơ đấu thầu",
+    "List Bid Document": "Xem hồ sơ đấu thầu",
+    "Detail Bid Document": "Chi tiết hồ sơ đấu thầu",
+    "Create Bid Document": "Thêm hồ sơ đấu thầu",
+    "Update Bid Document": "Sửa hồ sơ đấu thầu",
+    "Destroy Bid Document": "Xóa hồ sơ đấu thầu"
 }
