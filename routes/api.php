@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BiddingTypeController;
+use App\Http\Controllers\Api\BidDocumentController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
 use App\Http\Controllers\Api\ProcurementCategoryController;
@@ -133,7 +134,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Procurement Categories / Lĩnh vực mua sắm công
     Route::resource('procurement-categories', ProcurementCategoryController::class);
-    Route::put('procurement-categories/{procurement_category}/changeActive', [ProcurementCategoryController::class, 'changeActive']);
+    Route::put('procurement-categories/{procurement_category}/changeActive',
+        [ProcurementCategoryController::class, 'changeActive']);
     Route::get('list-procurement-categories', [ProcurementCategoryController::class, 'getNameAndIds']);
 
     // Project - Dự án
@@ -149,4 +151,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     // Attachments
     Route::post('attachments', [AttachmentController::class, 'store']);
+
+    // Bid Documents
+    Route::resource('bid-documents', BidDocumentController::class);
 });
