@@ -92,5 +92,11 @@
     "Detail Bid Bond": "Chi tiết bảo lãnh dự thầu",
     "Create Bid Bond": "Thêm bảo lãnh dự thầu",
     "Update Bid Bond": "Sửa bảo lãnh dự thầu",
-    "Destroy Bid Bond": "Xóa bảo lãnh dự thầu"
+    "Destroy Bid Bond": "Xóa bảo lãnh dự thầu",
+    "Bid Document": "Hồ sơ đấu thầu",
+    "List Bid Document": "Xem hồ sơ đấu thầu",
+    "Detail Bid Document": "Chi tiết hồ sơ đấu thầu",
+    "Create Bid Document": "Thêm hồ sơ đấu thầu",
+    "Update Bid Document": "Sửa hồ sơ đấu thầu",
+    "Destroy Bid Document": "Xóa hồ sơ đấu thầu"
 }
