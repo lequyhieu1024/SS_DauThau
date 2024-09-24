@@ -21,13 +21,4 @@ class BidBondRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
-
-    public function deleteBanner($id)
-    {
-        $banner = $this->model->find($id);
-        if ($banner) {
-            $banner->delete();
-        }
-        return $banner;
-    }
 }
