@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\FeedbackComplaints;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -18,7 +18,7 @@ class FeedbackComplaintCollection extends ResourceCollection
             'data' => $this->collection->map(function ($feedbackComplaint) {
                 return [
                     'id' => $feedbackComplaint->id,
-                    'project_id' => $feedbackComplaint->project_id,
+                    'project_id' => $feedbackComplaint->project->name,
                     'complaint_by' => $feedbackComplaint->complainedBy->name,
                     'responded_by' => $feedbackComplaint->respondedBy->name ?? null,
                     'content' => $feedbackComplaint->content,

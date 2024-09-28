@@ -13,34 +13,11 @@ class FeedbackComplaintRepository extends BaseRepository
     public function filter($data)
     {
         $query = $this->model->query();
+
+        if (isset($data['content'])) {
+            $query->where('content', 'like', '%' . $data['content'] . '%');
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
-    }
-
-    public function createFeedbackComplaint(array $data)
-    {
-        return $this->model::create($data);
-    }
-
-    public function findFeedbackComplaintById($id)
-    {
-        return $this->model->find($id);
-    }
-
-    public function updateFeedbackComplaint(array $data, $id)
-    {
-        $feedbackComplaint = $this->model->find($id);
-        if ($feedbackComplaint) {
-            $feedbackComplaint->update($data);
-        }
-        return $feedbackComplaint;
-    }
-
-    public function deleteFeedbackComplaint($id)
-    {
-        $feedbackComplaint = $this->model->find($id);
-        if ($feedbackComplaint) {
-            $feedbackComplaint->delete();
-        }
-        return $feedbackComplaint;
     }
 }

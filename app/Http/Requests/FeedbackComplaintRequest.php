@@ -35,6 +35,7 @@ class FeedbackComplaintRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+            'project_id'=>'required|exists:projects,id',
             'content' => $this->isPost() ? 'required|string' : 'nullable',
             'responded_by' => $this->isPutOrPatch() ? 'required|exists:users,id' : 'nullable|exists:users,id',
             'response_content' => $this->isPutOrPatch() ? 'required|string' : 'nullable',

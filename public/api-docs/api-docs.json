@@ -2300,6 +2300,15 @@
                             "type": "integer",
                             "default": 1
                         }
+                    },
+                    {
+                        "name": "content",
+                        "in": "query",
+                        "description": "Content",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -2427,6 +2436,10 @@
                                     "content": {
                                         "type": "string",
                                         "example": "Feedback complaint 1"
+                                    },
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -2648,6 +2661,10 @@
                                     "response_content": {
                                         "type": "string",
                                         "example": "response content 1"
+                                    },
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\FeedbackComplaints;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,7 +16,7 @@ class FeedbackComplaintResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project_id' => $this->project_id,
+            'project_id' => $this->project->name,
             'complaint_by' => $this->complainedBy->name ?? null,
             'responded_by' => $this->respondedBy->name ?? null,
             'content' => $this->content,

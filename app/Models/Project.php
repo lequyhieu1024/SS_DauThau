@@ -90,6 +90,9 @@ class Project extends Model
         return $this->hasMany(BidBond::class);
     }
 
+    public function feedbackComplaints(){
+        return $this->hasMany(FeedbackComplaint::class);
+    }
 
     protected function getModelName(): string
     {

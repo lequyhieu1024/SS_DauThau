@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FeedbackComplaintRequest;
-use App\Http\Resources\FeedbackComplaints\FeedbackComplaintCollection;
-use App\Http\Resources\FeedbackComplaints\FeedbackComplaintResource;
+use App\Http\Resources\FeedbackComplaintCollection;
+use App\Http\Resources\FeedbackComplaintResource;
 use App\Repositories\FeedbackComplaintRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +48,16 @@ class FeedbackComplaintController extends Controller
      *         @OA\Schema(
      *             type="integer",
      *             default=1
+     *         )
+     *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="content",
+     *         in="query",
+     *         description="Content",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
      *         )
      *     ),
      * 
@@ -190,6 +200,11 @@ class FeedbackComplaintController extends Controller
      *                 property="content",
      *                 type="string",
      *                 example="Feedback complaint 1"
+     *             ),
+     *             @OA\Property(
+     *                 property="project_id",
+     *                 type="integer",
+     *                 example=1
      *             )
      *         )
      *     ),
@@ -267,7 +282,7 @@ class FeedbackComplaintController extends Controller
 
         try {
             $data = $request->validated();
-            $feedbackComplaint = $this->feedbackComplaintRepository->createFeedbackComplaint($data);
+            $feedbackComplaint = $this->feedbackComplaintRepository->create($data);
 
             DB::commit();
 
@@ -376,7 +391,7 @@ class FeedbackComplaintController extends Controller
      */
     public function show($id)
     {
-        $feedbackComplaint = $this->feedbackComplaintRepository->findFeedbackComplaintById($id);
+        $feedbackComplaint = $this->feedbackComplaintRepository->find($id);
         $data = new FeedbackComplaintResource($feedbackComplaint);
 
         if (!$feedbackComplaint) {
@@ -420,6 +435,11 @@ class FeedbackComplaintController extends Controller
      *                 type="string",
      *                 example="response content 1"
      *             ),
+     *             @OA\Property(
+     *                 property="project_id",
+     *                 type="integer",
+     *                 example=1
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -434,21 +454,14 @@ class FeedbackComplaintController extends Controller
 
         try {
             $data = $request->validated();
-            $feedbackComplaint = $this->feedbackComplaintRepository->updateFeedbackComplaint($data, $id);
+            $this->feedbackComplaintRepository->update($data, $id);
 
-            if (!$feedbackComplaint) {
-                DB::rollBack();
-                return response()->json([
-                    'result' => false,
-                    'message' => 'Nguồn tài trợ không tồn tại',
-                ], 404);
-            }
             DB::commit();
 
             return response()->json([
                 'result' => true,
                 'message' => 'Cập nhật nguồn tài trợ thành công.',
-                'data' => new FeedbackComplaintResource($feedbackComplaint),
+                'data' => new FeedbackComplaintResource($this->feedbackComplaintRepository->findOrFail($id)),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -489,7 +502,7 @@ class FeedbackComplaintController extends Controller
     public function destroy($id)
     {
         try {
-            $feedbackComplaint = $this->feedbackComplaintRepository->deleteFeedbackComplaint($id);
+            $feedbackComplaint = $this->feedbackComplaintRepository->delete($id);
 
             if (!$feedbackComplaint) {
                 return response()->json([

@@ -22,4 +22,8 @@ class FeedbackComplaint extends Model
     public function respondedBy(){
         return $this->belongsTo(User::class, 'responded_by');
     }
+
+    public function project(){
+        return $this->belongsTo(Project::class, 'project_id');
+    }
 }

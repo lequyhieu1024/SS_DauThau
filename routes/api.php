@@ -130,7 +130,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('selection-methods/{id}/toggle-status', [SelectionMethodController::class, 'toggleActiveStatus']);
 
     // Feedback Complaints
-    Route::resource('feedback-complaints', FeedbackComplaintController::class);
+    Route::resource('feedback-complaints', FeedbackComplaintController::class)->except('update');
+    Route::patch('feedback-complaints/{id}', [FeedbackComplaintController::class, 'update']);
 
     Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
     // Evaluation citeria - Tieu chi danh gia
