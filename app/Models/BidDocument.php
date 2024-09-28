@@ -64,9 +64,9 @@ class BidDocument extends Model
         ];
     }
 
-    public function getEnterpriseNameByUserId($userId)
+    public function getEnterpriseNameByUserId($enterpriseId)
     {
-        $enterprise = Enterprise::where('id', $this->enterprise_id)->first();
+        $enterprise = Enterprise::where('id', $enterpriseId)->first();
         return $enterprise ? $enterprise->representative : '';
     }
 
