@@ -41,31 +41,14 @@ class Enterprise extends Model
         return $this->belongsToMany(Industry::class);
     }
 
+    public function bidBonds(){
+        return $this->hasMany(BidBond::class);
+    }
+
     protected function getModelName(): string
     {
         return 'Doanh nghiệp - Enterprise';
     }
-
-//    protected function getLogAttributes(): array
-//    {
-//        return [
-//            'user_id',
-//            'representative',
-//            'industries',
-//            'avatar',
-//            'phone',
-//            'address',
-//            'website',
-//            'description',
-//            'establish_date',
-//            'avg_document_rating',
-//            'registration_date',
-//            'registration_number',
-//            'organization_type',
-//            'is_active',
-//            'is_blacklist',
-//        ];
-//    }
 
     protected function getLogAttributes(): array
     {

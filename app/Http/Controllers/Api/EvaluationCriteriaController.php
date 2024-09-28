@@ -12,15 +12,18 @@ use Illuminate\Http\Request;
 class EvaluationCriteriaController extends Controller
 {
     protected $evaluationCriteriaRepository;
+
     public function __construct(EvaluationCriteriaRepository $evaluationCriteriaRepository)
     {
+        $this->middleware(['permission:list_evaluation_criteria'])->only('index');
+        $this->middleware(['permission:create_evaluation_criteria'])->only(['store']);
+        $this->middleware(['permission:update_evaluation_criteria'])->only(['update', 'changeActive']);
+        $this->middleware(['permission:detail_evaluation_criteria'])->only('edit');
+        $this->middleware(['permission:destroy_evaluation_criteria'])->only('destroy');
+
         $this->evaluationCriteriaRepository = $evaluationCriteriaRepository;
-        // $this->middleware(['permission:list_evaluation_criteria'])->only('index');
-        // $this->middleware(['permission:create_evaluation_criteria'])->only(['store']);
-        // $this->middleware(['permission:update_evaluation_criteria'])->only(['update', 'toggleActiveStatus']);
-        // $this->middleware(['permission:detail_evaluation_criteria'])->only('show');
-        // $this->middleware(['permission:destroy_evaluation_criteria'])->only('destroy');
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -44,16 +47,6 @@ class EvaluationCriteriaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        // $projects = $this->projectRepository->getNameAndIds();
-        // return response([
-        //     'result' => true,
-        //     'message' => "Lấy danh sách dự án thành công",
-        //     'data' => $projects
-        // ], 200);
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -133,6 +126,7 @@ class EvaluationCriteriaController extends Controller
             'message' => "Xóa tiêu chí đánh giá thành công",
         ], 200);
     }
+
     public function changeActive($id)
     {
         $evaluationCriteria = $this->evaluationCriteriaRepository->findOrFail($id);

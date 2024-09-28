@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\sendEmailActiveJob;
 use App\Models\User;
 use App\Models\Staff;
-use App\Models\ModelHasRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StaffResource;
 use App\Repositories\StaffRepository;
 use App\Http\Requests\StaffFormRequest;
@@ -22,6 +20,7 @@ class StaffController extends Controller
     protected $staffRepository;
     protected $userRepository;
     protected $roleRepository;
+
     public function __construct(StaffRepository $staffRepository, RoleRepository $roleRepository, UserRepository $userRepository)
     {
         $this->middleware(['permission:list_staff'])->only('index');
@@ -33,6 +32,7 @@ class StaffController extends Controller
         $this->roleRepository = $roleRepository;
         $this->userRepository = $userRepository;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,7 +42,7 @@ class StaffController extends Controller
     {
         try {
             $staffs = $this->staffRepository->filter($request->all());
-            return response()->json([
+            return response([
                 'result' => true,
                 'message' => 'Danh sách nhan vien',
                 'data' => new StaffCollection($staffs)
@@ -62,12 +62,12 @@ class StaffController extends Controller
         try {
             $roles = $this->roleRepository->getAllNotPaginate();
             if ($roles->isEmpty()) {
-                return response()->json([
+                return response([
                     'result' => false,
                     'message' => 'Chưa có vai trò nào!',
                 ], 404);
             } else {
-                return response()->json([
+                return response([
                     'result' => true,
                     'status' => 200,
                     'message' => 'Danh sách vai trò',
@@ -82,7 +82,7 @@ class StaffController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(StaffFormRequest $request)
@@ -90,11 +90,18 @@ class StaffController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data)->assignRole($this->roleRepository->getNameById($request->role_id));
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $data['user_id'] = $user->id;
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+            }
             $staff = $this->staffRepository->create($data);
+            $data['staff_id'] = $staff->id;
+            $data['receiver'] = "nhân viên";
+            unset($data['avatar']);
+            sendEmailActiveJob::dispatch($data);
             DB::commit();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Thêm nhân viên thành công',
@@ -109,20 +116,20 @@ class StaffController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $staff = $this->staffRepository->showStaff($id);
         if (!$staff) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 404,
                 'message' => 'Không tìm thấy nhân viên'
             ], 404);
         } else {
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Lấy nhân viên thành công',
@@ -134,7 +141,7 @@ class StaffController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -142,12 +149,12 @@ class StaffController extends Controller
         try {
             $staff = $this->staffRepository->showStaff($id);
             if (!$staff) {
-                return response()->json([
+                return response([
                     'result' => false,
                     'message' => 'Không tìm thấy nhân viên',
                 ], 404);
             }
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Lấy thông tin nhân viên thành công',
@@ -161,8 +168,8 @@ class StaffController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(StaffFormRequest $request, $id)
@@ -171,9 +178,16 @@ class StaffController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $this->userRepository->update($data, $this->staffRepository->showStaff($id)->user_id);
+            $this->userRepository->findOrFail($this->staffRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = upload_image($request->file('avatar'));
+                isset($this->staffRepository->findOrFail($id)->avatar) ? unlink($this->staffRepository->findOrFail($id)->avatar) : "";
+            } else {
+                $data['avatar'] = $this->staffRepository->findOrFail($id)->avatar;
+            }
             $this->staffRepository->update($data, $id);
             DB::commit();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Cập nhật nhân viên thành công',
@@ -188,7 +202,7 @@ class StaffController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -196,13 +210,13 @@ class StaffController extends Controller
         try {
             $this->userRepository->delete($this->staffRepository->findOrFail($id)->user_id);
             $this->staffRepository->delete($id);
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Xóa nhân viên thành công'
             ], 200);
         } catch (\Throwable $th) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 400,
                 'message' => 'Xóa nhân viên thất bại, lỗi : ' . $th
@@ -216,7 +230,7 @@ class StaffController extends Controller
         $user = User::find($staff->user_id);
         //dd($user);
         if (!$user) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'status' => 404,
                 'message' => 'Không tìm thấy nhân viên'
@@ -225,7 +239,7 @@ class StaffController extends Controller
         if ($user->account_ban_at == null) {
             $user->account_ban_at = now();
             $user->save();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Khóa tài khoản thành công'
@@ -233,11 +247,26 @@ class StaffController extends Controller
         } else {
             $user->account_ban_at = null;
             $user->save();
-            return response()->json([
+            return response([
                 'result' => true,
                 'status' => 200,
                 'message' => 'Mở khóa tài khoản thành công'
             ], 200);
         }
+    }
+
+    public function getnameAndIds()
+    {
+        $staffs = $this->staffRepository->getAllNotPaginate();
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy danh sách doanh nghiệp thành công",
+            'data' => $staffs->map(function ($staff) {
+                return [
+                    'id' => $staff->id,
+                    'name' => $staff->user->name
+                ];
+            })
+        ], 200);
     }
 }

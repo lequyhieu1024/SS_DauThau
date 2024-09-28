@@ -52,7 +52,7 @@ class BiddingFieldRepository extends BaseRepository
         $query->where('id', '!=', 1);
 
         if (isset($data['name'])) {
-            $query->where('name', 'like', '%'.$data['name'].'%');
+            $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
         if (isset($data['code'])) {

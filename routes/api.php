@@ -1,9 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\BidBondController;
 use App\Http\Controllers\Api\BiddingTypeController;
+use App\Http\Controllers\Api\BidDocumentController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
+use App\Http\Controllers\Api\ProcurementCategoryController;
+use App\Http\Controllers\Api\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffController;
@@ -58,18 +64,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('role', RoleController::class);
     //Staff
     Route::resource('staff', StaffController::class);
-    // cấm tài khoản
+    Route::get('list-staffs', [StaffController::class, 'getNameAndIds']);
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
     // doanh nhghieejp
     Route::resource('enterprises', EnterpriseController::class);
     Route::put('enterprises/{enterprise}/changeActive', [EnterpriseController::class, 'changeActive']);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
-
+    Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     // Funding Sources
     Route::resource('funding-sources', FundingSourceController::class)->except('update');
     Route::patch('funding-sources/{id}', [FundingSourceController::class, 'update']);
     Route::patch('funding-sources/{id}/toggle-status', [FundingSourceController::class, 'toggleActiveStatus']);
+    Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
@@ -105,7 +112,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
         'update',
         'destroy'
     ]);
-    Route::get('list-industries', [IndustryController::class, 'getListIndustries']);
+    Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('industries/{id}', [IndustryController::class, 'show']);
     Route::patch('industries/{id}', [IndustryController::class, 'update']);
     Route::patch(
@@ -125,7 +132,34 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Feedback Complaints
     Route::resource('feedback-complaints', FeedbackComplaintController::class);
 
+    Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive', [EvaluationCriteriaController::class, 'changeActive']);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
+        [EvaluationCriteriaController::class, 'changeActive']);
+
+    // Procurement Categories / Lĩnh vực mua sắm công
+    Route::resource('procurement-categories', ProcurementCategoryController::class);
+    Route::put('procurement-categories/{procurement_category}/changeActive',
+        [ProcurementCategoryController::class, 'changeActive']);
+    Route::get('list-procurement-categories', [ProcurementCategoryController::class, 'getNameAndIds']);
+
+    // Project - Dự án
+    Route::resource('projects', ProjectController::class);
+    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
+    // Banner
+    Route::resource('banners', BannerController::class)->except('update');
+    Route::patch('banners/{id}', [BannerController::class, 'update']);
+    Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
+    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
+        [EvaluationCriteriaController::class, 'changeActive']);
+
+    // Attachments
+    Route::post('attachments', [AttachmentController::class, 'store']);
+
+    // Bid bonds
+    Route::resource('bid-bonds', BidBondController::class)->except('update');
+    Route::patch('bid-bonds/{id}', [BidBondController::class, 'update']);
+
 });

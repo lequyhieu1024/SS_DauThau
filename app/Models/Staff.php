@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\ActivityLogOptionsTrait;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,11 +31,10 @@ class Staff extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function roles()
+    public function projects()
     {
-        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+        return $this->hasMany(Project::class);
     }
-
     protected function getModelName(): string
     {
         return 'Nhân viên - Staff';
@@ -50,7 +48,7 @@ class Staff extends Model
             'birthday',
             'phone',
             'gender',
-            'roles.name'
+            'role_id'
         ];
     }
 

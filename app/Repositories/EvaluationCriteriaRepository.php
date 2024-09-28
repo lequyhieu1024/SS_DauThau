@@ -10,6 +10,7 @@ class EvaluationCriteriaRepository extends BaseRepository
     {
         return EvaluationCriteria::class;
     }
+
     public function filter($data)
     {
         $query = $this->model->query(); // ->project()

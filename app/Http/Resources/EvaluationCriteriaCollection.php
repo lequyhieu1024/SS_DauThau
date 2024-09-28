@@ -23,8 +23,6 @@ class EvaluationCriteriaCollection extends ResourceCollection
                     'weight' => $data->weight,
                     'description' => $data->description,
                     'is_active' => $data->is_active,
-                    'created_at' => $data->created_at,
-                    'updated_at' => $data->updated_at,
                 ];
             }),
             'total_elements' => $this->total(),

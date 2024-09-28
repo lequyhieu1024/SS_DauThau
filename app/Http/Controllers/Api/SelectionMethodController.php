@@ -16,12 +16,13 @@ class SelectionMethodController extends Controller
 
     public function __construct(SelectionMethodRepository $selectionMethodRepository)
     {
+        $this->middleware(['permission:list_selection_method'])->only('index');
+        $this->middleware(['permission:create_selection_method'])->only(['store']);
+        $this->middleware(['permission:update_selection_method'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_selection_method'])->only('show');
+        $this->middleware(['permission:destroy_selection_method'])->only('destroy');
+
         $this->selectionMethodRepository = $selectionMethodRepository;
-        // $this->middleware(['permission:list_selection_method'])->only('index');
-        // $this->middleware(['permission:create_selection_method'])->only(['store']);
-        // $this->middleware(['permission:update_selection_method'])->only(['update', 'toggleActiveStatus']);
-        // $this->middleware(['permission:detail_selection_method'])->only('show');
-        // $this->middleware(['permission:destroy_selection_method'])->only('destroy');
     }
     /**
      * Display a listing of the resource.
@@ -33,7 +34,7 @@ class SelectionMethodController extends Controller
      *     summary="Get all Selection methods",
      *     description="Get all Selection methods",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -44,7 +45,7 @@ class SelectionMethodController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -55,7 +56,7 @@ class SelectionMethodController extends Controller
      *             default=1
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="method_name",
      *         in="query",
@@ -65,7 +66,7 @@ class SelectionMethodController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get Selection methods successfully",
@@ -184,7 +185,7 @@ class SelectionMethodController extends Controller
      *     summary="Create a new selection method",
      *     description="Create a new selection method",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -571,5 +572,14 @@ class SelectionMethodController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getNameAndIds()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy danh sách phương thức lựa chọn nhà thầu thành công",
+            'data' => $this->selectionMethodRepository->getSelectionMethod()
+        ], 200);
     }
 }
