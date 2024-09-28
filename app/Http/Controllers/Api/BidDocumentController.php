@@ -11,22 +11,22 @@ use App\Http\Resources\BidDocument\BidDocumentResource;
 use App\Repositories\BidDocumentRepository;
 use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 class BidDocumentController extends Controller
 {
 
-    protected $bidDocumentRepository;
-    protected $projectRepository;
+    protected BidDocumentRepository $bidDocumentRepository;
+    protected ProjectRepository $projectRepository;
 
     public function __construct(BidDocumentRepository $bidDocumentRepository, ProjectRepository $projectRepository)
     {
 //        $this->middleware(['permission:list_bid_document'])->only('index');
 //        $this->middleware(['permission:create_bid_document'])->only(['store']);
-//        $this->middleware(['permission:update_bid_document'])->only(['update']);
+//        $this->middleware(['permission:update_bid_document_status'])->only(['approveBidDocument']);
 //        $this->middleware(['permission:detail_bid_document'])->only('show');
 //        $this->middleware(['permission:destroy_bid_document'])->only('destroy');
         $this->bidDocumentRepository = $bidDocumentRepository;
@@ -34,9 +34,101 @@ class BidDocumentController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/admin/bid-documents",
+     *     summary="Get list of bid documents",
+     *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
+     *          @OA\Parameter(
+     *          name="size",
+     *          in="query",
+     *          description="Number of records per page",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="integer",
+     *              default=10
+     *          )
+     *      ),
+     *       @OA\Parameter(
+     *       name="page",
+     *       in="query",
+     *       description="Page number",
+     *       required=false,
+     *       @OA\Schema(
+     *       type="integer",
+     *       default=1
+     *       )
+     *     ),
+     *      @OA\Parameter(
+     *          name="project_id",
+     *          in="query",
+     *          description="Filter by project id",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="enterprise_id",
+     *          in="query",
+     *          description="Filter by enterprise id",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="status",
+     *          in="query",
+     *          description="Filter by status",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="integer",
+     *     enum={1, 2, 3, 4}
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="start_date",
+     *          in="query",
+     *          description="Filter by start date (e.g., 2023-01-01)",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="string",
+     *              format="date",
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_date",
+     *          in="query",
+     *          description="Filter by end date (e.g., 2023-12-31)",
+     *          required=false,
+     *          @OA\Schema(
+     *              type="string",
+     *              format="date",
+     *          )
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Lấy danh sách hồ sơ dự thầu thành công"),
+     *             @OA\Property(property="data", type="object", example="{}")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy hồ sơ dự thầu")
+     *         )
+     *     )
+     * )
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $bidDocuments = $this->bidDocumentRepository->filter($request->all());
         $data = new BidDocumentCollection($bidDocuments);
@@ -55,9 +147,34 @@ class BidDocumentController extends Controller
         ], 200);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/bid-documents/check-bid-participation/{projectId}",
+     *     summary="Check bid participation",
+     *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Doanh nghiệp đã tham gia đấu thầu dự án này."),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function checkBidParticipation($projectId): \Illuminate\Http\JsonResponse
     {
-        $user = Auth::user();
+        $user = JWTAuth::user();
         $enterpriseId = $user->enterprise->id ?? null;
 
         if ($enterpriseId) {
@@ -69,7 +186,18 @@ class BidDocumentController extends Controller
                     'message' => 'Doanh nghiệp đã tham gia đấu thầu dự án này.',
                     'data' => [
                         'can_create' => false,
-                        'bid_document_status' => BidDocumentStatus::from($bidDocument->status)->label()
+                        'bid_document' => [
+                            'id' => $bidDocument->id,
+                            'project' => [
+                                'id' => $bidDocument->project->id,
+                                'name' => $bidDocument->project->name,
+                            ],
+                            'status' => [
+                                'id' => $bidDocument->status,
+                                'label' => BidDocumentStatus::from($bidDocument->status)->label()
+                            ],
+                        ],
+
                     ]
                 ], 200);
             }
@@ -81,19 +209,14 @@ class BidDocumentController extends Controller
             ], 200);
         }
 
-        if ($user->can('create_bid_document')) {
-            return response()->json([
-                'result' => true,
-                'message' => 'Người dùng có thể tạo mới hồ sơ dự thầu.',
-                'data' => ['can_create' => true]
-            ], 200);
-        }
 
         return response()->json([
-            'result' => false,
-            'message' => 'Người dùng không có quyền tạo hồ sơ dự thầu.',
-            'data' => ['can_create' => false]
-        ], 403);
+            'result' => true,
+            'message' => 'Người dùng có thể tạo mới hồ sơ dự thầu.',
+            'data' => ['can_create' => true]
+        ], 200);
+
+
     }
 
 
@@ -102,6 +225,7 @@ class BidDocumentController extends Controller
      *     path="/api/admin/bid-documents",
      *     summary="Create a new bid document",
      *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -204,7 +328,47 @@ class BidDocumentController extends Controller
 
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/admin/bid-documents/{id}",
+     *     summary="Get bid document details",
+     *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Lấy thông tin hồ sơ dự thầu thành công"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy hồ sơ dự thầu này")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Lỗi khi lấy thông tin hồ sơ dự thầu"),
+     *             @OA\Property(property="errors", type="string", example="Error message")
+     *         )
+     *     )
+     * )
      */
     public function show(string $id): \Illuminate\Http\JsonResponse
     {
@@ -214,7 +378,6 @@ class BidDocumentController extends Controller
                 'result' => true,
                 'message' => 'Lấy thông tin hồ sơ dự thầu thành công',
                 'data' => new BidDocumentResource($bidDocument)
-//                'data' => $bidDocument
             ], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -230,51 +393,149 @@ class BidDocumentController extends Controller
         }
     }
 
-
     /**
-     * Update the specified resource in storage.
+     * @OA\Delete(
+     *     path="/api/admin/bid-documents/{id}",
+     *     summary="Delete a bid document",
+     *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Xóa hồ sơ dự thầu thành công")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy hồ sơ dự thầu này")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Lỗi khi xóa hồ sơ dự thầu"),
+     *             @OA\Property(property="errors", type="string", example="Error message")
+     *         )
+     *     )
+     * )
      */
-    public function update(BidDocumentFormRequest $request, string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-//        try {
-//            $bidDocument = $this->bidDocumentRepository->findOrFail($id);
-//
-//            $data = $request->only(['bid_price', 'implementation_time', 'note']);
-//
-//            // Kiểm tra vai trò của người dùng
-//            if (auth()->user()->hasRole(['admin', 'staff', 'chuyenvien'])) {
-//                $data['status'] = $request->input('status');
-//            }
-//
-//            $bidDocument->update($data);
-//
-//            return response()->json([
-//                'result' => true,
-//                'message' => 'Cập nhật hồ sơ dự thầu thành công',
-//                'data' => new BidDocumentResource($bidDocument)
-//            ], 200);
-//        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-//            return response()->json([
-//                'result' => false,
-//                'message' => 'Không tìm thấy hồ sơ dự thầu này'
-//            ], 404);
-//        } catch (\Throwable $e) {
-//            return response()->json([
-//                'result' => false,
-//                'message' => 'Lỗi khi cập nhật hồ sơ dự thầu',
-//                'errors' => $e->getMessage()
-//            ], 500);
-//        }
+        try {
+            DB::beginTransaction();
+            $bidDocument = $this->bidDocumentRepository->findOrFail($id);
+            $bidDocument->delete();
+            DB::commit();
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Xóa hồ sơ dự thầu thành công',
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy hồ sơ dự thầu này'
+            ], 404);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'result' => false,
+                'message' => 'Lỗi khi xóa hồ sơ dự thầu',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Patch (
+     *     path="/api/admin/bid-documents/{id}/approve",
+     *     summary="Approve a bid document",
+     *     tags={"Bid Documents"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 enum={2, 3, 4},
+     *                 example=2
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Cập nhật trạng thái hồ sơ dự thầu thành công"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Lỗi khi cập nhật trạng thái hồ sơ dự thầu"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Bạn không có quyền cập nhật trạng thái hồ sơ dự thầu")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy hồ sơ dự thầu này")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="result", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Lỗi khi cập nhật trạng thái hồ sơ dự thầu"),
+     *             @OA\Property(property="errors", type="string", example="Error message")
+     *         )
+     *     )
+     * )
      */
-    public function destroy(string $id)
-    {
-        //
-    }
-
     public function approveBidDocument(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $rules = [
@@ -292,7 +553,7 @@ class BidDocumentController extends Controller
         try {
             $bidDocument = $this->bidDocumentRepository->findOrFail($id);
 
-            if (!auth()->user()->can('update_bid_document_status')) {
+            if (!JWTAuth::user()->can('update_bid_document_status')) {
                 return response()->json([
                     'result' => false,
                     'message' => 'Bạn không có quyền cập nhật trạng thái hồ sơ dự thầu',
