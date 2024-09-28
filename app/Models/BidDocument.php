@@ -25,18 +25,18 @@ class BidDocument extends Model
     // N-1 relationship with Project
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class, 'project_id', 'id');
     }
 
     // N-1 relationship with Enterprise
     public function enterprise()
     {
-        return $this->belongsTo(Enterprise::class, 'enterprise_id');
+        return $this->belongsTo(Enterprise::class, 'enterprise_id', 'id');
     }
 
     // 1-1 relationship with BidBond
-//    public function bidBond()
-//    {
-//        return $this->hasOne(BidBond::class, 'id', 'bid_bond_id');
-//    }
+    public function bidBond()
+    {
+        return $this->hasOne(BidBond::class, 'id', 'bid_bond_id');
+    }
 }

@@ -173,7 +173,13 @@ return [
         'bond_amount' => 'số tiền bảo lãnh',
         'bond_type' => 'loại bảo lãnh',
         'expiry_date' => 'ngày hết hạn bảo lãnh',
-        "business_activity_type_name" => "tên loại hoạt động kinh doanh",
+
+        'bid_bond_id' => 'bảo lãnh',
+        'submission_date' => 'ngày nộp hồ sơ',
+        'bid_price' => 'giá thầu',
+        'implementation_time' => 'thời gian thực hiện',
+        'validity_period' => 'thời hạn hiệu lực',
+        'note' => 'ghi chú',
     ],
 
 ];
