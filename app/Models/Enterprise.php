@@ -41,6 +41,10 @@ class Enterprise extends Model
         return $this->belongsToMany(Industry::class);
     }
 
+    public function bidBonds(){
+        return $this->hasMany(BidBond::class);
+    }
+
     protected function getModelName(): string
     {
         return 'Doanh nghiệp - Enterprise';

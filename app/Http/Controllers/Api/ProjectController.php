@@ -23,11 +23,11 @@ class ProjectController extends Controller
 
     public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository)
     {
-        // $this->middleware(['permission:list_staff'])->only('index');
-        // $this->middleware(['permission:create_staff'])->only(['create', 'store']);
-        // $this->middleware(['permission:update_staff'])->only(['edit', 'update']);
-        // $this->middleware(['permission:detail_staff'])->only('show');
-        // $this->middleware(['permission:destroy_staff'])->only('destroy');
+        $this->middleware(['permission:list_project'])->only('index', 'getNameAndIds');
+        $this->middleware(['permission:create_project'])->only(['store']);
+        $this->middleware(['permission:update_project'])->only(['update']);
+        $this->middleware(['permission:detail_project'])->only('show');
+        $this->middleware(['permission:destroy_project'])->only('destroy');
         $this->projectRepository = $projectRepository;
         $this->attachmentRepository = $attachmentRepository;
     }
