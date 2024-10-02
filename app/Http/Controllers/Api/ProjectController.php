@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\ProjectStatus;
+use App\Events\ProjectCreated;
 use App\Http\Resources\ProjectResource;
 use App\Jobs\sendApproveProjectJob;
 use App\Mail\sendApproveProjectMail;
@@ -56,7 +57,6 @@ class ProjectController extends Controller
             $project = $this->projectRepository->create($data);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
-//            dd(auth()->user);
             $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
             if (isset($data['children'])) {
                 foreach ($data['children'] as $child) {
@@ -68,6 +68,7 @@ class ProjectController extends Controller
                     $this->projectRepository->syncIndustry($child, $newChild->id);
                 }
             }
+            event(new ProjectCreated(new ProjectResource($project)));
             DB::commit();
             return response([
                 'result' => true,
