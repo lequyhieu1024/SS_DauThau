@@ -17,38 +17,25 @@
 <body class="antialiased">
 <div class="">
     <div class="image-container">
-        <img src="{{ asset('img/logo.jpg') }}" style="width: 1680px; height: 1000px;" alt="BecomeDev">
+        <img src="{{ asset('img/logo.jpg') }}" style="width: 100%; height:920px" alt="Septenary Solutions">
     </div>
 </div>
-</body>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+    Pusher.logToConsole = true;
 
+    var pusher = new Pusher('fd0c3289fdf6749d5b9c', {
+        cluster: 'ap1',
+    });
 
-</html>
-<!DOCTYPE html>
-<head>
-    <title>Pusher Test</title>
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
+    var channel = pusher.subscribe('update-project-status');
 
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+    channel.bind('status.updated', function (data) {
+        console.log('Received data:', data);
+        alert(JSON.stringify(data));
+    });
 
-        var pusher = new Pusher('fd0c3289fdf6749d5b9c', {
-            cluster: 'ap1'
-        });
-
-        var channel = pusher.subscribe('bidding-septenary');
-        channel.bind('project-created', function (data) {
-            alert(JSON.stringify(data));
-        });
-    </script>
-</head>
-<body>
-<h1>Pusher Test</h1>
-<p>
-    Try publishing an event to channel <code>my-channel</code>
-    with event name <code>my-event</code>.
-</p>
+</script>
 </body>
 </html>
 
