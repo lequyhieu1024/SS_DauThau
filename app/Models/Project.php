@@ -86,6 +86,9 @@ class Project extends Model
         return $this->hasMany(EvaluationCriteria::class);
     }
 
+    public function bidBonds(){
+        return $this->hasMany(BidBond::class);
+    }
 
 
     protected function getModelName(): string
