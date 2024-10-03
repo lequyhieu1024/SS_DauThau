@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
 use App\Models\Project;
+use Carbon\Carbon;
 
 class ProjectRepository extends BaseRepository
 {
@@ -45,6 +46,11 @@ class ProjectRepository extends BaseRepository
         }
 
         return $query->paginate(10 ?? $data['size']);
+    }
+
+    public function getOverdueProjectSubmission()
+    {
+        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status",  ProjectStatus::RECEIVED->value)->get();
     }
 
     public function syncIndustry(array $data, $id)
