@@ -42,7 +42,6 @@ destroy - Xóa một vai trò
 URL: {{base_url}}/roles/{id}
 Phương thức: DELETE
 
-Chaỵ command + queue + cronjob để test gửi mail, thay đổi trạng thái khi hết hạn nộp hồ sơ , ...
+Chaỵ command + queue + cronjob để test gửi mail, thay đổi trạng thái khi hết hạn nộp hồ sơ , ... 
 php artisan queue:work 
 php artisan app:update-project-status-command
-
