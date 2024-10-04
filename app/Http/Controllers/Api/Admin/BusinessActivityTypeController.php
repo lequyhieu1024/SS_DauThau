@@ -1,39 +1,41 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BusinessActivityTypes\BusinessActivityTypeFormRequest;
+use App\Http\Requests\Common\IndexBaseRequest;
 use App\Http\Requests\Common\ValidateIdRequest;
-use App\Http\Requests\Industries\IndexIndustryRequest;
-use App\Http\Requests\Industries\IndustryFormRequest;
 use App\Http\Resources\Common\IndexBaseCollection;
-use App\Models\Industry;
-use App\Repositories\IndustryRepository;
+use App\Repositories\BusinessActivityTypeRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 
 
-class IndustryController extends Controller
+class BusinessActivityTypeController extends Controller
 {
-    protected $industryRepository;
 
-    public function __construct(IndustryRepository $industryRepository)
+    protected $businessActivityTypeRepository;
+
+    public function __construct(BusinessActivityTypeRepository $businessActivityTypeRepository)
     {
-        $this->middleware(['permission:list_industry'])->only(['index', 'getAllIds']);
-        $this->middleware(['permission:create_industry'])->only('store');
-        $this->middleware(['permission:update_industry'])->only(['update', 'toggleActiveStatus']);
-        $this->middleware(['permission:detail_industry'])->only('show');
-        $this->middleware(['permission:destroy_industry'])->only('destroy');
+        $this->middleware(['permission:list_business_activity_type'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:create_business_activity_type'])->only('store');
+        $this->middleware(['permission:update_business_activity_type'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_business_activity_type'])->only('show');
+        $this->middleware(['permission:destroy_business_activity_type'])->only('destroy');
 
-        $this->industryRepository = $industryRepository;
+        $this->businessActivityTypeRepository = $businessActivityTypeRepository;
     }
+
 
     /**
      * @OA\Get (
-     *     path="/api/admin/industries",
-     *     tags={"Industry"},
-     *     summary="Get industries",
-     *     description="Get industries",
-     *     operationId="getIndustries",
+     *     path="/api/admin/business-activity-types",
+     *     tags={"Business Activity Type"},
+     *     summary="Get business activity types",
+     *     description="Get business activity types",
+     *     operationId="getBusinessActivityTypes",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *     name="size",
@@ -64,18 +66,9 @@ class IndustryController extends Controller
      *     type="string"
      *    )
      *   ),
-     *     @OA\Parameter (
-     *      name="business_activity_type_id",
-     *      in="query",
-     *      description="Id of business activity type",
-     *      required=false,
-     *      @OA\Schema(
-     *      type="number"
-     *     )
-     *    ),
      *    @OA\Response(
      *      response=200,
-     *      description="Get industries successfully",
+     *      description="Get bidding fields successfully",
      *      @OA\JsonContent(
      *      type="object",
      *      @OA\Property(
@@ -86,7 +79,7 @@ class IndustryController extends Controller
      *      @OA\Property(
      *      property="message",
      *      type="string",
-     *      example="Get industries successfully"
+     *      example="Get bidding fields successfully"
      *     ),
      *     @OA\Property(
      *     property="data",
@@ -97,41 +90,33 @@ class IndustryController extends Controller
      * )
      * )
      */
-    public function index(IndexIndustryRequest $request)
+    public function index(IndexBaseRequest $request)
     {
-        $industries = $this->industryRepository->filter($request->all());
-        $data = new IndexBaseCollection($industries);
+        $businessActivityTypes = $this->businessActivityTypeRepository->filter($request->all());
 
-        if ($industries->isEmpty()) {
+        if ($businessActivityTypes->isEmpty()) {
             return response()->json([
                 'result' => false,
-                'message' => 'Không tìm thấy ngành nghề',
+                'message' => 'Không tìm thấy loại hoạt động kinh doanh',
             ], 404);
         }
 
-        return response()->json([
-            'result' => true,
-            'message' => 'Lấy danh sách ngành nghề thành công',
-            'data' => $data,
-        ], 200);
-    }
+        $data = new IndexBaseCollection($businessActivityTypes);
 
-    public function getNameAndIds()
-    {
         return response()->json([
             'result' => true,
-            'message' => 'Lấy danh sách ngành nghề thành công',
-            'data' => $this->industryRepository->getNameAndIds(),
+            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
+            'data' => $data,
         ], 200);
     }
 
     /**
      * @OA\Post(
-     *     path="/api/admin/industries",
-     *     tags={"Industry"},
-     *     summary="Create a new industry",
-     *     description="Create a new industry",
-     *     operationId="createIndustry",
+     *     path="/api/admin/business-activity-types",
+     *     tags={"Business Activity Type"},
+     *     summary="Create a new business activity type",
+     *     description="Store a newly created business activity type in storage",
+     *     operationId="storeBusinessActivityType",
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -140,28 +125,26 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="name",
      *                 type="string",
-     *                 example="Industry Name"
+     *                 description="Name of the business activity type",
+     *                 example="Consulting"
      *             ),
      *             @OA\Property(
      *                 property="description",
      *                 type="string",
-     *                 example="Industry Description"
+     *                 description="Description of the business activity type",
+     *                 example="Consulting services"
      *             ),
      *             @OA\Property(
      *                 property="is_active",
      *                 type="boolean",
+     *                 description="Active status of the business activity type",
      *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="business_activity_type_id",
-     *                 type="integer",
-     *                 example=1
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Industry created successfully",
+     *         description="Business activity type created successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -172,18 +155,37 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Create industry successfully"
+     *                 example="Business activity type created successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 example={}
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Consulting"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="Consulting services"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="boolean",
+     *                     example=true
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Failed to create industry",
+     *         description="Failed to create business activity type",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -194,7 +196,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Failed to create industry"
+     *                 example="Failed to create business activity type"
      *             ),
      *             @OA\Property(
      *                 property="error",
@@ -205,24 +207,26 @@ class IndustryController extends Controller
      *     )
      * )
      */
-
-    public function store(IndustryFormRequest $request)
+    public function store(BusinessActivityTypeFormRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $industry = $this->industryRepository->create($request->all());
+            $businessActivityType = $this->businessActivityTypeRepository->create($request->all());
+
             DB::commit();
+
             return response()->json([
                 'result' => true,
-                'message' => 'Tạo ngành nghề thành công',
-                'data' => $industry,
+                'message' => 'Tạo loại hoạt động kinh doanh thành công',
+                'data' => $businessActivityType,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi tạo ngành nghề',
+                'message' => 'Lỗi khi tạo loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -230,16 +234,79 @@ class IndustryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/admin/industries/{id}",
-     *     tags={"Industry"},
-     *     summary="Get industry by ID",
-     *     description="Retrieve a specific industry by its ID",
-     *     operationId="getIndustryById",
+     *     path="/api/admin/business-activity-types/all-ids",
+     *     tags={"Business Activity Type"},
+     *     summary="Get all business activity type IDs",
+     *     description="Get all business activity type IDs",
+     *     operationId="getAllBusinessActivityTypeIds",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *     response=200,
+     *     description="Get all business activity type IDs successfully",
+     *     @OA\JsonContent(
+     *     type="object",
+     *     @OA\Property(
+     *     property="result",
+     *     type="boolean",
+     *     example=true
+     *     ),
+     *     @OA\Property(
+     *     property="message",
+     *     type="string",
+     *     example="Get all business activity type IDs successfully"
+     *    ),
+     *     @OA\Property(
+     *     property="data",
+     *     type="array",
+     *     @OA\Items(
+     *     type="object",
+     *     @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     example=1
+     *     ),
+     *     @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     example="Consulting"
+     *    ),
+     *     )
+     * )
+     * )
+     * )
+     * )
+     */
+    public function getAllIds()
+    {
+//        $businessActivityTypes = $this->businessActivityTypeRepository->getAllIds();
+        $businessActivityTypes = $this->businessActivityTypeRepository->getBusinessActivityTypesWithIndustries();
+
+        if (!$businessActivityTypes) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy loại hoạt động kinh doanh',
+            ], 404);
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách loại hoạt động kinh doanh thành công',
+            'data' => $businessActivityTypes,
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/business-activity-types/{id}",
+     *     tags={"Business Activity Type"},
+     *     summary="Get a business activity type by ID",
+     *     description="Retrieve a specific business activity type by its ID",
+     *     operationId="showBusinessActivityType",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of the industry",
+     *         description="ID of the business activity type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -247,7 +314,7 @@ class IndustryController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Industry retrieved successfully",
+     *         description="Business activity type retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -258,18 +325,37 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Get industry successfully"
+     *                 example="Business activity type retrieved successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 example={}
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Consulting"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="Consulting services"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="boolean",
+     *                     example=true
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Industry not found",
+     *         description="Business activity type not found",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -280,29 +366,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Industry not found"
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Failed to retrieve industry",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="result",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Failed to retrieve industry"
-     *             ),
-     *             @OA\Property(
-     *                 property="error",
-     *                 type="string",
-     *                 example="Error message"
+     *                 example="Business activity type not found"
      *             )
      *         )
      *     )
@@ -312,42 +376,44 @@ class IndustryController extends Controller
     {
         $id = $request->route('id');
 
-        try {
-            $industry = $this->industryRepository->find($id);
+        $businessActivityType = $this->businessActivityTypeRepository->find($id);
 
-            if (!$industry) {
-                return response()->json([
-                    'result' => false,
-                    'message' => 'Ngành nghề không tồn tại',
-                ], 404);
-            }
-
-            return response()->json([
-                'result' => true,
-                'message' => 'Lấy thông tin ngành nghề thành công',
-                'data' => $industry,
-            ], 200);
-        } catch (\Exception $e) {
+        if (!$businessActivityType) {
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi lấy thông tin ngành nghề',
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => 'Loại hoạt động kinh doanh không tồn tại',
+            ], 404);
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thông tin loại hoạt động kinh doanh thành công',
+            'data' => $businessActivityType,
+        ], 200);
+    }
+
+    private function checkSpecialRecord($id)
+    {
+        if ($id == 1) {
+            throw new HttpResponseException(response()->json([
+                'result' => false,
+                'message' => 'Không thể chỉnh sửa hoặc xóa danh mục "Chưa phân loại".',
+            ], 403));
         }
     }
 
     /**
      * @OA\Patch (
-     *     path="/api/admin/industries/{id}",
-     *     tags={"Industry"},
-     *     summary="Update industry by ID",
-     *     description="Update a specific industry by its ID",
-     *     operationId="updateIndustry",
+     *     path="/api/admin/business-activity-types/{id}",
+     *     tags={"Business Activity Type"},
+     *     summary="Update a business activity type by ID",
+     *     description="Update a specific business activity type by its ID",
+     *     operationId="updateBusinessActivityType",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of the industry",
+     *         description="ID of the business activity type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -360,28 +426,26 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="name",
      *                 type="string",
-     *                 example="Updated Industry Name"
+     *                 description="Name of the business activity type",
+     *                 example="Consulting"
      *             ),
      *             @OA\Property(
      *                 property="description",
-     *                 type="text",
-     *                 example="Updated Industry Description"
+     *                 type="string",
+     *                 description="Description of the business activity type",
+     *                 example="Consulting services"
      *             ),
      *             @OA\Property(
      *                 property="is_active",
      *                 type="boolean",
+     *                 description="Active status of the business activity type",
      *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="business_activity_type_id",
-     *                 type="integer",
-     *                 example=1
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Industry updated successfully",
+     *         description="Business activity type updated successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -392,18 +456,37 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Update industry successfully"
+     *                 example="Business activity type updated successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 example={}
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Consulting"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="Consulting services"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="boolean",
+     *                     example=true
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Industry not found",
+     *         description="Business activity type not found",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -414,13 +497,13 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Industry not found"
+     *                 example="Business activity type not found"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Failed to update industry",
+     *         description="Failed to update business activity type",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -431,7 +514,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Failed to update industry"
+     *                 example="Failed to update business activity type"
      *             ),
      *             @OA\Property(
      *                 property="error",
@@ -442,34 +525,38 @@ class IndustryController extends Controller
      *     )
      * )
      */
-    public function update(ValidateIdRequest $request, IndustryFormRequest $updateRequest)
+    public function update(ValidateIdRequest $request, BusinessActivityTypeFormRequest $updateRequest)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $industry = $this->industryRepository->update($updateRequest->all(), $id);
+            $updateData = $updateRequest->all();
+            $businessActivityType = $this->businessActivityTypeRepository->update($updateData, $id);
 
-            if (!$industry) {
+            if (!$businessActivityType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Ngành nghề không tồn tại',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
             DB::commit();
+
             return response()->json([
                 'result' => true,
-                'message' => 'Cập nhật ngành nghề thành công',
-                'data' => $this->industryRepository->find($id),
+                'message' => 'Loại hoạt động kinh doanh đã được cập nhật thành công',
+                'data' => $this->businessActivityTypeRepository->find($id),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi cập nhật ngành nghề',
+                'message' => 'Lỗi khi cập nhật loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -477,16 +564,16 @@ class IndustryController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/industries/{id}/toggle-status",
-     *     tags={"Industry"},
-     *     summary="Toggle active status of industry by ID",
-     *     description="Toggle active status of industry by ID",
-     *     operationId="toggleIndustryActiveStatus",
+     *     path="/api/admin/business-activity-types/{id}/toggle-status",
+     *     tags={"Business Activity Type"},
+     *     summary="Toggle active status of business activity type by ID",
+     *     description="Toggle active status of business activity type by ID",
+     *     operationId="toggleBusinessActivityTypeStatus",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of the industry",
+     *         description="ID of the business activity type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -494,7 +581,7 @@ class IndustryController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Industry active status toggled successfully",
+     *         description="Business activity type status toggled successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -505,7 +592,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Status of industry has been updated successfully"
+     *                 example="Business activity type status toggled successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -520,7 +607,7 @@ class IndustryController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Industry not found",
+     *         description="Business activity type not found",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -531,13 +618,13 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Industry not found"
+     *                 example="Business activity type not found"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Failed to toggle industry active status",
+     *         description="Failed to toggle business activity type status",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -548,7 +635,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Failed to toggle industry active status"
+     *                 example="Failed to toggle business activity type status"
      *             ),
      *             @OA\Property(
      *                 property="error",
@@ -562,51 +649,53 @@ class IndustryController extends Controller
     public function toggleActiveStatus(ValidateIdRequest $request)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $industry = $this->industryRepository->toggleStatus($id);
+            $businessActivityType = $this->businessActivityTypeRepository->toggleStatus($id);
 
-            if (!$industry) {
+            if (!$businessActivityType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Ngành nghề không tồn tại',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
             DB::commit();
+
             return response()->json([
                 'result' => true,
-                'message' => 'Trạng thái hoạt động của ngành nghề đã được cập nhật thành công',
+                'message' => 'Trạng thái loại hoạt động kinh doanh đã được cập nhật thành công',
                 'data' => [
-                    'is_active' => $industry->is_active,
+                    'is_active' => $businessActivityType->is_active,
                 ],
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi cập nhật trạng thái hoạt động của ngành nghề',
+                'message' => 'Lỗi khi cập nhật trạng thái loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
 
-
     /**
      * @OA\Delete(
-     *     path="/api/admin/industries/{id}",
-     *     tags={"Industry"},
-     *     summary="Delete industry by ID",
-     *     description="Delete a specific industry by its ID",
-     *     operationId="deleteIndustry",
+     *     path="/api/admin/business-activity-types/{id}",
+     *     tags={"Business Activity Type"},
+     *     summary="Delete business activity type by ID",
+     *     description="Delete a specific business activity type by its ID",
+     *     operationId="deleteBusinessActivityType",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of the industry",
+     *         description="ID of the business activity type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -614,7 +703,7 @@ class IndustryController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Industry deleted successfully",
+     *         description="Business activity type deleted successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -625,13 +714,13 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Industry has been deleted successfully"
+     *                 example="Business activity type deleted successfully"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Industry not found",
+     *         description="Business activity type not found",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -642,13 +731,13 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Industry not found"
+     *                 example="Business activity type not found"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Failed to delete industry",
+     *         description="Failed to delete business activity type",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -659,7 +748,7 @@ class IndustryController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Failed to delete industry"
+     *                 example="Failed to delete business activity type"
      *             ),
      *             @OA\Property(
      *                 property="error",
@@ -673,30 +762,33 @@ class IndustryController extends Controller
     public function destroy(ValidateIdRequest $request)
     {
         $id = $request->route('id');
+        $this->checkSpecialRecord($id);
 
         DB::beginTransaction();
 
         try {
-            $deleted = $this->industryRepository->delete($id);
+            $businessActivityType = $this->businessActivityTypeRepository->delete($id);
 
-            if (!$deleted) {
+            if (!$businessActivityType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Ngành nghề không tồn tại',
+                    'message' => 'Loại hoạt động kinh doanh không tồn tại',
                 ], 404);
             }
 
             DB::commit();
+
             return response()->json([
                 'result' => true,
-                'message' => 'Ngành nghề đã được xóa thành công',
+                'message' => 'Loại hoạt động kinh doanh đã được xóa thành công',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi xóa ngành nghề',
+                'message' => 'Lỗi khi xóa loại hoạt động kinh doanh',
                 'error' => $e->getMessage(),
             ], 500);
         }

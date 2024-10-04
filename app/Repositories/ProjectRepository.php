@@ -48,23 +48,45 @@ class ProjectRepository extends BaseRepository
         return $query->paginate(10 ?? $data['size']);
     }
 
+    /**
+     * @return mixed
+     * Lấy ra những dự án đã hết hạn nộp hồ sơ rồi update trạng trạng thái từ RECEIVED -> SELECTING_CONTRUCTOR
+     */
     public function getOverdueProjectSubmission()
     {
-        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status",  ProjectStatus::RECEIVED->value)->get();
+        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status", ProjectStatus::RECEIVED->value)->get();
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @return mixed
+     * Đồng bộ ngành nghề khi create || update project
+     */
     public function syncIndustry(array $data, $id)
     {
         $project = $this->model->findOrFail($id);
         return $project->industries()->sync($data['industry_id']);
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @return mixed
+     * Đồng bộ lĩnh vực mua sắm công khi create || update project
+     */
     public function syncProcurement(array $data, $id)
     {
         $project = $this->model->findOrFail($id);
         return $project->procurementCategories()->sync($data['procurement_id']);
     }
 
+    /**
+     * @param $id
+     * @param $decision_number_approve
+     * @return mixed
+     * Staff quyết định phê duyệt dự án
+     */
     public function approveProject($id, $decision_number_approve)
     {
         return $this->model->findOrFail($id)->update([
@@ -74,11 +96,28 @@ class ProjectRepository extends BaseRepository
         ]);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * Staff quyết định reject dự án
+     */
     public function rejectProject($id)
     {
         return $this->model->findOrFail($id)->update([
             'approve_at' => now(),
             'status' => ProjectStatus::REJECT->value,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * Khi người đăng tải project lựa chọn nhà thầu rồi bấm submit, cùng lúc đó phải update status , dùng hàm publishResultProject
+     */
+    public function publishResultProject($id)
+    {
+        return $this->model->findOrFail($id)->update([
+            'status' => ProjectStatus::RESULTS_PUBLICED->value,
         ]);
     }
 }
