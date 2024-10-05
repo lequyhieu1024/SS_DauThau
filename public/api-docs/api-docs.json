@@ -666,6 +666,508 @@
                 ]
             }
         },
+        "/api/admin/bid-bonds": {
+            "get": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Get all Bid Bonds",
+                "description": "Get all Bid Bonds",
+                "operationId": "e69d016c06a3dbd86c7484ebab2b82c6",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "bond_number",
+                        "in": "query",
+                        "description": "bond_number",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Bid Bonds successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Bid Bonds successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "bidBonds": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "project_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "enterprise_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "bond_number": {
+                                                                "type": "string",
+                                                                "example": "bd1"
+                                                            },
+                                                            "bond_amount": {
+                                                                "type": "integer",
+                                                                "example": 1000000
+                                                            },
+                                                            "bond_amount_in_words": {
+                                                                "type": "string",
+                                                                "example": "một triệu"
+                                                            },
+                                                            "bond_type": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "issue_date": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01"
+                                                            },
+                                                            "expiry_date": {
+                                                                "type": "string",
+                                                                "example": "2021-09-02"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "description"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Create a new bid bond",
+                "description": "Create a new bid bond",
+                "operationId": "cffa6794736366770255e4e4fd4dd1be",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "project_id",
+                                    "enterprise_id",
+                                    "bond_number",
+                                    "bond_amount",
+                                    "bond_type",
+                                    "expiry_date"
+                                ],
+                                "properties": {
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "enterprise_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bond_number": {
+                                        "type": "string",
+                                        "example": "bb1"
+                                    },
+                                    "bond_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1200000
+                                    },
+                                    "bond_type": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "expiry_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-21"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "abc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bid bond created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "bidBonds": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "project_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "enterprise_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "bond_number": {
+                                                        "type": "string",
+                                                        "example": "bd1"
+                                                    },
+                                                    "bond_amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1000000
+                                                    },
+                                                    "bond_amount_in_words": {
+                                                        "type": "string",
+                                                        "example": "một triệu"
+                                                    },
+                                                    "bond_type": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "issue_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2021-09-01"
+                                                    },
+                                                    "expiry_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2021-09-02"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "description"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2021-09-01T00:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2021-09-01T00:00:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-bonds/{id}": {
+            "get": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Get bid bond by ID",
+                "description": "Get bid bond by ID",
+                "operationId": "7d5b573f021dd035a7cfd239b505f0dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "bid bond retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bid bond retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "project_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "enterprise_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "bond_number": {
+                                                    "type": "string",
+                                                    "example": "bd1"
+                                                },
+                                                "bond_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1000000
+                                                },
+                                                "bond_amount_in_words": {
+                                                    "type": "string",
+                                                    "example": "một triệu"
+                                                },
+                                                "bond_type": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "issue_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-01"
+                                                },
+                                                "expiry_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-02"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "description"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Delete bid bond by ID",
+                "description": "Delete bid bond by ID",
+                "operationId": "81e2cc81a215ecc50aaefb93a0d94f51",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "bid bond deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Update bid bond by ID",
+                "description": "Update bid bond by ID",
+                "operationId": "954331e5df1751afb2ce67808d4b16e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "enterprise_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bond_number": {
+                                        "type": "string",
+                                        "example": "bb1"
+                                    },
+                                    "bond_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1200000
+                                    },
+                                    "bond_type": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "expiry_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-21"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "abc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "bid bond updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/bid-documents": {
             "get": {
                 "tags": [
@@ -4495,6 +4997,10 @@
         {
             "name": "Banners",
             "description": "Banners"
+        },
+        {
+            "name": "Bid Bonds",
+            "description": "Bid Bonds"
         },
         {
             "name": "Bid Documents",

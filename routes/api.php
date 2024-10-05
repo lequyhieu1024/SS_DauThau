@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
 use App\Http\Controllers\Api\IndustryController;
+use App\Http\Controllers\Api\PostCatalogController;
 use App\Http\Controllers\Api\ProcurementCategoryController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\RoleController;
@@ -161,5 +162,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('bid-documents', BidDocumentController::class);
     Route::get('bid-documents/check-bid-participation/{projectId}', [BidDocumentController::class, 'checkBidParticipation']);
     Route::patch('bid-documents/approve/{id}', [BidDocumentController::class, 'approveBidDocument']);
+
+    // Post catalogs
+    Route::resource('post-catalogs', PostCatalogController::class)->except('update');
+    Route::patch('post-catalogs/{id}', [PostCatalogController::class, 'update']);
 
 });
