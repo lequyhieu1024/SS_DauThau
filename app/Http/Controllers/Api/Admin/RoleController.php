@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
-use App\Models\Staff;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoleFormRequest;
-use App\Http\Resources\RoleResource;
-use App\Repositories\RoleRepository;
-use App\Http\Resources\RoleCollection;
 use App\Http\Resources\PermissionCollection;
+use App\Http\Resources\RoleCollection;
+use App\Http\Resources\RoleResource;
+use App\Models\Staff;
+use App\Repositories\RoleRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {

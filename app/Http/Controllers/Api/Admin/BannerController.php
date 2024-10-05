@@ -1,38 +1,37 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Common\ValidateIdRequest;
-use App\Http\Requests\SelectionMethodRequest;
-use App\Http\Resources\SelectionMethodCollection;
-use App\Repositories\SelectionMethodRepository;
+use App\Http\Requests\BannerFormRequest;
+use App\Http\Resources\BannerCollection;
+use App\Repositories\BannerRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class SelectionMethodController extends Controller
+class BannerController extends Controller
 {
-    protected $selectionMethodRepository;
+    public $bannerRepository;
 
-    public function __construct(SelectionMethodRepository $selectionMethodRepository)
+    public function __construct(BannerRepository $bannerRepository)
     {
-        $this->middleware(['permission:list_selection_method'])->only('index');
-        $this->middleware(['permission:create_selection_method'])->only(['store']);
-        $this->middleware(['permission:update_selection_method'])->only(['update', 'toggleActiveStatus']);
-        $this->middleware(['permission:detail_selection_method'])->only('show');
-        $this->middleware(['permission:destroy_selection_method'])->only('destroy');
+        $this->middleware(['permission:list_banner'])->only(['index']);
+        $this->middleware(['permission:create_banner'])->only('store');
+        $this->middleware(['permission:update_banner'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_banner'])->only('show');
+        $this->middleware(['permission:destroy_banner'])->only('destroy');
 
-        $this->selectionMethodRepository = $selectionMethodRepository;
+        $this->bannerRepository = $bannerRepository;
     }
     /**
      * Display a listing of the resource.
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/selection-methods",
-     *     tags={"Selection methods"},
-     *     summary="Get all Selection methods",
-     *     description="Get all Selection methods",
+     *     path="/api/admin/banners",
+     *     tags={"Banners"},
+     *     summary="Get all Banners",
+     *     description="Get all Banners",
      *     security={{"bearerAuth": {}}},
      *
      *     @OA\Parameter(
@@ -56,11 +55,10 @@ class SelectionMethodController extends Controller
      *             default=1
      *         )
      *     ),
-     *
      *     @OA\Parameter(
-     *         name="method_name",
+     *         name="name",
      *         in="query",
-     *         description="Method name of selection method",
+     *         description="Name of banner",
      *         required=false,
      *         @OA\Schema(
      *             type="string"
@@ -69,7 +67,7 @@ class SelectionMethodController extends Controller
      *
      *     @OA\Response(
      *         response=200,
-     *         description="Get Selection methods successfully",
+     *         description="Get Banners successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -80,13 +78,13 @@ class SelectionMethodController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Get Selection methods successfully"
+     *                 example="Get Banners successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
-     *                     property="selectionMethods",
+     *                     property="banners",
      *                     type="array",
      *                     @OA\Items(
      *                         type="object",
@@ -96,14 +94,14 @@ class SelectionMethodController extends Controller
      *                             example=1
      *                         ),
      *                         @OA\Property(
-     *                             property="method_name",
+     *                             property="name",
      *                             type="string",
-     *                             example="Selection methods 1"
+     *                             example="Banners 1"
      *                         ),
      *                         @OA\Property(
-     *                             property="description",
+     *                             property="path",
      *                             type="string",
-     *                             example="Description of Selection methods 1"
+     *                             example="banner.png"
      *                         ),
      *                         @OA\Property(
      *                             property="is_active",
@@ -163,15 +161,12 @@ class SelectionMethodController extends Controller
      */
     public function index(Request $request)
     {
-        $selectionMethods = $this->selectionMethodRepository->filter($request->all());
+        $banners = $this->bannerRepository->filter($request->all());
 
-        $data = new SelectionMethodCollection($selectionMethods);
-
-        return response([
+        return response()->json([
             'result' => true,
-            'status' => 200,
-            'message' => 'Lấy danh sách các hình thức lựa chọn nhà thầu thành công',
-            'data' => $data
+            'message' => 'Lấy danh sách banner thành công.',
+            'data' => new BannerCollection($banners)
         ], 200);
     }
 
@@ -180,36 +175,41 @@ class SelectionMethodController extends Controller
      */
     /**
      * @OA\Post(
-     *     path="/api/admin/selection-methods",
-     *     tags={"Selection methods"},
-     *     summary="Create a new selection method",
-     *     description="Create a new selection method",
+     *     path="/api/admin/banners",
+     *     tags={"Banners"},
+     *     summary="Create a new banner",
+     *     description="Create a new banner",
      *     security={{"bearerAuth": {}}},
      *
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"method_name", "description", "is_active"},
-     *             @OA\Property(
-     *                 property="method_name",
-     *                 type="string",
-     *                 example="selection method 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="description",
-     *                 type="string",
-     *                 example="Description of selection method 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="is_active",
-     *                 type="number",
-     *                 example=1
-     *             ),
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "is_active"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="banner 1"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="path",
+     *                     type="string",
+     *                     format="binary",
+     *                     nullable=true,
+     *                     description="The file to upload",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="selection method created successfully",
+     *         description="banner created successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -220,7 +220,7 @@ class SelectionMethodController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="selection method created successfully"
+     *                 example="banner created successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -233,12 +233,12 @@ class SelectionMethodController extends Controller
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     example="selection method 1"
+     *                     example="banner 1"
      *                 ),
      *                 @OA\Property(
-     *                     property="description",
+     *                     property="path",
      *                     type="string",
-     *                     example="Description of selection method 1"
+     *                     example="banner.png"
      *                 ),
      *                 @OA\Property(
      *                     property="is_active",
@@ -260,26 +260,28 @@ class SelectionMethodController extends Controller
      *     )
      * )
      */
-    public function store(SelectionMethodRequest $request)
+    public function store(BannerFormRequest $request)
     {
-        DB::beginTransaction();
-
         try {
-            $selectionMethod = $this->selectionMethodRepository->createSelectionMethod($request->all());
+            DB::beginTransaction();
+
+            $data = $request->all();
+            if ($request->hasFile('path')) {
+                $data['path'] = upload_image($request->file('path'));
+            }
+            $banner = $this->bannerRepository->create($data);
 
             DB::commit();
-
             return response()->json([
-                'result' => true,
-                'message' => 'Tạo mới hình thức lựa chọn nhà thầu thành công.',
-                'data' => $selectionMethod,
+                "result" => true,
+                "message" => "Tạo banner thành công.",
+                "data" => $banner
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
-                'result' => false,
-                'message' => 'Lỗi khi tạo mới hình thức lựa chọn nhà thầu.',
+                "result" => false,
+                "message" => "Tạo banner không thành công.",
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -290,15 +292,15 @@ class SelectionMethodController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/selection-methods/{id}",
-     *     tags={"Selection methods"},
-     *     summary="Get selection method by ID",
-     *     description="Get selection method by ID",
+     *     path="/api/admin/banners/{id}",
+     *     tags={"Banners"},
+     *     summary="Get banner by ID",
+     *     description="Get banner by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of selection method",
+     *         description="ID of banner",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -306,7 +308,7 @@ class SelectionMethodController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="selection method retrieved successfully",
+     *         description="banner retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -317,7 +319,7 @@ class SelectionMethodController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="selection method retrieved successfully"
+     *                 example="banner retrieved successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -330,12 +332,12 @@ class SelectionMethodController extends Controller
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     example="selection method 1"
+     *                     example="banner 1"
      *                 ),
      *                 @OA\Property(
-     *                     property="description",
+     *                     property="path",
      *                     type="string",
-     *                     example="Description of selection method 1"
+     *                     example="banner.png"
      *                 ),
      *                 @OA\Property(
      *                     property="is_active",
@@ -359,19 +361,19 @@ class SelectionMethodController extends Controller
      */
     public function show($id)
     {
-        $selectionMethod = $this->selectionMethodRepository->findSelectionMethodById($id);
+        $banner = $this->bannerRepository->find($id);
 
-        if (!$selectionMethod) {
+        if (!$banner) {
             return response()->json([
                 'result' => false,
-                'message' => 'Hình thức lựa chọn nhà thầu không tồn tại',
+                'message' => 'Banner không tồn tại',
             ], 404);
         }
 
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thông tin hình thức lựa chọn nhà thầu thành công.',
-            'data' => $selectionMethod
+            'message' => 'Lấy thông tin banner thành công.',
+            'data' => $banner
         ], 200);
     }
 
@@ -379,16 +381,16 @@ class SelectionMethodController extends Controller
      * Update the specified resource in storage.
      */
     /**
-     * @OA\Patch(
-     *     path="/api/admin/selection-methods/{id}",
-     *     tags={"Selection methods"},
-     *     summary="Update selection method by ID",
-     *     description="Update selection method by ID",
+     * @OA\Post(
+     *     path="/api/admin/banners/{id}",
+     *     tags={"Banners"},
+     *     summary="Update banner by ID",
+     *     description="Update a banner by its ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of selection method",
+     *         description="ID of the banner",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -396,60 +398,77 @@ class SelectionMethodController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="method_name",
-     *                 type="string",
-     *                 example="selection method 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="description",
-     *                 type="string",
-     *                 example="Description of selection method 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="is_active",
-     *                 type="number",
-     *                 example=1
-     *             ),
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "is_active", "_method"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Banner 1",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="path",
+     *                     type="string",
+     *                     format="binary",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_active",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="_method",
+     *                     type="string",
+     *                     example="PATCH",
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="selection method updated successfully"
-     *     )
+     *         description="Banner updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="result",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Banner updated successfully"
+     *             )
+     *         )
+     *     ),
      * )
      */
-    public function update(SelectionMethodRequest $request, $id)
+
+    public function update(BannerFormRequest $request, $id)
     {
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
+
             $data = $request->all();
-
-            $selectionMethod = $this->selectionMethodRepository->updateSelectionMethod($data, $id);
-
-            if (!$selectionMethod) {
-                DB::rollBack();
-                return response()->json([
-                    'result' => false,
-                    'message' => 'Hình thức lựa chọn nhà thầu không tồn tại',
-                ], 404);
+            if ($request->hasFile('path')) {
+                $data['path'] = upload_image($request->file('path'));
+                isset($this->bannerRepository->findOrFail($id)->path) ? unlink($this->bannerRepository->findOrFail($id)->path) : "";
+            } else {
+                $data['path'] = $this->bannerRepository->findOrFail($id)->path;
             }
+            $banner = $this->bannerRepository->update($data, $id);
 
             DB::commit();
-
             return response()->json([
-                'result' => true,
-                'message' => 'Cập nhật hình thức lựa chọn nhà thầu thành công.',
-                'data' => $selectionMethod,
+                "result" => true,
+                "message" => "Cập nhật banner thành công",
+                "data" => $banner
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
-                'result' => false,
-                'message' => 'Lỗi khi cập nhật hình thức lựa chọn nhà thầu.',
+                "result" => false,
+                "message" => "Cập nhật banner không thành công.",
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -460,15 +479,15 @@ class SelectionMethodController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/admin/selection-methods/{id}",
-     *     tags={"Selection methods"},
-     *     summary="Delete selection method by ID",
-     *     description="Delete selection method by ID",
+     *     path="/api/admin/banners/{id}",
+     *     tags={"Banners"},
+     *     summary="Delete banner by ID",
+     *     description="Delete banner by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of selection method",
+     *         description="ID of banner",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -476,37 +495,33 @@ class SelectionMethodController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="selection method deleted successfully"
+     *         description="banner deleted successfully"
      *     )
      * )
      */
     public function destroy($id)
     {
-        DB::beginTransaction();
-
         try {
-            $selectionMethod = $this->selectionMethodRepository->deleteSelectionMethod($id);
+            $banner = $this->bannerRepository->deleteBanner($id);
+            isset($banner->path) ? unlink($banner->path) : "";
 
-            if (!$selectionMethod) {
-                DB::rollBack();
+            if (!$banner) {
                 return response()->json([
                     'result' => false,
-                    'message' => 'Hình thức lựa chọn nhà thầu không tồn tại',
+                    'message' => 'Banner không tồn tại',
                 ], 404);
             }
 
-            DB::commit();
-
             return response()->json([
                 'result' => true,
-                'message' => 'Xóa hình thức lựa chọn nhà thầu thành công.',
+                'message' => 'Xóa banner thành công.',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi xóa hình thức lựa chọn nhà thầu.',
+                'message' => 'Lỗi khi xóa banner.',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -514,15 +529,15 @@ class SelectionMethodController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/selection-methods/{id}/toggle-status",
-     *     tags={"Selection methods"},
-     *     summary="Toggle active status of selection method by ID",
-     *     description="Toggle active status of selection method by ID",
+     *     path="/api/admin/banners/{id}/toggle-status",
+     *     tags={"Banners"},
+     *     summary="Toggle active status of banner by ID",
+     *     description="Toggle active status of banner by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of selection method",
+     *         description="ID of banner",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -530,56 +545,20 @@ class SelectionMethodController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="selection method status toggled successfully"
+     *         description="banner status toggled successfully"
      *     )
      * )
      */
-    public function toggleActiveStatus(ValidateIdRequest $request)
+    public function toggleActiveStatus($id)
     {
-        $id = $request->route('id');
-
-        DB::beginTransaction();
-
-        try {
-            $selectionMethod = $this->selectionMethodRepository->findSelectionMethodById($id);
-
-            if (!$selectionMethod) {
-                DB::rollBack();
-                return response()->json([
-                    'result' => false,
-                    'message' => 'Hình thức lựa chọn nhà thầu không tồn tại.',
-                ], 404);
-            }
-
-            $selectionMethod->is_active = !$selectionMethod->is_active;
-            $selectionMethod->save();
-
-            DB::commit();
-
-            return response()->json([
-                'result' => true,
-                'message' => 'Cập nhật trạng thái hình thức lựa chọn nhà thầu thành công.',
-                'data' => [
-                    'is_active' => $selectionMethod->is_active,
-                ],
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'result' => false,
-                'message' => 'Lỗi khi cập nhật trạng thái hình thức lựa chọn nhà thầu.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function getNameAndIds()
-    {
+        $banner = $this->bannerRepository->findOrFail($id);
+        $banner->is_active = !$banner->is_active;
+        $banner->save();
         return response()->json([
             'result' => true,
-            'message' => "Lấy danh sách phương thức lựa chọn nhà thầu thành công",
-            'data' => $this->selectionMethodRepository->getSelectionMethod()
+            'status' => 200,
+            'message' => 'Thay đổi trạng thái thành công',
+            'is_active' => $banner->is_active
         ], 200);
     }
 }

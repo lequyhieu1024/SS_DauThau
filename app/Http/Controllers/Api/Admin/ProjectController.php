@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\ProjectStatus;
 use App\Events\ProjectCreated;
-use App\Http\Resources\ProjectResource;
-use App\Jobs\sendApproveProjectJob;
-use App\Mail\sendApproveProjectMail;
-use App\Repositories\AttachmentRepository;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Repositories\ProjectRepository;
 use App\Http\Requests\ProjectFormRequest;
 use App\Http\Resources\ProjectCollection;
+use App\Http\Resources\ProjectResource;
+use App\Jobs\sendApproveProjectJob;
+use App\Repositories\AttachmentRepository;
+use App\Repositories\ProjectRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
