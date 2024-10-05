@@ -166,5 +166,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Post catalogs
     Route::resource('post-catalogs', PostCatalogController::class)->except('update');
     Route::patch('post-catalogs/{id}', [PostCatalogController::class, 'update']);
+    Route::patch('post-catalogs/{id}/toggle-status', [PostCatalogController::class, 'toggleActiveStatus']);
 
 });
