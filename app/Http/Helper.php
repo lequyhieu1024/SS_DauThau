@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Resources\AttachmentResource;
 use Illuminate\Support\Facades\Cache;
 use Intervention\Image\ImageManagerStatic as Image;
 
 if (!function_exists('upload_image')) {
-    function upload_image($file) {
+    function upload_image($file)
+    {
         // Kiểm tra xem biến $file có phải là một đối tượng tệp hợp lệ không
         if (!is_a($file, 'Illuminate\Http\UploadedFile')) {
             throw new \InvalidArgumentException('Invalid file type.');
@@ -24,21 +26,21 @@ if (!function_exists('upload_image')) {
         return 'uploads/images/' . $filename;
     }
 }
-// if (!function_exists('get_setting')) {
-//     function get_setting($key, $limit = null, $lang = false, $default = null)
-//     {
-//         $settings = Cache::remember('business_settings', 86400, function () {
-//             return BusinessSetting::all();
-//         });
-//         if ($lang == false) {
-//             $setting = $settings->where('type', $key)->first();
-//         } else {
-//             $setting = $settings->where('type', $key)->where('lang', $lang)->first();
-//             $setting = !$setting ? $settings->where('type', $key)->first() : $setting;
-//         }
-//         return $setting == null ? $default : $setting->value;
-//     }
-// }
+
+if (!function_exists('upload_file')) {
+    function upload_file($file)
+    {
+        $newFilename = now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $relativePath = "uploads/documents/{$newFilename}";
+
+        $file->move(public_path('uploads/documents'), $newFilename);
+
+        if (!file_exists(public_path('uploads/documents/' . $newFilename))) {
+            throw new \Exception('Không tìm thấy tập tin sau khi di chuyển.');
+        }
+        return $relativePath;
+    }
+}
 
 if (!function_exists('convertText')) {
     function convertText($string)

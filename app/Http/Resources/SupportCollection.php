@@ -18,7 +18,10 @@ class SupportCollection extends ResourceCollection
             'data' => $this->collection->map(function ($support) {
                 return [
                     'id' => $support->id,
-                    'user_id' => $support->user_id,
+                    'sender' => [
+                        "id" => $support->user->id ?? "Không xác định",
+                        "name" => $support->user->name ?? "Không xác định",
+                    ],
                     'title' => $support->title,
                     'email' => $support->email,
                     'phone' => $support->phone,
