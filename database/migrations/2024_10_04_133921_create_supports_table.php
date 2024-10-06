@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('supports', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('email',255);
             $table->string('phone')->nullable();
             $table->string('title',255);
-            $table->text('content');
-            $table->string('document',255);
+            $table->text('content')->nullable();
+            $table->string('document',255)->nullable();
             $table->tinyInteger('type');
             $table->enum('status', ['sent', 'processing', 'responded'])->default('sent');
             $table->timestamps();

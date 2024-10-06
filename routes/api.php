@@ -148,8 +148,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
     Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
-        [EvaluationCriteriaController::class, 'changeActive']);
 
     // Attachments
     Route::post('attachments', [AttachmentController::class, 'store']);

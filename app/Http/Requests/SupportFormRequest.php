@@ -29,10 +29,9 @@ class SupportFormRequest extends FormRequest
             'title' => 'required|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|max:11',
-            'content' => 'required|max:10000',
+            'content' => 'sometimes|max:10000',
             'document' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,ppt,pptx|max:2048',
             'type' => 'required|numeric',
-            'status' => request()->isMethod('POST') ? 'nullable|in:sent,processing,responded' : 'required|in:sent,processing,responded'
         ];
     }
 }
