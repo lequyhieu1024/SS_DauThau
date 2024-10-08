@@ -10,8 +10,11 @@ use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Jobs\sendApproveProjectJob;
 use App\Repositories\AttachmentRepository;
+use App\Repositories\EnterpriseRepository;
 use App\Repositories\ProjectRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,8 +22,10 @@ class ProjectController extends Controller
 {
     public $projectRepository;
     public $attachmentRepository;
+    public $enterpriseRepository;
+    public $userRepository;
 
-    public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository)
+    public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository, EnterpriseRepository $enterpriseRepository, UserRepository $userRepository)
     {
         $this->middleware(['permission:list_project'])->only('index', 'getNameAndIds');
         $this->middleware(['permission:create_project'])->only(['store']);
@@ -29,6 +34,8 @@ class ProjectController extends Controller
         $this->middleware(['permission:destroy_project'])->only('destroy');
         $this->projectRepository = $projectRepository;
         $this->attachmentRepository = $attachmentRepository;
+        $this->enterpriseRepository = $enterpriseRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -36,8 +43,8 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $projects = $this->projectRepository->filter($request->all());
-        // dd($projects);
+        $data['enterprise_id'] = $this->userRepository->getEnterpriseId(Auth::user()->id);
+        $projects = $this->projectRepository->filter($data);
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án thành công",
@@ -258,4 +265,5 @@ class ProjectController extends Controller
             ]
         ], 200);
     }
+
 }

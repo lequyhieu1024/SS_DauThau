@@ -5,10 +5,10 @@ namespace App\Repositories;
 use App\Enums\ProjectStatus;
 use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectRepository extends BaseRepository
 {
-
     public function getModel()
     {
         return Project::class;
@@ -16,7 +16,14 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-        $query = $this->model->with('children')->whereNull('parent_id');
+        if ($data['enterprise_id'] == null){
+            $query = $this->model->with('children')->whereNull('parent_id');
+        }else{ // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+            $query = $this->model->with('children')->whereNull('parent_id')->where(function($query) use ($data) {
+                $query->where('investor_id', $data['enterprise_id'])
+                    ->orWhere('tenderer_id', $data['enterprise_id']);
+            });
+        }
         // logic loc du an
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');

@@ -110,7 +110,6 @@ class User extends Authenticatable implements JWTSubject
             'account_ban_at',
         ];
     }
-
     protected function getFieldName(): string
     {
         return $this->name;
