@@ -98,5 +98,17 @@
     "Detail Bid Document": "Chi tiết hồ sơ đấu thầu",
     "Create Bid Document": "Thêm hồ sơ đấu thầu",
     "Update Bid Document": "Sửa hồ sơ đấu thầu",
-    "Destroy Bid Document": "Xóa hồ sơ đấu thầu"
+    "Destroy Bid Document": "Xóa hồ sơ đấu thầu",
+    "Post Catalog": "Danh mục bài viết",
+    "List Post Catalog": "Xem danh mục bài viết",
+    "Detail Post Catalog": "Chi tiết danh mục bài viết",
+    "Create Post Catalog": "Thêm danh mục bài viết",
+    "Update Post Catalog": "Sửa danh mục bài viết",
+    "Destroy Post Catalog": "Xóa danh mục bài viết",
+    "Post": "Bài viết",
+    "List Post": "Xem bài viết",
+    "Detail Post": "Chi tiết bài viết",
+    "Create Post": "Thêm bài viết",
+    "Update Post": "Sửa bài viết",  
+    "Destroy Post": "Xoá bài viết"
 }
