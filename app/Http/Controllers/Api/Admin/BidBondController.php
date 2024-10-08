@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BidBondFormRequest;
@@ -31,7 +31,7 @@ class BidBondController extends Controller
      *     summary="Get all Bid Bonds",
      *     description="Get all Bid Bonds",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -42,7 +42,7 @@ class BidBondController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -53,7 +53,7 @@ class BidBondController extends Controller
      *             default=1
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="bond_number",
      *         in="query",
@@ -63,7 +63,7 @@ class BidBondController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get Bid Bonds successfully",
@@ -121,22 +121,22 @@ class BidBondController extends Controller
      *                             property="bond_type",
      *                             type="integer",
      *                             example=1
-     *                         ), 
+     *                         ),
      *                         @OA\Property(
      *                             property="issue_date",
      *                             type="string",
      *                             example="2021-09-01"
-     *                         ),  
+     *                         ),
      *                         @OA\Property(
      *                             property="expiry_date",
      *                             type="string",
      *                             example="2021-09-02"
-     *                         ), 
+     *                         ),
      *                         @OA\Property(
      *                             property="description",
      *                             type="string",
      *                             example="description"
-     *                         ), 
+     *                         ),
      *                         @OA\Property(
      *                             property="created_at",
      *                             type="string",
@@ -233,18 +233,18 @@ class BidBondController extends Controller
      *                 type="number",
      *                 format="float",
      *                 example=1200000.00
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="bond_type",
      *                 type="integer",
      *                 example=1
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="expiry_date",
      *                 type="string",
      *                 format="date",
      *                 example="2024-09-21"
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="description",
      *                 type="string",
@@ -297,24 +297,24 @@ class BidBondController extends Controller
      *                         property="bond_type",
      *                         type="integer",
      *                         example=1
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="issue_date",
      *                         type="string",
      *                         format="date",
      *                         example="2021-09-01"
-     *                     ),  
+     *                     ),
      *                     @OA\Property(
      *                         property="expiry_date",
      *                         type="string",
      *                         format="date",
      *                         example="2021-09-02"
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="description",
      *                         type="string",
      *                         example="description"
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="created_at",
      *                         type="string",
@@ -438,24 +438,24 @@ class BidBondController extends Controller
      *                         property="bond_type",
      *                         type="integer",
      *                         example=1
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="issue_date",
      *                         type="string",
      *                         format="date",
      *                         example="2021-09-01"
-     *                     ),  
+     *                     ),
      *                     @OA\Property(
      *                         property="expiry_date",
      *                         type="string",
      *                         format="date",
      *                         example="2021-09-02"
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="description",
      *                         type="string",
      *                         example="description"
-     *                     ), 
+     *                     ),
      *                     @OA\Property(
      *                         property="created_at",
      *                         type="string",
@@ -533,18 +533,18 @@ class BidBondController extends Controller
      *                 type="number",
      *                 format="float",
      *                 example=1200000.00
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="bond_type",
      *                 type="integer",
      *                 example=1
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="expiry_date",
      *                 type="string",
      *                 format="date",
      *                 example="2024-09-21"
-     *             ), 
+     *             ),
      *             @OA\Property(
      *                 property="description",
      *                 type="string",

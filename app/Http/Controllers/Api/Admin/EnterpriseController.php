@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
-use App\Jobs\sendEmailActiveJob;
-use App\Repositories\RoleRepository;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository;
-use App\Repositories\IndustryRepository;
-use App\Http\Resources\EnterpriseResource;
-use App\Repositories\EnterpriseRepository;
 use App\Http\Requests\EnterpriseFormRequest;
 use App\Http\Resources\EnterpriseCollection;
+use App\Http\Resources\EnterpriseResource;
+use App\Jobs\sendEmailActiveJob;
+use App\Repositories\EnterpriseRepository;
+use App\Repositories\IndustryRepository;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EnterpriseController extends Controller
 {

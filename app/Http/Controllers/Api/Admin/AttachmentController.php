@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttachmentFormRequest;
@@ -8,10 +8,10 @@ use App\Http\Resources\AttachmentResource;
 use App\Repositories\AttachmentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
-//use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
+
+//use Symfony\Component\HttpFoundation\Response;
 
 class AttachmentController extends Controller
 {

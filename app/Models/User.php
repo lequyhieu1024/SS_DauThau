@@ -82,6 +82,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Staff::class);
     }
 
+    public function supports()
+    {
+        return $this->hasMany(Support::class);
+    }
     public function causer()
     {
         return $this->belongsTo(User::class, 'causer_id');
@@ -106,7 +110,6 @@ class User extends Authenticatable implements JWTSubject
             'account_ban_at',
         ];
     }
-
     protected function getFieldName(): string
     {
         return $this->name;

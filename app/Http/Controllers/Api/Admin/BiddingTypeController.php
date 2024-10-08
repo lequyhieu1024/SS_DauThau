@@ -1,40 +1,37 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BiddingTypes\BiddingTypeFormRequest;
+use App\Http\Requests\BiddingTypes\IndexBiddingTypeRequest;
 use App\Http\Requests\Common\ValidateIdRequest;
-use App\Http\Requests\FundingSources\FundingSourceFormRequest;
-use App\Http\Requests\FundingSources\StoreFundingSourceRequest;
-use App\Http\Requests\FundingSources\UpdateFundingSourceRequest;
-use App\Http\Resources\FundingSourceCollection;
-use App\Repositories\FundingSourceRepository;
-use Illuminate\Http\Request;
+use App\Http\Resources\BiddingTypeCollection;
+use App\Repositories\BiddingTypeRepository;
 use Illuminate\Support\Facades\DB;
 
-class FundingSourceController extends Controller
+class BiddingTypeController extends Controller
 {
-    protected $fundingSourceRepository;
+    protected $biddingTypeRepository;
 
-    public function __construct(FundingSourceRepository $fundingSourceRepository)
+    public function __construct(BiddingTypeRepository $biddingTypeRepository)
     {
-        $this->fundingSourceRepository = $fundingSourceRepository;
-        $this->middleware(['permission:list_funding_source'])->only('index');
-        $this->middleware(['permission:create_funding_source'])->only(['store']);
-        $this->middleware(['permission:update_funding_source'])->only(['update', 'toggleActiveStatus']);
-        $this->middleware(['permission:detail_funding_source'])->only('show');
-        $this->middleware(['permission:destroy_funding_source'])->only('destroy');
+        $this->biddingTypeRepository = $biddingTypeRepository;
+        $this->middleware(['permission:list_bidding_type'])->only('index');
+        $this->middleware(['permission:create_bidding_type'])->only(['store']);
+        $this->middleware(['permission:update_bidding_type'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_bidding_type'])->only('show');
+        $this->middleware(['permission:destroy_bidding_type'])->only('destroy');
     }
-
     /**
      * Display a listing of the resource.
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/funding-sources",
-     *     tags={"Funding Sources"},
-     *     summary="Get all funding sources",
-     *     description="Get all funding sources",
+     *     path="/api/admin/bidding-types",
+     *     tags={"Bidding Types"},
+     *     summary="Get all bidding types",
+     *     description="Get all bidding types",
      *     security={{"bearerAuth": {}}},
      *
      *     @OA\Parameter(
@@ -62,17 +59,7 @@ class FundingSourceController extends Controller
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
-     *         description="Name of funding source",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *
-     *     @OA\Parameter(
-     *         name="code",
-     *         in="query",
-     *         description="Code of funding source",
+     *         description="Name of bidding type",
      *         required=false,
      *         @OA\Schema(
      *             type="string"
@@ -81,7 +68,7 @@ class FundingSourceController extends Controller
      *
      *     @OA\Response(
      *         response=200,
-     *         description="Get funding sources successfully",
+     *         description="Get bidding types successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -92,13 +79,13 @@ class FundingSourceController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Get funding sources successfully"
+     *                 example="Get bidding types successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
-     *                     property="fundingSources",
+     *                     property="biddingTypes",
      *                     type="array",
      *                     @OA\Items(
      *                         type="object",
@@ -110,28 +97,17 @@ class FundingSourceController extends Controller
      *                         @OA\Property(
      *                             property="name",
      *                             type="string",
-     *                             example="funding source 1"
+     *                             example="Bidding types 1"
      *                         ),
      *                         @OA\Property(
      *                             property="description",
      *                             type="string",
-     *                             example="Description of funding source 1"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="code",
-     *                             type="string",
-     *                             example="BF1"
+     *                             example="Description of bidding types 1"
      *                         ),
      *                         @OA\Property(
      *                             property="is_active",
      *                             type="boolean",
      *                             example=true
-     *                         ),
-     *                         @OA\Property(
-     *                             property="type",
-     *                             type="string",
-     *                             enum={"Chính phủ", "Tư nhân", "Quốc tế"},
-     *                             example="Tư nhân"
      *                         ),
      *                         @OA\Property(
      *                             property="created_at",
@@ -184,16 +160,16 @@ class FundingSourceController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index(IndexBiddingTypeRequest $request)
     {
-        $fundingSources = $this->fundingSourceRepository->filter($request->all());
+        $biddingTypes = $this->biddingTypeRepository->filter($request->all());
 
-        $data = new FundingSourceCollection($fundingSources);
+        $data = new BiddingTypeCollection($biddingTypes);
 
         return response([
             'result' => true,
             'status' => 200,
-            'message' => 'Lấy danh sách các nguồn tài trợ thành công',
+            'message' => 'Lấy danh sách các loại hình đấu thầu thành công',
             'data' => $data
         ], 200);
     }
@@ -203,36 +179,25 @@ class FundingSourceController extends Controller
      */
     /**
      * @OA\Post(
-     *     path="/api/admin/funding-sources",
-     *     tags={"Funding Sources"},
-     *     summary="Create a new funding sources",
-     *     description="Create a new funding sources",
+     *     path="/api/admin/bidding-types",
+     *     tags={"Bidding Types"},
+     *     summary="Create a new bidding type",
+     *     description="Create a new bidding type",
      *     security={{"bearerAuth": {}}},
      *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "description", "code", "type", "is_active"},
+     *             required={"name", "description", "is_active"},
      *             @OA\Property(
      *                 property="name",
      *                 type="string",
-     *                 example="Funding sources 1"
+     *                 example="Bidding type 1"
      *             ),
      *             @OA\Property(
      *                 property="description",
      *                 type="string",
-     *                 example="Description of funding sources 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="code",
-     *                 type="string",
-     *                 example="Vn123"
-     *             ),
-     *             @OA\Property(
-     *                 property="type",
-     *                 type="string",
-     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"},
-     *                 example="Tư nhân"
+     *                 example="Description of bidding type 1"
      *             ),
      *             @OA\Property(
      *                 property="is_active",
@@ -243,7 +208,7 @@ class FundingSourceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Funding sources created successfully",
+     *         description="Bidding type created successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -254,7 +219,7 @@ class FundingSourceController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Funding sources created successfully"
+     *                 example="Bidding type created successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -267,28 +232,17 @@ class FundingSourceController extends Controller
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     example="Funding sources 1"
+     *                     example="Bidding type 1"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     example="Description of funding sources 1"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="code",
-     *                     type="string",
-     *                     example="Vn123"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="type",
-     *                     type="string",
-     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"},
-     *                     example="Tư nhân"
+     *                     example="Description of bidding type 1"
      *                 ),
      *                 @OA\Property(
      *                     property="is_active",
-     *                     type="number",
-     *                     example=1
+     *                     type="boolean",
+     *                     example=true
      *                 ),
      *                 @OA\Property(
      *                     property="created_at",
@@ -305,26 +259,26 @@ class FundingSourceController extends Controller
      *     )
      * )
      */
-    public function store(FundingSourceFormRequest $request)
+    public function store(BiddingTypeFormRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $fundingSource = $this->fundingSourceRepository->createFundingSource($request->all());
+            $biddingType = $this->biddingTypeRepository->createBiddingTpye($request->all());
 
             DB::commit();
 
             return response()->json([
                 'result' => true,
-                'message' => 'Tạo mới nguồn tài trợ thành công.',
-                'data' => $fundingSource,
+                'message' => 'Tạo mới loại hình đấu thầu thành công.',
+                'data' => $biddingType,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi tạo mới nguồn tài trợ.',
+                'message' => 'Lỗi khi tạo mới loại hình đấu thầu.',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -335,15 +289,15 @@ class FundingSourceController extends Controller
      */
     /**
      * @OA\Get(
-     *     path="/api/admin/funding-sources/{id}",
-     *     tags={"Funding Sources"},
-     *     summary="Get funding sources by ID",
-     *     description="Get funding sources by ID",
+     *     path="/api/admin/bidding-types/{id}",
+     *     tags={"Bidding Types"},
+     *     summary="Get bidding type by ID",
+     *     description="Get bidding type by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of funding sources",
+     *         description="ID of bidding type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -351,7 +305,7 @@ class FundingSourceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Funding Sources retrieved successfully",
+     *         description="Bidding type retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -362,7 +316,7 @@ class FundingSourceController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Funding Sources retrieved successfully"
+     *                 example="Bidding type retrieved successfully"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -375,28 +329,17 @@ class FundingSourceController extends Controller
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     example="Funding Sources 1"
+     *                     example="bidding type 1"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     example="Description of Funding Sources 1"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="code",
-     *                     type="string",
-     *                     example="Vn123"
-     *                 ),
-     *                     @OA\Property(
-     *                     property="type",
-     *                     type="string",
-     *                     enum={"Chính phủ", "Tư nhân", "Quốc tế"},
-     *                     example="Tư nhân"
+     *                     example="Description of bidding type 1"
      *                 ),
      *                 @OA\Property(
      *                     property="is_active",
-     *                     type="number",
-     *                     example=1
+     *                     type="boolean",
+     *                     example=true
      *                 ),
      *                 @OA\Property(
      *                     property="created_at",
@@ -415,19 +358,19 @@ class FundingSourceController extends Controller
      */
     public function show($id)
     {
-        $fundingSource = $this->fundingSourceRepository->findFundingSourceById($id);
+        $biddingType = $this->biddingTypeRepository->findBiddingTypeById($id);
 
-        if (!$fundingSource) {
+        if (!$biddingType) {
             return response()->json([
                 'result' => false,
-                'message' => 'Không tìm thấy nguồn tài trợ',
+                'message' => 'Loại hình đấu thầu không tồn tại',
             ], 404);
-        };
+        }
 
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thông tin nguồn tài trợ thành công.',
-            'data' => $fundingSource,
+            'message' => 'Lấy thông tin loại hình đấu thầu thành công.',
+            'data' => $biddingType
         ], 200);
     }
 
@@ -436,15 +379,15 @@ class FundingSourceController extends Controller
      */
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding-sources/{id}",
-     *     tags={"Funding Sources"},
-     *     summary="Update funding sources by ID",
-     *     description="Update funding sources by ID",
+     *     path="/api/admin/bidding-types/{id}",
+     *     tags={"Bidding Types"},
+     *     summary="Update bidding type by ID",
+     *     description="Update bidding type by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of funding sources",
+     *         description="ID of bidding type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -456,23 +399,12 @@ class FundingSourceController extends Controller
      *             @OA\Property(
      *                 property="name",
      *                 type="string",
-     *                 example="Funding Sources 1"
+     *                 example="Bidding type 1"
      *             ),
      *             @OA\Property(
      *                 property="description",
      *                 type="string",
-     *                 example="Description of funding sources 1"
-     *             ),
-     *             @OA\Property(
-     *                 property="code",
-     *                 type="string",
-     *                 example="Vn123"
-     *             ),
-     *                 @OA\Property(
-     *                 property="type",
-     *                 type="string",
-     *                 enum={"Chính phủ", "Tư nhân", "Quốc tế"},
-     *                 example="Tư nhân"
+     *                 example="Description of bidding type 1"
      *             ),
      *             @OA\Property(
      *                 property="is_active",
@@ -483,39 +415,40 @@ class FundingSourceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Funding Sources updated successfully"
+     *         description="Bidding type updated successfully"
      *     )
      * )
      */
-    public function update($id, FundingSourceFormRequest $request)
+    public function update(BiddingTypeFormRequest $request, $id)
     {
         DB::beginTransaction();
 
         try {
             $data = $request->all();
 
-            $fundingSource = $this->fundingSourceRepository->updateFundingSource($data, $id);
+            $biddingType = $this->biddingTypeRepository->updateBiddingTpye($data, $id);
 
-            if (!$fundingSource) {
+            if (!$biddingType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Nguồn tài trợ không tồn tại',
+                    'message' => 'Loại hình đấu thầu không tồn tại',
                 ], 404);
             }
+
             DB::commit();
 
             return response()->json([
                 'result' => true,
-                'message' => 'Cập nhật nguồn tài trợ thành công.',
-                'data' => $fundingSource,
+                'message' => 'Cập nhật loại hình đấu thầu thành công.',
+                'data' => $biddingType,
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi cập nhật nguồn tài trợ.',
+                'message' => 'Lỗi khi cập nhật loại hình đấu thầu.',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -526,15 +459,15 @@ class FundingSourceController extends Controller
      */
     /**
      * @OA\Delete(
-     *     path="/api/admin/funding-sources/{id}",
-     *     tags={"Funding Sources"},
-     *     summary="Delete funding sources by ID",
-     *     description="Delete funding sources by ID",
+     *     path="/api/admin/bidding-types/{id}",
+     *     tags={"Bidding Types"},
+     *     summary="Delete bidding type by ID",
+     *     description="Delete bidding type by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of funding sources",
+     *         description="ID of bidding type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -542,7 +475,7 @@ class FundingSourceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Funding Sources deleted successfully"
+     *         description="Bidding type deleted successfully"
      *     )
      * )
      */
@@ -551,13 +484,13 @@ class FundingSourceController extends Controller
         DB::beginTransaction();
 
         try {
-            $fundingSource = $this->fundingSourceRepository->deleteFundingSource($id);
+            $biddingType = $this->biddingTypeRepository->deleteBiddingTpye($id);
 
-            if (!$fundingSource) {
+            if (!$biddingType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Nguồn tài trợ không tồn tại',
+                    'message' => 'Loại hình đấu thầu không tồn tại',
                 ], 404);
             }
 
@@ -565,14 +498,14 @@ class FundingSourceController extends Controller
 
             return response()->json([
                 'result' => true,
-                'message' => 'Xóa nguồn tài trợ thành công.',
+                'message' => 'Xóa loại hình đấu thầu thành công.',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi xóa nguồn tài trợ.',
+                'message' => 'Lỗi khi xóa loại hình đấu thầu.',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -580,15 +513,15 @@ class FundingSourceController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/funding-sources/{id}/toggle-status",
-     *     tags={"Funding Sources"},
-     *     summary="Toggle active status of funding sources by ID",
-     *     description="Toggle active status of funding sources by ID",
+     *     path="/api/admin/bidding-types/{id}/toggle-status",
+     *     tags={"Bidding Types"},
+     *     summary="Toggle active status of bidding type by ID",
+     *     description="Toggle active status of bidding type by ID",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of funding sources",
+     *         description="ID of bidding type",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -596,7 +529,7 @@ class FundingSourceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Funding sources status toggled successfully"
+     *         description="Bidding type status toggled successfully"
      *     )
      * )
      */
@@ -607,26 +540,26 @@ class FundingSourceController extends Controller
         DB::beginTransaction();
 
         try {
-            $fundingSource = $this->fundingSourceRepository->findFundingSourceById($id);
+            $biddingType = $this->biddingTypeRepository->findBiddingTypeById($id);
 
-            if (!$fundingSource) {
+            if (!$biddingType) {
                 DB::rollBack();
                 return response()->json([
                     'result' => false,
-                    'message' => 'Nguồn tài trợ không tồn tại',
+                    'message' => 'Loại hình đấu thầu không tồn tại.',
                 ], 404);
             }
 
-            $fundingSource->is_active = !$fundingSource->is_active;
-            $fundingSource->save();
+            $biddingType->is_active = !$biddingType->is_active;
+            $biddingType->save();
 
             DB::commit();
 
             return response()->json([
                 'result' => true,
-                'message' => 'Cập nhật trạng thái nguồn tài trợ thành công',
+                'message' => 'Cập nhật trạng thái loại hình đấu thầu thành công.',
                 'data' => [
-                    'is_active' => $fundingSource->is_active,
+                    'is_active' => $biddingType->is_active,
                 ],
             ], 200);
         } catch (\Exception $e) {
@@ -634,18 +567,9 @@ class FundingSourceController extends Controller
 
             return response()->json([
                 'result' => false,
-                'message' => 'Lỗi khi cập nhật trạng thái nguồn tài trợ',
+                'message' => 'Lỗi khi cập nhật trạng thái loại hình đấu thầu.',
                 'error' => $e->getMessage(),
             ], 500);
         }
-    }
-
-    public function getNameAndIds()
-    {
-        return response([
-            'result' => true,
-            'message' => 'lấy nguồn tài trợ thành công',
-            'data' => $this->fundingSourceRepository->getNameAndIds()
-        ], 200);
     }
 }

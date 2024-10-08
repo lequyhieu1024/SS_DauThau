@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BiddingFields\BiddingFieldFormRequest;
@@ -10,8 +10,6 @@ use App\Http\Resources\BiddingFieldCollection;
 use App\Repositories\BiddingFieldRepository;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
-use OpenApi\Annotations as OA;
-use function Laravel\Prompts\error;
 
 class BiddingFieldController extends Controller
 {

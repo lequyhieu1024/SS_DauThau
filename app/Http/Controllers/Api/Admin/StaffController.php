@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
-use App\Jobs\sendEmailActiveJob;
-use App\Models\User;
-use App\Models\Staff;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Repositories\RoleRepository;
-use App\Repositories\UserRepository;
-use App\Http\Resources\StaffResource;
-use App\Repositories\StaffRepository;
 use App\Http\Requests\StaffFormRequest;
 use App\Http\Resources\StaffCollection;
+use App\Http\Resources\StaffResource;
+use App\Jobs\sendEmailActiveJob;
+use App\Models\Staff;
+use App\Models\User;
+use App\Repositories\RoleRepository;
+use App\Repositories\StaffRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StaffController extends Controller
 {
