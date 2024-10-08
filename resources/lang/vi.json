@@ -104,5 +104,11 @@
     "Detail Post Catalog": "Chi tiết danh mục bài viết",
     "Create Post Catalog": "Thêm danh mục bài viết",
     "Update Post Catalog": "Sửa danh mục bài viết",
-    "Destroy Post Catalog": "Xóa danh mục bài viết"
+    "Destroy Post Catalog": "Xóa danh mục bài viết",
+    "Post": "Bài viết",
+    "List Post": "Xem bài viết",
+    "Detail Post": "Chi tiết bài viết",
+    "Create Post": "Thêm bài viết",
+    "Update Post": "Sửa bài viết",  
+    "Destroy Post": "Xoá bài viết"
 }

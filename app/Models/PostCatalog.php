@@ -18,4 +18,8 @@ class PostCatalog extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function posts(){
+        return $this->belongsToMany(Post::class, 'post_catalog_links');
+    }
 }

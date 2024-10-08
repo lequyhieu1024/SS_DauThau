@@ -179,6 +179,11 @@ return [
         'implementation_time' => 'thời gian thực hiện',
         'validity_period' => 'thời hạn hiệu lực',
         'note' => 'ghi chú',
+        'post_catalog_id' => 'danh mục bài viết',
+        'author_id' => 'tác giả',
+        'short_title' => 'tiêu đề ngắn',
+        'title' => 'tiêu đề dài',
+        'content' => 'nội dung'
     ],
 
 ];

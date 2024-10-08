@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\EvaluationCriteriaController;
 use App\Http\Controllers\Api\FundingSourceController;
 use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\PostCatalogController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProcurementCategoryController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\RoleController;
@@ -167,5 +168,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('post-catalogs', PostCatalogController::class)->except('update');
     Route::patch('post-catalogs/{id}', [PostCatalogController::class, 'update']);
     Route::patch('post-catalogs/{id}/toggle-status', [PostCatalogController::class, 'toggleActiveStatus']);
+
+    // Posts
+    Route::resource('posts', PostController::class);
 
 });
