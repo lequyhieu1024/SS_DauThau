@@ -4907,6 +4907,491 @@
                 ]
             }
         },
+        "/api/admin/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get all Posts",
+                "description": "Get all Posts",
+                "operationId": "3c5ff02b2fccb55136f33aaeaa8a0f36",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "short_title",
+                        "in": "query",
+                        "description": "Short title of post",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Posts successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Posts successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_name": {
+                                                                "type": "string",
+                                                                "example": "Author Name"
+                                                            },
+                                                            "post_catalog_name": {
+                                                                "type": "string",
+                                                                "example": "Post Catalog Name"
+                                                            },
+                                                            "short_title": {
+                                                                "type": "string",
+                                                                "example": "Short Title"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Post Title"
+                                                            },
+                                                            "content": {
+                                                                "type": "string",
+                                                                "example": "Post Content"
+                                                            },
+                                                            "thumbnail": {
+                                                                "type": "string",
+                                                                "example": "thumbnail.png"
+                                                            },
+                                                            "status": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "description": "Create a new post",
+                "operationId": "145a86ddf12e8160890c5abc0ba8c029",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get post by ID",
+                "description": "Get post by ID",
+                "operationId": "8f3e571071a2765890ef18567c0ccd8a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update post by ID",
+                "description": "Update post by ID",
+                "operationId": "789d233fef4ea439d04938cd0861e65d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PATCH"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete post by ID",
+                "description": "Delete post by ID",
+                "operationId": "ede6250de814e6c847900520df40b7de",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/selection-methods": {
             "get": {
                 "tags": [
@@ -5445,6 +5930,10 @@
         {
             "name": "Post Catalogs",
             "description": "Post Catalogs"
+        },
+        {
+            "name": "Posts",
+            "description": "Posts"
         },
         {
             "name": "Selection methods",
