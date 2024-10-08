@@ -57,7 +57,7 @@ class AuthController extends Controller
             'taxcode' => [
                 'required_without:email',
                 function ($attribute, $value, $fail) {
-                    $taxcodePattern = '/^\d{10}(\d{3})?$/';
+                    $taxcodePattern = '/^[0-9]{10,14}$/';
                     if (!preg_match($taxcodePattern, $value)) {
                         $fail('Mã số thuế không đúng định dạng');
                     }
