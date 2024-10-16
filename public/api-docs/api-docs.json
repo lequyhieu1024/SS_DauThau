@@ -12,7 +12,7 @@
                 ],
                 "summary": "Get a list of activity logs",
                 "description": "Retrieve a list of activity logs with optional filters",
-                "operationId": "7e6dbb690b63dcb9d99ad328c5e2ba1f",
+                "operationId": "d9a5001328eec7da143fb43cfb5a5418",
                 "parameters": [
                     {
                         "name": "size",
@@ -152,7 +152,7 @@
                 ],
                 "summary": "Get activity log by ID",
                 "description": "Retrieve a specific activity log by its ID",
-                "operationId": "256e14f16266d55f2749d7f61d4e8756",
+                "operationId": "3f0eb6ffbce1849c4e50c7fe6e2929fe",
                 "parameters": [
                     {
                         "name": "id",
@@ -222,6 +222,1595 @@
                 ]
             }
         },
+        "/api/admin/banners": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get all Banners",
+                "description": "Get all Banners",
+                "operationId": "75ab6aa85a6dbc6f7ad8a7a1453256ad",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of banner",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Banners successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Banners successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "banners": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Banners 1"
+                                                            },
+                                                            "path": {
+                                                                "type": "string",
+                                                                "example": "banner.png"
+                                                            },
+                                                            "is_active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Create a new banner",
+                "description": "Create a new banner",
+                "operationId": "2624429451525dcd13a73280c7c8a413",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "is_active"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "banner 1"
+                                    },
+                                    "path": {
+                                        "description": "The file to upload",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "is_active": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "banner created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "banner created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "banner 1"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "banner.png"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banners/{id}": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get banner by ID",
+                "description": "Get banner by ID",
+                "operationId": "1f7771815ef9f329b9e535e103e71936",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of banner",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "banner retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "banner retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "banner 1"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "banner.png"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Update banner by ID",
+                "description": "Update a banner by its ID",
+                "operationId": "3663f7db7fa584324503f1d414567e3c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the banner",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "is_active",
+                                    "_method"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Banner 1"
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "is_active": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PATCH"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Banner updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Banner updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Delete banner by ID",
+                "description": "Delete banner by ID",
+                "operationId": "bcd1e352e1dbe1d29ce324eda422abe5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of banner",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "banner deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banners/{id}/toggle-status": {
+            "patch": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Toggle active status of banner by ID",
+                "description": "Toggle active status of banner by ID",
+                "operationId": "56c50972f61878d1c6947184f92d0063",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of banner",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "banner status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-bonds": {
+            "get": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Get all Bid Bonds",
+                "description": "Get all Bid Bonds",
+                "operationId": "ba6fef6767aae621983524dadee1239c",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "bond_number",
+                        "in": "query",
+                        "description": "bond_number",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Bid Bonds successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Bid Bonds successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "bidBonds": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "project_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "enterprise_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "bond_number": {
+                                                                "type": "string",
+                                                                "example": "bd1"
+                                                            },
+                                                            "bond_amount": {
+                                                                "type": "integer",
+                                                                "example": 1000000
+                                                            },
+                                                            "bond_amount_in_words": {
+                                                                "type": "string",
+                                                                "example": "một triệu"
+                                                            },
+                                                            "bond_type": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "issue_date": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01"
+                                                            },
+                                                            "expiry_date": {
+                                                                "type": "string",
+                                                                "example": "2021-09-02"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "description"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Create a new bid bond",
+                "description": "Create a new bid bond",
+                "operationId": "d5761a2ee94a8b415b3fc0ea89de91a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "project_id",
+                                    "enterprise_id",
+                                    "bond_number",
+                                    "bond_amount",
+                                    "bond_type",
+                                    "expiry_date"
+                                ],
+                                "properties": {
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "enterprise_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bond_number": {
+                                        "type": "string",
+                                        "example": "bb1"
+                                    },
+                                    "bond_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1200000
+                                    },
+                                    "bond_type": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "expiry_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-21"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "abc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bid bond created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "bidBonds": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "project_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "enterprise_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "bond_number": {
+                                                        "type": "string",
+                                                        "example": "bd1"
+                                                    },
+                                                    "bond_amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1000000
+                                                    },
+                                                    "bond_amount_in_words": {
+                                                        "type": "string",
+                                                        "example": "một triệu"
+                                                    },
+                                                    "bond_type": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "issue_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2021-09-01"
+                                                    },
+                                                    "expiry_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2021-09-02"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "description"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2021-09-01T00:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2021-09-01T00:00:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-bonds/{id}": {
+            "get": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Get bid bond by ID",
+                "description": "Get bid bond by ID",
+                "operationId": "0ee516428e6e96bdf67416a1c2204c75",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "bid bond retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bid bond retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "project_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "enterprise_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "bond_number": {
+                                                    "type": "string",
+                                                    "example": "bd1"
+                                                },
+                                                "bond_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1000000
+                                                },
+                                                "bond_amount_in_words": {
+                                                    "type": "string",
+                                                    "example": "một triệu"
+                                                },
+                                                "bond_type": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "issue_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-01"
+                                                },
+                                                "expiry_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-02"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "description"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Delete bid bond by ID",
+                "description": "Delete bid bond by ID",
+                "operationId": "36703ea2ae81d43521819d6e0bb2fec3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "bid bond deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Update bid bond by ID",
+                "description": "Update bid bond by ID",
+                "operationId": "4b89c319fc88ea970b0a1dd7aa01aff3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of bid bond",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "enterprise_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bond_number": {
+                                        "type": "string",
+                                        "example": "bb1"
+                                    },
+                                    "bond_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1200000
+                                    },
+                                    "bond_type": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "expiry_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-21"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "abc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "bid bond updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-documents": {
+            "get": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Get list of bid documents",
+                "operationId": "1548ba0f72322499a7a97f29ef63a821",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Number of records per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "description": "Filter by project id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "enterprise_id",
+                        "in": "query",
+                        "description": "Filter by enterprise id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2,
+                                3,
+                                4
+                            ]
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Filter by start date (e.g., 2023-01-01)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "Filter by end date (e.g., 2023-12-31)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lấy danh sách hồ sơ dự thầu thành công"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": "{}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy hồ sơ dự thầu"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Create a new bid document",
+                "operationId": "703b579625a34eec15f2b681fafeb4a6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 14
+                                    },
+                                    "bid_bond_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bid_price": {
+                                        "type": "integer",
+                                        "example": 111111
+                                    },
+                                    "implementation_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-12-31 00:00:00"
+                                    },
+                                    "validity_period": {
+                                        "type": "string",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bid document created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tạo hồ sơ dự thầu thành công"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": "{}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dự án không ở trạng thái cho phép gửi hồ sơ dự thầu."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi tạo hồ sơ dự thầu"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-documents/check-bid-participation/{projectId}": {
+            "get": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Check bid participation",
+                "operationId": "4f2421e9c3fb2a7a733d8b953c3ac206",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Doanh nghiệp đã tham gia đấu thầu dự án này."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-documents/{id}": {
+            "get": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Get bid document details",
+                "operationId": "38d698c49bf3605aca486f7664fcc9e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lấy thông tin hồ sơ dự thầu thành công"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy hồ sơ dự thầu này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi lấy thông tin hồ sơ dự thầu"
+                                        },
+                                        "errors": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Delete a bid document",
+                "operationId": "55da3f3dcbc8b8838190be85adff0434",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Xóa hồ sơ dự thầu thành công"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy hồ sơ dự thầu này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi xóa hồ sơ dự thầu"
+                                        },
+                                        "errors": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/bid-documents/{id}/approve": {
+            "patch": {
+                "tags": [
+                    "Bid Documents"
+                ],
+                "summary": "Approve a bid document",
+                "operationId": "d70805589a733d94e52b6181d879ec56",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "integer",
+                                        "enum": [
+                                            2,
+                                            3,
+                                            4
+                                        ],
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cập nhật trạng thái hồ sơ dự thầu thành công"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi cập nhật trạng thái hồ sơ dự thầu"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn không có quyền cập nhật trạng thái hồ sơ dự thầu"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy hồ sơ dự thầu này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi cập nhật trạng thái hồ sơ dự thầu"
+                                        },
+                                        "errors": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/bidding-fields": {
             "get": {
                 "tags": [
@@ -229,7 +1818,7 @@
                 ],
                 "summary": "Get all bidding fields",
                 "description": "Get all bidding fields",
-                "operationId": "6b4ecada9b3b7d8b9a16fe673e6c93b5",
+                "operationId": "c2baa011ae8fbc2ecdd7ec88c55edbc5",
                 "parameters": [
                     {
                         "name": "size",
@@ -391,7 +1980,7 @@
                 ],
                 "summary": "Create a new bidding field",
                 "description": "Create a new bidding field",
-                "operationId": "e94eb396b04d391086837b91fb33bc34",
+                "operationId": "7decea7bcaefd0cb0083b286c6891c08",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -506,7 +2095,7 @@
                 ],
                 "summary": "Get all bidding field ids",
                 "description": "Get all bidding field ids",
-                "operationId": "4b5c9673cdfe7f4219f2657d6423359e",
+                "operationId": "2fee506b40136c856fd7cccef08b402d",
                 "responses": {
                     "200": {
                         "description": "Get all successful bidding field ids in tree structure",
@@ -555,7 +2144,7 @@
                 ],
                 "summary": "Get bidding field by ID",
                 "description": "Get bidding field by ID",
-                "operationId": "3b4285c4a892b7b2ed35ab4d2c76b090",
+                "operationId": "4fc07e4292f432f23d8909a37e79c0e8",
                 "parameters": [
                     {
                         "name": "id",
@@ -642,7 +2231,7 @@
                 ],
                 "summary": "Delete bidding field by ID",
                 "description": "Delete bidding field by ID",
-                "operationId": "99e2b5cd29a0287a6607854177f1799d",
+                "operationId": "a66735d0f2a0e8b8ee37aaf9e3afdd99",
                 "parameters": [
                     {
                         "name": "id",
@@ -671,7 +2260,7 @@
                 ],
                 "summary": "Update bidding field by ID",
                 "description": "Update bidding field by ID",
-                "operationId": "68a9ce0409a628a73ed6d00afe464300",
+                "operationId": "6bb524d67a16cc2d2e975ca18da233db",
                 "parameters": [
                     {
                         "name": "id",
@@ -737,7 +2326,7 @@
                 ],
                 "summary": "Toggle active status of bidding field by ID",
                 "description": "Toggle active status of bidding field by ID",
-                "operationId": "5bcb73da9088c62a261deedee1cae53e",
+                "operationId": "201d32b7e2c3ef86d8901d090b2c3267",
                 "parameters": [
                     {
                         "name": "id",
@@ -768,7 +2357,7 @@
                 ],
                 "summary": "Get all bidding types",
                 "description": "Get all bidding types",
-                "operationId": "dba022d6ab4b53051ea60f6ddd41604d",
+                "operationId": "b09c9c46c684eddc3a53f8b1f2a270d9",
                 "parameters": [
                     {
                         "name": "size",
@@ -900,7 +2489,7 @@
                 ],
                 "summary": "Create a new bidding type",
                 "description": "Create a new bidding type",
-                "operationId": "83ad84e2b711d54812de4f749d19e55f",
+                "operationId": "d8f75e8db5d1352a2884a99e93de68a2",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -995,7 +2584,7 @@
                 ],
                 "summary": "Get bidding type by ID",
                 "description": "Get bidding type by ID",
-                "operationId": "c96e7b9581ceaa92c39bde2d50d4684f",
+                "operationId": "4d8a9b7958679c4beee0791bda2a1847",
                 "parameters": [
                     {
                         "name": "id",
@@ -1070,7 +2659,7 @@
                 ],
                 "summary": "Delete bidding type by ID",
                 "description": "Delete bidding type by ID",
-                "operationId": "78af2258983a047eda2fcec4afb8511a",
+                "operationId": "b4911d99588b00ffc57b9c4a06a2450a",
                 "parameters": [
                     {
                         "name": "id",
@@ -1099,7 +2688,7 @@
                 ],
                 "summary": "Update bidding type by ID",
                 "description": "Update bidding type by ID",
-                "operationId": "f337d375bd3f6987cf66db0ac30ff172",
+                "operationId": "02f894951f4157f2b94a91e8a2678e63",
                 "parameters": [
                     {
                         "name": "id",
@@ -1154,7 +2743,7 @@
                 ],
                 "summary": "Toggle active status of bidding type by ID",
                 "description": "Toggle active status of bidding type by ID",
-                "operationId": "fbbdbfa570bb8f79ed9b45f5c0c72f14",
+                "operationId": "6abc70846067694a07c504ff939c66bd",
                 "parameters": [
                     {
                         "name": "id",
@@ -1835,7 +3424,7 @@
                 ],
                 "summary": "Get all funding sources",
                 "description": "Get all funding sources",
-                "operationId": "4f00effba94f9a190c0a3beebf90cc46",
+                "operationId": "f32a8c2bb0b8316967b0ba3d378f44a5",
                 "parameters": [
                     {
                         "name": "size",
@@ -1989,7 +3578,7 @@
                 ],
                 "summary": "Create a new funding sources",
                 "description": "Create a new funding sources",
-                "operationId": "c4ceafca313ff079dae727f779f77028",
+                "operationId": "f676f993445fd6340a176f843beee69b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2112,7 +3701,7 @@
                 ],
                 "summary": "Get funding sources by ID",
                 "description": "Get funding sources by ID",
-                "operationId": "a4c88f4a7000b1911a7d629b9ebd43c0",
+                "operationId": "ba331864d4c8df62e0bf624f85edb8bf",
                 "parameters": [
                     {
                         "name": "id",
@@ -2200,7 +3789,7 @@
                 ],
                 "summary": "Delete funding sources by ID",
                 "description": "Delete funding sources by ID",
-                "operationId": "84394bd9d2ffd5034cde807c7fb23cef",
+                "operationId": "2921a91cdce6f3b0f9fdf05be25fe1df",
                 "parameters": [
                     {
                         "name": "id",
@@ -2229,7 +3818,7 @@
                 ],
                 "summary": "Update funding sources by ID",
                 "description": "Update funding sources by ID",
-                "operationId": "cf44eb67ca9a8e8dbd96e754d2a63716",
+                "operationId": "bcb13a49c84bfc7f48f12ba5170558d6",
                 "parameters": [
                     {
                         "name": "id",
@@ -2297,7 +3886,7 @@
                 ],
                 "summary": "Toggle active status of funding sources by ID",
                 "description": "Toggle active status of funding sources by ID",
-                "operationId": "7492417398ec693346a6449fc83e0f45",
+                "operationId": "8ec7e30348571a3a117884abe1363a76",
                 "parameters": [
                     {
                         "name": "id",
@@ -2909,7 +4498,7 @@
                 ],
                 "summary": "Get all Selection methods",
                 "description": "Get all Selection methods",
-                "operationId": "6db814dc988d3e051fb36b9369d41681",
+                "operationId": "5e96b96730d9666aa990d5f20e5a3cd8",
                 "parameters": [
                     {
                         "name": "size",
@@ -3041,7 +4630,7 @@
                 ],
                 "summary": "Create a new selection method",
                 "description": "Create a new selection method",
-                "operationId": "4d69b2a730bd43bb5d2ee4345456af3c",
+                "operationId": "01f8d23e444bcec2928a002548ba18fa",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3136,7 +4725,7 @@
                 ],
                 "summary": "Get selection method by ID",
                 "description": "Get selection method by ID",
-                "operationId": "0261945806c202c04159b84ea2a4fbe5",
+                "operationId": "9d79d5f1ca774a392d9a4d3354e2fd6b",
                 "parameters": [
                     {
                         "name": "id",
@@ -3211,7 +4800,7 @@
                 ],
                 "summary": "Delete selection method by ID",
                 "description": "Delete selection method by ID",
-                "operationId": "fc12db5c217dd94a61f1500d77fdfe2f",
+                "operationId": "f8dd132d78cc3c3b88fb7f944f3dbb45",
                 "parameters": [
                     {
                         "name": "id",
@@ -3240,7 +4829,7 @@
                 ],
                 "summary": "Update selection method by ID",
                 "description": "Update selection method by ID",
-                "operationId": "87622b86df01af6e919094414b9f703b",
+                "operationId": "aaf86d3d78139c5dd3f51bdf2a55fde3",
                 "parameters": [
                     {
                         "name": "id",
@@ -3295,7 +4884,7 @@
                 ],
                 "summary": "Toggle active status of selection method by ID",
                 "description": "Toggle active status of selection method by ID",
-                "operationId": "25e8e6d129558cc5d25139e89ad70fd4",
+                "operationId": "68057e25b3b0d14c7337442163bceaae",
                 "parameters": [
                     {
                         "name": "id",
@@ -3310,6 +4899,907 @@
                 "responses": {
                     "200": {
                         "description": "selection method status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/post-catalogs": {
+            "get": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Get all Post Catalogs",
+                "description": "Get all Post Catalogs",
+                "operationId": "81b9627c9a5162d00d7f2ba7d4b9f3da",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of post catalog",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Post Catalogs successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Post Catalogs successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "postCatalogs": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Post Catalogs 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Description of Post Catalogs 1"
+                                                            },
+                                                            "is_active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Create a new post catalog",
+                "description": "Create a new post catalog",
+                "operationId": "f1be97cc2301e7db65f5beb048d22e60",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "is_active"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "post catalog 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of post catalog 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post catalog created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post catalog created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "post catalog 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of post catalog 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/post-catalogs/{id}": {
+            "get": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Get post catalog by ID",
+                "description": "Get post catalog by ID",
+                "operationId": "489a172c2da456a8b366ea3d70287d7f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post catalog retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "post catalog 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of post catalog 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Delete post catalog by ID",
+                "description": "Delete post catalog by ID",
+                "operationId": "42c5b089c72297f746ed4899ea0b5e98",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Update post catalog by ID",
+                "description": "Update post catalog by ID",
+                "operationId": "4c8c816ed1b089f6b3dc6bb079369840",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "post catalog 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of post catalog 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "post catalog updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/post-catalogs/{id}/toggle-status": {
+            "patch": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Toggle active status of post catalog by ID",
+                "description": "Toggle active status of post catalog by ID",
+                "operationId": "29aae791e88b52008d0749b0b3b5b259",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get all Posts",
+                "description": "Get all Posts",
+                "operationId": "3c5ff02b2fccb55136f33aaeaa8a0f36",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "short_title",
+                        "in": "query",
+                        "description": "Short title of post",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Posts successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Posts successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_name": {
+                                                                "type": "string",
+                                                                "example": "Author Name"
+                                                            },
+                                                            "post_catalog_name": {
+                                                                "type": "string",
+                                                                "example": "Post Catalog Name"
+                                                            },
+                                                            "short_title": {
+                                                                "type": "string",
+                                                                "example": "Short Title"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Post Title"
+                                                            },
+                                                            "content": {
+                                                                "type": "string",
+                                                                "example": "Post Content"
+                                                            },
+                                                            "thumbnail": {
+                                                                "type": "string",
+                                                                "example": "thumbnail.png"
+                                                            },
+                                                            "status": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "description": "Create a new post",
+                "operationId": "145a86ddf12e8160890c5abc0ba8c029",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get post by ID",
+                "description": "Get post by ID",
+                "operationId": "8f3e571071a2765890ef18567c0ccd8a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update post by ID",
+                "description": "Update post by ID",
+                "operationId": "789d233fef4ea439d04938cd0861e65d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PATCH"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete post by ID",
+                "description": "Delete post by ID",
+                "operationId": "ede6250de814e6c847900520df40b7de",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post deleted successfully"
                     }
                 },
                 "security": [
@@ -3406,6 +5896,18 @@
             "description": "Activity Log"
         },
         {
+            "name": "Banners",
+            "description": "Banners"
+        },
+        {
+            "name": "Bid Bonds",
+            "description": "Bid Bonds"
+        },
+        {
+            "name": "Bid Documents",
+            "description": "Bid Documents"
+        },
+        {
             "name": "Bidding Field",
             "description": "Bidding Field"
         },
@@ -3428,6 +5930,14 @@
         {
             "name": "Selection methods",
             "description": "Selection methods"
+        },
+        {
+            "name": "Post Catalogs",
+            "description": "Post Catalogs"
+        },
+        {
+            "name": "Posts",
+            "description": "Posts"
         }
     ]
 }

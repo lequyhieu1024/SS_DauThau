@@ -14,7 +14,7 @@ class IndustryRepository extends BaseRepository
         $query = $this->model->query();
 
         if (isset($data['name'])) {
-            $query->where('name', 'like', '%'.$data['name'].'%');
+            $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
         if (isset($data['business_activity_type_id'])) {

@@ -46,57 +46,43 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        if (isset($request->taxcode)) {
-            $messages = [
-                'taxcode.required' => 'Mã số thuế không được để trống',
-                'password.required' => 'Mật khẩu không được để trống',
-            ];
+        $messages = [
+            'taxcode.required' => 'Mã số thuế không được để trống',
+            'password.required' => 'Mật khẩu không được để trống',
+            'email.required' => 'Email không được để trống',
+        ];
 
-            $validator = Validator::make($request->all(), [
-                'taxcode' => [
-                    'required',
-                    function ($attribute, $value, $fail) {
-                        $emailPattern = '/^\d{10}(\d{3})?$/';
-                        if (!preg_match($emailPattern, $value)) {
-                            $fail('Mã số thuế không đúng định dạng');
-                        }
+        // Xác thực yêu cầu
+        $validator = Validator::make($request->all(), [
+            'taxcode' => [
+                'required_without:email',
+                function ($attribute, $value, $fail) {
+                    $taxcodePattern = '/^[0-9]{10,14}$/';
+                    if (!preg_match($taxcodePattern, $value)) {
+                        $fail('Mã số thuế không đúng định dạng');
                     }
-                ],
-                'password' => 'required',
-            ], $messages);
-
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 401);
-            }
-
-            $credentials = $request->only('taxcode', 'password');
-        }
-        if (isset($request->email)) {
-            $messages = [
-                'email.required' => 'Email không được để trống',
-                'password.required' => 'Mật khẩu không được để trống',
-            ];
-
-            $validator = Validator::make($request->all(), [
-                'email' => [
-                    'required',
-                    'string',
-                    function ($attribute, $value, $fail) {
-                        $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
-                        if (!preg_match($emailPattern, $value)) {
-                            $fail('Email không đúng định dạng');
-                        }
+                }
+            ],
+            'email' => [
+                'required_without:taxcode',
+                'string',
+                function ($attribute, $value, $fail) {
+                    $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
+                    if (!preg_match($emailPattern, $value)) {
+                        $fail('Email không đúng định dạng');
                     }
-                ],
-                'password' => 'required',
-            ], $messages);
+                }
+            ],
+            'password' => 'required',
+        ], $messages);
 
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 401);
-            }
-
-            $credentials = $request->only('email', 'password');
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
         }
+
+        // Lấy thông tin xác thực
+        $credentials = $request->only('taxcode', 'email', 'password');
+        $credentials = array_filter($credentials); // Xóa các trường rỗng
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
@@ -112,27 +98,33 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    //     public function login(Request $request)
-    // {
-    //     $credentials = $request->only('email', 'password');
-
-    //     if ($token = JWTAuth::attempt($credentials)) {
-    //         return $this->respondWithToken($token);
-    //     }
-
-    //     return response()->json(['error' => 'Unauthorized'], 401);
-    // }
-
     protected function respondWithToken($token)
     {
         return response()->json([
             'data' => [
                 'access_token' => $token,
-                //            'token_type' => 'bearer',
-                //            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
             ]
         ]);
+    }
+
+    public function refreshToken(Request $request)
+    {
+        try {
+            $token = $request->header('Authorization');
+
+            if (!$user = JWTAuth::setToken($token)->authenticate()) {
+                return response()->json(['result' => false, 'message' => 'Token không hợp lệ'], 401);
+            }
+
+            // Tạo token mới
+            $newToken = JWTAuth::fromUser($user);
+
+            return $this->respondWithToken($newToken);
+        } catch (JWTException $e) {
+            return response()->json(['result' => false, 'message' => 'Không thể làm mới token'], 500);
+        }
     }
 
     public function profile()

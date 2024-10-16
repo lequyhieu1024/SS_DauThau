@@ -6,17 +6,19 @@ namespace App\Repositories;
 abstract class BaseRepository implements RepositoryInterface
 {
     protected $model;
+
     public function __construct()
     {
         $this->model = app()->make($this->getModel());
     }
-    abstract public function getModel();
 
+    abstract public function getModel();
 
     public function getNameAndIds()
     {
-        return $this->model->pluck('name', 'id');
+        return $this->model->select('id', 'name')->get();
     }
+
     public function getAll($data)
     {
         return $this->model->paginate($data['size'] ?? 10);
@@ -59,6 +61,14 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function delete($id)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->findOrFail($id)->delete();
+    }
+
+    public function deletes($ids)
+    {
+        if (is_array($ids)) {
+            return $this->model->destroy($ids);
+        }
+        return $this->model->destroy([$ids]);
     }
 }

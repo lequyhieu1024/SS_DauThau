@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
+use App\Traits\HandlesValidationFailures;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SelectionMethodRequest extends FormRequest
 {
+    use HandlesValidationFailures;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -37,19 +38,10 @@ class SelectionMethodRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'unique:selection_methods,method_name,'. $id,
+                'unique:selection_methods,method_name,' . $id,
             ],
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'result' => false,
-            'message' => 'Lỗi xác thực',
-            'errors' => $validator->errors(),
-        ], 400));
     }
 }
