@@ -18,6 +18,9 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'author_id' => $this->author_id,
             'author_name' => $this->staff->user->name,
+            'post_catalog_id' => $this->postCatalogs->map(function ($postCatalog) {
+                return $postCatalog->id;
+            })->values()->toArray(),
             'post_catalog_name' => $this->postCatalogs->map(function ($postCatalog) {
                 return $postCatalog->name;
             })->values()->toArray(),
