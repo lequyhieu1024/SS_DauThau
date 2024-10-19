@@ -99,6 +99,11 @@ class PostController extends Controller
      *                             example="Author Name"
      *                         ),
      *                         @OA\Property(
+     *                             property="post_catalog_id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
      *                             property="post_catalog_name",
      *                             type="string",
      *                             example="Post Catalog Name"
@@ -401,6 +406,11 @@ class PostController extends Controller
      *                     property="author_name",
      *                     type="string",
      *                     example="Author Name"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="post_catalog_id",
+     *                     type="integer",
+     *                     example=1
      *                 ),
      *                 @OA\Property(
      *                     property="post_catalog_name",
