@@ -1,25 +1,26 @@
 <?php
 
-use App\Http\Controllers\Api\ActivityLogController;
-use App\Http\Controllers\Api\AttachmentController;
-use App\Http\Controllers\Api\BannerController;
-use App\Http\Controllers\Api\BidBondController;
-use App\Http\Controllers\Api\BiddingFieldController;
-use App\Http\Controllers\Api\BiddingTypeController;
-use App\Http\Controllers\Api\BidDocumentController;
-use App\Http\Controllers\Api\BusinessActivityTypeController;
-use App\Http\Controllers\Api\EnterpriseController;
-use App\Http\Controllers\Api\EvaluationCriteriaController;
-use App\Http\Controllers\Api\FundingSourceController;
-use App\Http\Controllers\Api\IndustryController;
-use App\Http\Controllers\Api\PostCatalogController;
-use App\Http\Controllers\Api\PostController;
-use App\Http\Controllers\Api\ProcurementCategoryController;
-use App\Http\Controllers\Api\ProjectController;
-use App\Http\Controllers\Api\RoleController;
-use App\Http\Controllers\Api\SelectionMethodController;
-use App\Http\Controllers\Api\StaffController;
-use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\Admin\ActivityLogController;
+use App\Http\Controllers\Api\Admin\BiddingResultController;
+use App\Http\Controllers\Api\Admin\PostCatalogController;
+use App\Http\Controllers\Api\Admin\PostController;
+use App\Http\Controllers\Api\Admin\AttachmentController;
+use App\Http\Controllers\Api\Admin\BannerController;
+use App\Http\Controllers\Api\Admin\BidBondController;
+use App\Http\Controllers\Api\Admin\BiddingFieldController;
+use App\Http\Controllers\Api\Admin\BiddingTypeController;
+use App\Http\Controllers\Api\Admin\BidDocumentController;
+use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
+use App\Http\Controllers\Api\Admin\EnterpriseController;
+use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
+use App\Http\Controllers\Api\Admin\FundingSourceController;
+use App\Http\Controllers\Api\Admin\IndustryController;
+use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
+use App\Http\Controllers\Api\Admin\ProjectController;
+use App\Http\Controllers\Api\Admin\RoleController;
+use App\Http\Controllers\Api\Admin\SelectionMethodController;
+use App\Http\Controllers\Api\Admin\StaffController;
+use App\Http\Controllers\Api\Admin\SystemController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -172,4 +173,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     //support
     Route::resource('supports', SupportController::class);
+
+    Route::resource('bidding-results', BiddingResultController::class);
+
 });

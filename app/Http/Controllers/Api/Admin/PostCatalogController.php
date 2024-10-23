@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostCatalogFormRequest;
 use App\Http\Resources\PostCatalogCollection;
-use App\Models\PostCatalog;
 use App\Repositories\PostCatalogRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
