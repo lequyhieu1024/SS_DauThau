@@ -2622,6 +2622,7 @@
         },
         {
             "name": "nikic/php-parser",
+<<<<<<< Updated upstream
             "version": "v5.3.0",
             "source": {
                 "type": "git",
@@ -2632,6 +2633,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3abf7425cd284141dc5d8d14a9ee444de3345d1a",
                 "reference": "3abf7425cd284141dc5d8d14a9ee444de3345d1a",
+=======
+            "version": "v5.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb",
+                "reference": "23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -2674,9 +2687,15 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
+<<<<<<< Updated upstream
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.3.0"
             },
             "time": "2024-09-29T13:56:26+00:00"
+=======
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.2.0"
+            },
+            "time": "2024-09-15T16:40:33+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "nunomaduro/termwind",
@@ -7167,6 +7186,7 @@
         },
         {
             "name": "laravel/pint",
+<<<<<<< Updated upstream
             "version": "v1.18.1",
             "source": {
                 "type": "git",
@@ -7177,6 +7197,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/pint/zipball/35c00c05ec43e6b46d295efc0f4386ceb30d50d9",
                 "reference": "35c00c05ec43e6b46d295efc0f4386ceb30d50d9",
+=======
+            "version": "v1.17.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pint.git",
+                "reference": "9d77be916e145864f10788bb94531d03e1f7b482"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/9d77be916e145864f10788bb94531d03e1f7b482",
+                "reference": "9d77be916e145864f10788bb94531d03e1f7b482",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -7229,6 +7261,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
+<<<<<<< Updated upstream
             "time": "2024-09-24T17:22:50+00:00"
         },
         {
@@ -7243,6 +7276,22 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/sail/zipball/511e9c95b0f3ee778dc9e11e242bcd2af8e002cd",
                 "reference": "511e9c95b0f3ee778dc9e11e242bcd2af8e002cd",
+=======
+            "time": "2024-09-03T15:00:28+00:00"
+        },
+        {
+            "name": "laravel/sail",
+            "version": "v1.32.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sail.git",
+                "reference": "4a7e41d280861ca7e35710cea011a07669b4003b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/4a7e41d280861ca7e35710cea011a07669b4003b",
+                "reference": "4a7e41d280861ca7e35710cea011a07669b4003b",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -7292,7 +7341,11 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
+<<<<<<< Updated upstream
             "time": "2024-09-27T14:58:09+00:00"
+=======
+            "time": "2024-09-11T20:14:29+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "mockery/mockery",

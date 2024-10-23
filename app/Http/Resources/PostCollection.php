@@ -20,6 +20,9 @@ class PostCollection extends ResourceCollection
                     'id' => $post->id,
                     'author_id' => $post->author_id,
                     'author_name' => $post->staff->user->name,
+                    'post_catalog_id' => $post->postCatalogs->map(function ($postCatalog) {
+                        return $postCatalog->id;
+                    })->values()->toArray(),
                     'post_catalog_name' => $post->postCatalogs->map(function ($postCatalog) {
                         return $postCatalog->name;
                     })->values()->toArray(),

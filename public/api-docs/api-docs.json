@@ -5396,6 +5396,10 @@
                                                                 "type": "string",
                                                                 "example": "Author Name"
                                                             },
+                                                            "post_catalog_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
                                                             "post_catalog_name": {
                                                                 "type": "string",
                                                                 "example": "Post Catalog Name"
@@ -5653,6 +5657,10 @@
                                                 "author_name": {
                                                     "type": "string",
                                                     "example": "Author Name"
+                                                },
+                                                "post_catalog_id": {
+                                                    "type": "integer",
+                                                    "example": 1
                                                 },
                                                 "post_catalog_name": {
                                                     "type": "string",
