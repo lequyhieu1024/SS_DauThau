@@ -962,6 +962,101 @@
                 ]
             }
         },
+        "/api/admin/list-bid-bonds": {
+            "get": {
+                "tags": [
+                    "Bid Bonds"
+                ],
+                "summary": "Get all Bid Bonds",
+                "description": "Get all Bid Bonds",
+                "operationId": "560813e3471383a4184e242b27f7c406",
+                "responses": {
+                    "200": {
+                        "description": "Get Bid Bonds successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Bid Bonds successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "project_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "enterprise_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "bond_number": {
+                                                    "type": "string",
+                                                    "example": "bd1"
+                                                },
+                                                "bond_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1000000
+                                                },
+                                                "bond_amount_in_words": {
+                                                    "type": "string",
+                                                    "example": "một triệu"
+                                                },
+                                                "bond_type": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "issue_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-01"
+                                                },
+                                                "expiry_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2021-09-02"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "description"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/bid-bonds/{id}": {
             "get": {
                 "tags": [
@@ -4491,6 +4586,915 @@
                 ]
             }
         },
+        "/api/admin/post-catalogs": {
+            "get": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Get all Post Catalogs",
+                "description": "Get all Post Catalogs",
+                "operationId": "82d2b95e102bbad7f4f9fa63e6c1a204",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of post catalog",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Post Catalogs successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Post Catalogs successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "postCatalogs": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Post Catalogs 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Description of Post Catalogs 1"
+                                                            },
+                                                            "is_active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Create a new post catalog",
+                "description": "Create a new post catalog",
+                "operationId": "63a21df951bb02a5343baeaa0814bb65",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "is_active"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "post catalog 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of post catalog 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post catalog created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post catalog created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "post catalog 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of post catalog 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/post-catalogs/{id}": {
+            "get": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Get post catalog by ID",
+                "description": "Get post catalog by ID",
+                "operationId": "b1bdad5b8f7b978d486ca83777f70923",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post catalog retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "post catalog 1"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Description of post catalog 1"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Delete post catalog by ID",
+                "description": "Delete post catalog by ID",
+                "operationId": "88c500a5b8fb1b6c861f4e5772e8ada5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Update post catalog by ID",
+                "description": "Update post catalog by ID",
+                "operationId": "0319248ea1d1152d81c3469f78cddf4f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "post catalog 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description of post catalog 1"
+                                    },
+                                    "is_active": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "post catalog updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/post-catalogs/{id}/toggle-status": {
+            "patch": {
+                "tags": [
+                    "Post Catalogs"
+                ],
+                "summary": "Toggle active status of post catalog by ID",
+                "description": "Toggle active status of post catalog by ID",
+                "operationId": "8cac33164ee93325d1947e0bb8bfbdfb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post catalog",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post catalog status toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get all Posts",
+                "description": "Get all Posts",
+                "operationId": "ae8c03ea3c2d21ab1bb7025340be56fc",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Size items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "short_title",
+                        "in": "query",
+                        "description": "Short title of post",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Posts successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Get Posts successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "author_name": {
+                                                                "type": "string",
+                                                                "example": "Author Name"
+                                                            },
+                                                            "post_catalog_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "post_catalog_name": {
+                                                                "type": "string",
+                                                                "example": "Post Catalog Name"
+                                                            },
+                                                            "short_title": {
+                                                                "type": "string",
+                                                                "example": "Short Title"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Post Title"
+                                                            },
+                                                            "content": {
+                                                                "type": "string",
+                                                                "example": "Post Content"
+                                                            },
+                                                            "thumbnail": {
+                                                                "type": "string",
+                                                                "example": "thumbnail.png"
+                                                            },
+                                                            "status": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2021-09-01T00:00:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "pageSize": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "totalItems": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "totalPages": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "hasNextPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "hasPreviousPage": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "description": "Create a new post",
+                "operationId": "c94870569170928c8d5cb40789e291c1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get post by ID",
+                "description": "Get post by ID",
+                "operationId": "eec01596fa3710510eb4e30bac1a8ad3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "post retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_name": {
+                                                    "type": "string",
+                                                    "example": "Author Name"
+                                                },
+                                                "post_catalog_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "post_catalog_name": {
+                                                    "type": "string",
+                                                    "example": "Post Catalog Name"
+                                                },
+                                                "short_title": {
+                                                    "type": "string",
+                                                    "example": "Short Title"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Title"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Content of the post"
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "thumbnail.png"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2021-09-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update post by ID",
+                "description": "Update post by ID",
+                "operationId": "6e2b4f926da9e89b47c22477afd5e6d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "post_catalog_id",
+                                    "short_title",
+                                    "title",
+                                    "content",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "post_catalog_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "short_title": {
+                                        "type": "string",
+                                        "example": "short_title"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "content"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PATCH"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete post by ID",
+                "description": "Delete post by ID",
+                "operationId": "f98594249dac7dbb547059f00345d860",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "post deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/selection-methods": {
             "get": {
                 "tags": [
@@ -4908,915 +5912,6 @@
                 ]
             }
         },
-        "/api/admin/post-catalogs": {
-            "get": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Get all Post Catalogs",
-                "description": "Get all Post Catalogs",
-                "operationId": "81b9627c9a5162d00d7f2ba7d4b9f3da",
-                "parameters": [
-                    {
-                        "name": "size",
-                        "in": "query",
-                        "description": "Size items per page",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Name of post catalog",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get Post Catalogs successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Get Post Catalogs successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "postCatalogs": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "Post Catalogs 1"
-                                                            },
-                                                            "description": {
-                                                                "type": "string",
-                                                                "example": "Description of Post Catalogs 1"
-                                                            },
-                                                            "is_active": {
-                                                                "type": "boolean",
-                                                                "example": true
-                                                            },
-                                                            "created_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            },
-                                                            "updated_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "pagination": {
-                                                    "properties": {
-                                                        "currentPage": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "pageSize": {
-                                                            "type": "integer",
-                                                            "example": 10
-                                                        },
-                                                        "totalItems": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "totalPages": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "hasNextPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        },
-                                                        "hasPreviousPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Create a new post catalog",
-                "description": "Create a new post catalog",
-                "operationId": "f1be97cc2301e7db65f5beb048d22e60",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "is_active"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "post catalog 1"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Description of post catalog 1"
-                                    },
-                                    "is_active": {
-                                        "type": "number",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "post catalog created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "post catalog created successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "post catalog 1"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Description of post catalog 1"
-                                                },
-                                                "is_active": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/post-catalogs/{id}": {
-            "get": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Get post catalog by ID",
-                "description": "Get post catalog by ID",
-                "operationId": "489a172c2da456a8b366ea3d70287d7f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post catalog",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "post catalog retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "post catalog retrieved successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "post catalog 1"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Description of post catalog 1"
-                                                },
-                                                "is_active": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Delete post catalog by ID",
-                "description": "Delete post catalog by ID",
-                "operationId": "42c5b089c72297f746ed4899ea0b5e98",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post catalog",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "post catalog deleted successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Update post catalog by ID",
-                "description": "Update post catalog by ID",
-                "operationId": "4c8c816ed1b089f6b3dc6bb079369840",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post catalog",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "post catalog 1"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Description of post catalog 1"
-                                    },
-                                    "is_active": {
-                                        "type": "number",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "post catalog updated successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/post-catalogs/{id}/toggle-status": {
-            "patch": {
-                "tags": [
-                    "Post Catalogs"
-                ],
-                "summary": "Toggle active status of post catalog by ID",
-                "description": "Toggle active status of post catalog by ID",
-                "operationId": "29aae791e88b52008d0749b0b3b5b259",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post catalog",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "post catalog status toggled successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/posts": {
-            "get": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Get all Posts",
-                "description": "Get all Posts",
-                "operationId": "3c5ff02b2fccb55136f33aaeaa8a0f36",
-                "parameters": [
-                    {
-                        "name": "size",
-                        "in": "query",
-                        "description": "Size items per page",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "short_title",
-                        "in": "query",
-                        "description": "Short title of post",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get Posts successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Get Posts successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "posts": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "author_id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "author_name": {
-                                                                "type": "string",
-                                                                "example": "Author Name"
-                                                            },
-                                                            "post_catalog_id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "post_catalog_name": {
-                                                                "type": "string",
-                                                                "example": "Post Catalog Name"
-                                                            },
-                                                            "short_title": {
-                                                                "type": "string",
-                                                                "example": "Short Title"
-                                                            },
-                                                            "title": {
-                                                                "type": "string",
-                                                                "example": "Post Title"
-                                                            },
-                                                            "content": {
-                                                                "type": "string",
-                                                                "example": "Post Content"
-                                                            },
-                                                            "thumbnail": {
-                                                                "type": "string",
-                                                                "example": "thumbnail.png"
-                                                            },
-                                                            "status": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "created_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            },
-                                                            "updated_at": {
-                                                                "type": "string",
-                                                                "example": "2021-09-01T00:00:00.000000Z"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "pagination": {
-                                                    "properties": {
-                                                        "currentPage": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "pageSize": {
-                                                            "type": "integer",
-                                                            "example": 10
-                                                        },
-                                                        "totalItems": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "totalPages": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "hasNextPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        },
-                                                        "hasPreviousPage": {
-                                                            "type": "boolean",
-                                                            "example": false
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Create a new post",
-                "description": "Create a new post",
-                "operationId": "145a86ddf12e8160890c5abc0ba8c029",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "post_catalog_id",
-                                    "short_title",
-                                    "title",
-                                    "content",
-                                    "status"
-                                ],
-                                "properties": {
-                                    "post_catalog_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "short_title": {
-                                        "type": "string",
-                                        "example": "short_title"
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "title"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "content"
-                                    },
-                                    "thumbnail": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "nullable": true
-                                    },
-                                    "status": {
-                                        "type": "number",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Post created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Post created successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "author_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "author_name": {
-                                                    "type": "string",
-                                                    "example": "Author Name"
-                                                },
-                                                "post_catalog_name": {
-                                                    "type": "string",
-                                                    "example": "Post Catalog Name"
-                                                },
-                                                "short_title": {
-                                                    "type": "string",
-                                                    "example": "Short Title"
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Title"
-                                                },
-                                                "content": {
-                                                    "type": "string",
-                                                    "example": "Content of the post"
-                                                },
-                                                "thumbnail": {
-                                                    "type": "string",
-                                                    "example": "thumbnail.png"
-                                                },
-                                                "status": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/posts/{id}": {
-            "get": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Get post by ID",
-                "description": "Get post by ID",
-                "operationId": "8f3e571071a2765890ef18567c0ccd8a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "post retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "result": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "post retrieved successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "author_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "author_name": {
-                                                    "type": "string",
-                                                    "example": "Author Name"
-                                                },
-                                                "post_catalog_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "post_catalog_name": {
-                                                    "type": "string",
-                                                    "example": "Post Catalog Name"
-                                                },
-                                                "short_title": {
-                                                    "type": "string",
-                                                    "example": "Short Title"
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Title"
-                                                },
-                                                "content": {
-                                                    "type": "string",
-                                                    "example": "Content of the post"
-                                                },
-                                                "thumbnail": {
-                                                    "type": "string",
-                                                    "example": "thumbnail.png"
-                                                },
-                                                "status": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2021-09-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Update post by ID",
-                "description": "Update post by ID",
-                "operationId": "789d233fef4ea439d04938cd0861e65d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "post_catalog_id",
-                                    "short_title",
-                                    "title",
-                                    "content",
-                                    "status"
-                                ],
-                                "properties": {
-                                    "post_catalog_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "short_title": {
-                                        "type": "string",
-                                        "example": "short_title"
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "title"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "content"
-                                    },
-                                    "thumbnail": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "nullable": true
-                                    },
-                                    "status": {
-                                        "type": "number",
-                                        "example": 1
-                                    },
-                                    "_method": {
-                                        "type": "string",
-                                        "example": "PATCH"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Post updated successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Delete post by ID",
-                "description": "Delete post by ID",
-                "operationId": "ede6250de814e6c847900520df40b7de",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of post",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "post deleted successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -5936,16 +6031,16 @@
             "description": "Industry"
         },
         {
-            "name": "Selection methods",
-            "description": "Selection methods"
-        },
-        {
             "name": "Post Catalogs",
             "description": "Post Catalogs"
         },
         {
             "name": "Posts",
             "description": "Posts"
+        },
+        {
+            "name": "Selection methods",
+            "description": "Selection methods"
         }
     ]
 }

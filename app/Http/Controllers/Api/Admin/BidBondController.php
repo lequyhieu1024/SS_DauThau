@@ -199,6 +199,110 @@ class BidBondController extends Controller
         ], 200);
     }
 
+     /**
+     * @OA\Get(
+     *     path="/api/admin/list-bid-bonds",
+     *     tags={"Bid Bonds"},
+     *     summary="Get all Bid Bonds",
+     *     description="Get all Bid Bonds",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Get Bid Bonds successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="result",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Get Bid Bonds successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="project_id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="enterprise_id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="bond_number",
+     *                         type="string",
+     *                         example="bd1"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="bond_amount",
+     *                         type="number",
+     *                         format="float",
+     *                         example=1000000.00
+     *                     ),
+     *                     @OA\Property(
+     *                         property="bond_amount_in_words",
+     *                         type="string",
+     *                         example="một triệu"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="bond_type",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="issue_date",
+     *                         type="string",
+     *                         format="date",
+     *                         example="2021-09-01"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="expiry_date",
+     *                         type="string",
+     *                         format="date",
+     *                         example="2021-09-02"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="description",
+     *                         type="string",
+     *                         example="description"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="created_at",
+     *                         type="string",
+     *                         format="date-time",
+     *                         example="2021-09-01T00:00:00.000000Z"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="updated_at",
+     *                         type="string",
+     *                         format="date-time",
+     *                         example="2021-09-01T00:00:00.000000Z"
+     *                     ),
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function listAll(){
+        $bidBonds = $this->bidBondRepository->listAll();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách bảo lãnh dự thầu thành công.',
+            'data' =>  (new BidBondCollection($bidBonds))->toArrayWithoutPagination()
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

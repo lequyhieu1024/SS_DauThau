@@ -16,8 +16,8 @@ class BidBondResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project_id' => $this->project->name,
-            'enterprise_id' => $this->enterprise->representative,
+            'project_id' => $this->project->id,
+            'enterprise_id' => $this->enterprise->id,
             'bond_number' => $this->bond_number,
             'bond_amount' => $this->bond_amount,
             'bond_amount_in_words' => $this->bond_amount_in_words,

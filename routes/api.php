@@ -157,6 +157,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Bid bonds
     Route::resource('bid-bonds', BidBondController::class)->except('update');
     Route::patch('bid-bonds/{id}', [BidBondController::class, 'update']);
+    Route::get('list-bid-bonds', [BidBondController::class, 'listAll']);
 
     // Bid documents
     Route::resource('bid-documents', BidDocumentController::class);
@@ -172,7 +173,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('posts', PostController::class);
 
     //support
-    Route::resource('supports', SupportController::class);
+    // Route::resource('supports', SupportController::class);
 
     Route::resource('bidding-results', BiddingResultController::class);
 
