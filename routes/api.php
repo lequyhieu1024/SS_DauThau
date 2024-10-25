@@ -1,7 +1,9 @@
 <?php
 
-
 use App\Http\Controllers\Api\Admin\ActivityLogController;
+use App\Http\Controllers\Api\Admin\BiddingResultController;
+use App\Http\Controllers\Api\Admin\PostCatalogController;
+use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\AttachmentController;
 use App\Http\Controllers\Api\Admin\BannerController;
 use App\Http\Controllers\Api\Admin\BidBondController;
@@ -18,11 +20,7 @@ use App\Http\Controllers\Api\Admin\ProjectController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
 use App\Http\Controllers\Api\Admin\StaffController;
-use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\SystemController;
-use App\Http\Controllers\Api\PostCatalogController;
-use App\Http\Controllers\Api\PostController;
-
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -174,5 +172,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('posts', PostController::class);
 
     //support
-    Route::resource('supports', SupportController::class);
+    // Route::resource('supports', SupportController::class);
+
+    Route::resource('bidding-results', BiddingResultController::class);
+
 });

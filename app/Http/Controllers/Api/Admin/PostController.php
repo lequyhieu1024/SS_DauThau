@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostFormRequest;
@@ -92,7 +92,7 @@ class PostController extends Controller
      *                             property="author_id",
      *                             type="integer",
      *                             example=1
-     *                         ), 
+     *                         ),
      *                         @OA\Property(
      *                             property="author_name",
      *                             type="string",
@@ -338,7 +338,7 @@ class PostController extends Controller
 
             $post = $this->postRepository->create($data);
             $this->postRepository->syncPostCatalog($data, $post->id);
-            
+
             DB::commit();
             return response()->json([
                 "result" => true,
@@ -487,7 +487,7 @@ class PostController extends Controller
      *     summary="Update post by ID",
      *     description="Update post by ID",
      *     security={{"bearerAuth": {}}},
-     *     
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -497,14 +497,14 @@ class PostController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={"post_catalog_id", "short_title", "title", "content", "status"},
-     *                 
+     *
      *                 @OA\Property(
      *                     property="post_catalog_id",
      *                         type="integer",
@@ -539,12 +539,12 @@ class PostController extends Controller
      *                 @OA\Property(
      *                     property="_method",
      *                     type="string",
-     *                     example="PATCH"  
+     *                     example="PATCH"
      *                 )
      *             )
      *         )
      *     ),
-     *     
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Post updated successfully"
