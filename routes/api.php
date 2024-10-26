@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Admin\BiddingFieldController;
 use App\Http\Controllers\Api\Admin\BiddingTypeController;
 use App\Http\Controllers\Api\Admin\BidDocumentController;
 use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
+use App\Http\Controllers\Api\Admin\DashBoardController;
 use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
@@ -175,5 +176,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Route::resource('supports', SupportController::class);
 
     Route::resource('bidding-results', BiddingResultController::class);
+
+    Route::get('project-by-industry', [DashBoardController::class, 'projectByIndustry']);
+
 
 });

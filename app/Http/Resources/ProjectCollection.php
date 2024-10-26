@@ -48,4 +48,17 @@ class ProjectCollection extends ResourceCollection
             'current_page' => $this->currentPage(),
         ];
     }
+
+    //
+    public function getProjectCountByIndustry()
+    {
+        return [
+            'data' => $this->collection->map(function ($industry) {
+                return [
+                    'industry_name' => $industry->name,
+                    'project_count' => $industry->projects_count,
+                ];
+            }),
+        ];
+    }
 }

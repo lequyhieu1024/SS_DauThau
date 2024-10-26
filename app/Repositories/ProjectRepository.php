@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\Industry;
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -126,5 +127,9 @@ class ProjectRepository extends BaseRepository
         return $this->model->findOrFail($id)->update([
             'status' => ProjectStatus::RESULTS_PUBLICED->value,
         ]);
+    }
+
+    public function getProjectCountByIndustry(){
+        return Industry::withCount('projects')->get();
     }
 }
