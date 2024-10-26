@@ -48,4 +48,5 @@ class ProjectCollection extends ResourceCollection
             'current_page' => $this->currentPage(),
         ];
     }
+    
 }
