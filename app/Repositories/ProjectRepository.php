@@ -152,7 +152,10 @@ class ProjectRepository extends BaseRepository
         foreach ($industries as $industry) {
             $projectCount = $industry->projects_count;
             $percentage = ($projectCount / $totalProjects) * 100;
-            $data[$industry->name] = round($percentage, 2);
+            $data[] = [
+                'name' => $industry->name,
+                'value' => round($percentage, 2)
+            ];
         }
 
         return $data;
@@ -178,7 +181,10 @@ class ProjectRepository extends BaseRepository
         foreach ($fundingSources as $fundingSource) {
             $projectCount = $fundingSource->projects_count;
             $percentage = ($projectCount / $totalProjects) * 100;
-            $data[$fundingSource->name] = round($percentage, 2);
+            $data[] = [
+                'name' =>$fundingSource->name,
+                'value' => round($percentage, 2)
+            ];
         }
 
         return $data;
@@ -283,7 +289,7 @@ class ProjectRepository extends BaseRepository
         // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
         $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
 
-        // 
+        //
         $tendererPercentage = ($tendererCount / $totalProjects) * 100;
         $investorPercentage = ($investorCount / $totalProjects) * 100;
         $bothPercentage = ($bothCount / $totalProjects) * 100;
