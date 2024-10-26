@@ -188,17 +188,47 @@ class ProjectRepository extends BaseRepository
         // Tổng số dự án
         $totalProjects = $this->model::count();
 
+        if($totalProjects === 0){
+            return [
+                'Trong nước' => 0,
+                'Quốc tế' => 0,
+            ];
+        }
+
         // trong nước
         $domesticCount = $this->model::where('is_domestic', true)->count();
-        $domesticPercentage = $totalProjects > 0 ? ($domesticCount / $totalProjects) * 100 : 0;
+        $domesticPercentage = ($domesticCount / $totalProjects) * 100;
 
         // quốc tế
-        $internationalCount = Project::where('is_domestic', false)->count();
-        $internationalPercentage = $totalProjects > 0 ? ($internationalCount / $totalProjects) * 100 : 0;
+        $internationalPercentage = 100 - $domesticPercentage;
 
         return [
-            'Trong nước' => round($domesticPercentage, 2) ,
-            'Quốc tế' => round($internationalPercentage, 2) ,
+            'Trong nước' => round($domesticPercentage, 2),
+            'Quốc tế' => round($internationalPercentage, 2),
+        ];
+    }
+
+    public function getProjectPercentageBySubmissionMethod()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+        
+        if($totalProjects === 0){
+            return [
+                'Online' => 0,
+                'Trực tiếp' => 0,
+            ];
+        }
+
+        // Online
+        $onlineCount = $this->model::where('submission_method', 'online')->count();
+        $onlinePercentage = ($onlineCount / $totalProjects) * 100;
+
+        // Trực tiếp
+        $inPersonPercentage = 100 - $onlinePercentage;
+        return [
+            'Online' => round($onlinePercentage, 2),
+            'Trực tiếp' => round($inPersonPercentage, 2),
         ];
     }
 }

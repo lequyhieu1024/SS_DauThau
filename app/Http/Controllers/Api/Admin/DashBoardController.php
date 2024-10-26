@@ -36,8 +36,18 @@ class DashBoardController extends Controller
         ], 200);
     }
 
+    // Lấy tỷ lệ dự án trong ngoài nước
     public function projectByIsDomestic() {
         $data = $this->projectRepository->getDomesticPercentage();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
+        ], 200);
+    }
+
+    public function projectBySubmissionMethod(){
+        $data = $this->projectRepository->getProjectPercentageBySubmissionMethod();
         return response()->json([
             'result' => true,
             'message' => 'Lấy thành công',
