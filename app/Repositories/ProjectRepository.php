@@ -6,6 +6,7 @@ use App\Enums\ProjectStatus;
 use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
+use App\Models\SelectionMethod;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -136,7 +137,7 @@ class ProjectRepository extends BaseRepository
         // Lấy tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào, trả về mảng trống
+        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -162,7 +163,7 @@ class ProjectRepository extends BaseRepository
         // 1. Lấy tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào, trả về mảng trống
+        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -212,7 +213,7 @@ class ProjectRepository extends BaseRepository
     {
         // Tổng số dự án
         $totalProjects = $this->model::count();
-        
+
         if($totalProjects === 0){
             return [
                 'Online' => 0,
@@ -230,5 +231,31 @@ class ProjectRepository extends BaseRepository
             'Online' => round($onlinePercentage, 2),
             'Trực tiếp' => round($inPersonPercentage, 2),
         ];
+    }
+
+    public function getProjectPercentageBySelectionMethod()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy số lượng dự án theo nguồn vốn
+        $selectionMethods = SelectionMethod::withCount('projects')->get();
+        $data = [];
+        foreach ($selectionMethods as $selectionMethod) {
+            $projectCount = $selectionMethod->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$selectionMethod->method_name] = round($percentage, 2);
+        }
+
+        return $data;
     }
 }

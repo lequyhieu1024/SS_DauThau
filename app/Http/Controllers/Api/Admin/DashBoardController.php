@@ -54,4 +54,13 @@ class DashBoardController extends Controller
             'data' =>  $data
         ], 200);
     }
+
+    public function projectBySelectionMethod(){
+        $data = $this->projectRepository->getProjectPercentageBySelectionMethod();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
+        ], 200);
+    }
 }
