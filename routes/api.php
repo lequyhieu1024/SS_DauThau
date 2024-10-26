@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\ActivityLogController;
 use App\Http\Controllers\Api\Admin\BiddingResultController;
+use App\Http\Controllers\Api\Admin\EmployeeController;
 use App\Http\Controllers\Api\Admin\PostCatalogController;
 use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\AttachmentController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
 use App\Http\Controllers\Api\Admin\StaffController;
 use App\Http\Controllers\Api\Admin\SystemController;
+use App\Http\Controllers\Api\Admin\TaskController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -136,6 +138,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
         [EvaluationCriteriaController::class, 'changeActive']);
+    Route::get('list-evaluation-criterias', [EvaluationCriteriaController::class, 'getNameAndIds']);
 
     // Procurement Categories / Lĩnh vực mua sắm công
     Route::resource('procurement-categories', ProcurementCategoryController::class);
@@ -173,10 +176,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('posts', PostController::class);
 
     //support
-    // Route::resource('supports', SupportController::class);
+    Route::resource('supports', SupportController::class);
 
     Route::resource('bidding-results', BiddingResultController::class);
 
+    Route::resource('employees', EmployeeController::class);
+    Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
+
+    Route::resource('tasks', TaskController::class);
     Route::get('project-by-industry', [DashBoardController::class, 'projectByIndustry']);
     Route::get('project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
     Route::get('project-by-domestic', [DashBoardController::class, 'projectByIsDomestic']);
@@ -185,5 +192,4 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('project-by-tenderer-investor', [DashBoardController::class, 'projectByTendererAndInvestor']);
 
     
-
 });
