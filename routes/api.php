@@ -178,6 +178,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('bidding-results', BiddingResultController::class);
 
     Route::get('project-by-industry', [DashBoardController::class, 'projectByIndustry']);
+    Route::get('project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
 
 
 });

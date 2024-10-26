@@ -15,14 +15,23 @@ class DashBoardController extends Controller
         $this->projectRepository = $projectRepository;
     }
 
-    // Lấy số dự án theo nghành nghề
+    // Lấy tỷ lệ dự án theo nghành nghề
     public function projectByIndustry()
     {
-        $data = $this->projectRepository->getProjectCountByIndustry();
+        $data = $this->projectRepository->getProjectPercentageByIndustry();
         return response()->json([
             'result' => true,
             'message' => 'Lấy thành công',
-            'data' => (new ProjectCollection($data))->getProjectCountByIndustry(),
+            'data' =>  $data,
+        ], 200);
+    }
+
+    public function projectByFundingSource() {
+        $data = $this->projectRepository->getProjectPercentageByFundingSource();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
         ], 200);
     }
 }

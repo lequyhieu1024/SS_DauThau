@@ -3,10 +3,12 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectRepository extends BaseRepository
 {
@@ -17,10 +19,10 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-        if ($data['enterprise_id'] == null){
+        if ($data['enterprise_id'] == null) {
             $query = $this->model->with('children')->whereNull('parent_id');
-        }else{ // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-            $query = $this->model->with('children')->whereNull('parent_id')->where(function($query) use ($data) {
+        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
                 $query->where('investor_id', $data['enterprise_id'])
                     ->orWhere('tenderer_id', $data['enterprise_id']);
             });
@@ -129,7 +131,55 @@ class ProjectRepository extends BaseRepository
         ]);
     }
 
-    public function getProjectCountByIndustry(){
-        return Industry::withCount('projects')->get();
+    public function getProjectPercentageByIndustry()
+    {
+        // Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào, trả về mảng trống
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy số lượng dự án theo ngành
+        $industries = Industry::withCount('projects')->get();
+        $data = [];
+        foreach ($industries as $industry) {
+            $projectCount = $industry->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$industry->name] = round($percentage, 2);
+        }
+
+        return $data;
+    }
+
+    public function getProjectPercentageByFundingSource()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào, trả về mảng trống
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy số lượng dự án theo nguồn vốn
+        $fundingSources = FundingSource::withCount('projects')->get();
+        $data = [];
+        foreach ($fundingSources as $fundingSource) {
+            $projectCount = $fundingSource->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$fundingSource->name] = round($percentage, 2);
+        }
+
+        return $data;
     }
 }
