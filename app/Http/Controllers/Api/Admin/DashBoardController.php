@@ -26,8 +26,18 @@ class DashBoardController extends Controller
         ], 200);
     }
 
+    // Lấy tỷ lệ dự án theo nguồn vốn
     public function projectByFundingSource() {
         $data = $this->projectRepository->getProjectPercentageByFundingSource();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
+        ], 200);
+    }
+
+    public function projectByIsDomestic() {
+        $data = $this->projectRepository->getDomesticPercentage();
         return response()->json([
             'result' => true,
             'message' => 'Lấy thành công',

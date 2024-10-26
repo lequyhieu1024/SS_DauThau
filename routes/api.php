@@ -179,6 +179,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     Route::get('project-by-industry', [DashBoardController::class, 'projectByIndustry']);
     Route::get('project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
+    Route::get('project-by-domestic', [DashBoardController::class, 'projectByIsDomestic']);
 
 
 });

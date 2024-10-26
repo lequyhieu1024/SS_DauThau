@@ -182,4 +182,23 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+
+    public function getDomesticPercentage()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // trong nước
+        $domesticCount = $this->model::where('is_domestic', true)->count();
+        $domesticPercentage = $totalProjects > 0 ? ($domesticCount / $totalProjects) * 100 : 0;
+
+        // quốc tế
+        $internationalCount = Project::where('is_domestic', false)->count();
+        $internationalPercentage = $totalProjects > 0 ? ($internationalCount / $totalProjects) * 100 : 0;
+
+        return [
+            'Trong nước' => round($domesticPercentage, 2) ,
+            'Quốc tế' => round($internationalPercentage, 2) ,
+        ];
+    }
 }
