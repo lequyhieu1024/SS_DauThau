@@ -13,19 +13,11 @@ class EvaluationCriteriaRepository extends BaseRepository
 
     public function filter($data)
     {
-        $query = $this->model->query(); // ->project()
+        $query = $this->model->query();
 
-        // if (isset($data['project_ids']) && is_array($data['project_ids'])) {
-        //     $data['project_ids'] = array_filter($data['project_ids'], function ($value) {
-        //         return $value !== null;
-        //     });
-
-        //     if (!empty($data['project_ids'])) {
-        //         $query->whereHas('projects', function ($query) use ($data) {
-        //             $query->whereIn('project_id', $data['project_ids']);
-        //         });
-        //     }
-        // }
+        if (isset($data['project'])) {
+            $query->where('project_id', $data['project']);
+        }
 
         if (isset($data['name']) && is_string($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');

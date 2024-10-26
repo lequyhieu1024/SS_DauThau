@@ -27,11 +27,11 @@ class EnterpriseController extends Controller
         IndustryRepository $industryRepository,
         RoleRepository $roleRepository
     ) {
-        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
-        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
-        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
-        $this->middleware(['permission:detail_enterprise'])->only('show');
-        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
+//        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
+//        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
+//        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
+//        $this->middleware(['permission:detail_enterprise'])->only('show');
+//        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
 
 
         $this->enterpriseRepository = $enterpriseRepository;

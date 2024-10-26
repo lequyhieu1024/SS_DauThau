@@ -444,7 +444,7 @@ class BidBondController extends Controller
 
             $data = $request->all();
 
-            $issueDate = $this->projectRepository->find($request->project_id)->submission_deadline;
+            $issueDate = $this->projectRepository->find($request->project_id)->bid_submission_end;
             $expiryValidation = $this->validateExpiryDate($request->expiry_date, $issueDate);
             if (!$expiryValidation['result']) {
                 return response()->json($expiryValidation, 422);
