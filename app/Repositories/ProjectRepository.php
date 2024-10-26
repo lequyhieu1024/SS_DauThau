@@ -182,7 +182,7 @@ class ProjectRepository extends BaseRepository
             $projectCount = $fundingSource->projects_count;
             $percentage = ($projectCount / $totalProjects) * 100;
             $data[] = [
-                'name' =>$fundingSource->name,
+                'name' => $fundingSource->name,
                 'value' => round($percentage, 2)
             ];
         }
@@ -197,8 +197,8 @@ class ProjectRepository extends BaseRepository
 
         if ($totalProjects === 0) {
             return [
-                'Trong nước' => 0,
-                'Quốc tế' => 0,
+                ['name' => 'Trong nước', 'value' => 0],
+                ['name' => 'Quốc tế', 'value' => 0]
             ];
         }
 
@@ -210,8 +210,8 @@ class ProjectRepository extends BaseRepository
         $internationalPercentage = 100 - $domesticPercentage;
 
         return [
-            'Trong nước' => round($domesticPercentage, 2),
-            'Quốc tế' => round($internationalPercentage, 2),
+            ['name' => 'Trong nước', 'value' => round($domesticPercentage, 2)],
+            ['name' => 'Quốc tế', 'value' => round($internationalPercentage, 2)]
         ];
     }
 
@@ -222,8 +222,8 @@ class ProjectRepository extends BaseRepository
 
         if ($totalProjects === 0) {
             return [
-                'Online' => 0,
-                'Trực tiếp' => 0,
+                ['name' => 'Online', 'value' => 0],
+                ['name' => 'Trực tiếp', 'value' => 0]
             ];
         }
 
@@ -233,9 +233,10 @@ class ProjectRepository extends BaseRepository
 
         // Trực tiếp
         $inPersonPercentage = 100 - $onlinePercentage;
+
         return [
-            'Online' => round($onlinePercentage, 2),
-            'Trực tiếp' => round($inPersonPercentage, 2),
+            ['name' => 'Online', 'value' => round($onlinePercentage, 2)],
+            ['name' => 'Trực tiếp', 'value' => round($inPersonPercentage, 2)]
         ];
     }
 
@@ -259,7 +260,11 @@ class ProjectRepository extends BaseRepository
         foreach ($selectionMethods as $selectionMethod) {
             $projectCount = $selectionMethod->projects_count;
             $percentage = ($projectCount / $totalProjects) * 100;
-            $data[$selectionMethod->method_name] = round($percentage, 2);
+
+            $data[] = [
+                'name' => $selectionMethod->method_name,
+                'value' => round($percentage, 2)
+            ];
         }
 
         return $data;
@@ -274,9 +279,9 @@ class ProjectRepository extends BaseRepository
         // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
-                'Bên mời thầu' => 0,
-                'Bên đầu tư' => 0,
-                'Cả hai' => 0,
+                ['name' => 'Bên mời thầu', 'value' => 0],
+                ['name' => 'Bên đầu tư', 'value' => 0],
+                ['name' => 'Cả hai', 'value' => 0]
             ];
         }
 
@@ -295,9 +300,9 @@ class ProjectRepository extends BaseRepository
         $bothPercentage = ($bothCount / $totalProjects) * 100;
 
         return [
-            'Bên mời thầu' => round($tendererPercentage, 2),
-            'Bên đầu tư' => round($investorPercentage, 2),
-            'Cả hai' => round($bothPercentage, 2)
+            ['name' => 'Bên mời thầu', 'value' => round($tendererPercentage, 2)],
+            ['name' => 'Bên đầu tư', 'value' => round($investorPercentage, 2)],
+            ['name' => 'Cả hai', 'value' => round($bothPercentage, 2)]
         ];
     }
 }
