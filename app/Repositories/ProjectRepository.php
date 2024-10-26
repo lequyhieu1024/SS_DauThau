@@ -189,7 +189,7 @@ class ProjectRepository extends BaseRepository
         // Tổng số dự án
         $totalProjects = $this->model::count();
 
-        if($totalProjects === 0){
+        if ($totalProjects === 0) {
             return [
                 'Trong nước' => 0,
                 'Quốc tế' => 0,
@@ -214,7 +214,7 @@ class ProjectRepository extends BaseRepository
         // Tổng số dự án
         $totalProjects = $this->model::count();
 
-        if($totalProjects === 0){
+        if ($totalProjects === 0) {
             return [
                 'Online' => 0,
                 'Trực tiếp' => 0,
@@ -247,7 +247,7 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo nguồn vốn
+        // Lấy tỷ lệ dự án theo nguồn vốn
         $selectionMethods = SelectionMethod::withCount('projects')->get();
         $data = [];
         foreach ($selectionMethods as $selectionMethod) {
@@ -257,5 +257,41 @@ class ProjectRepository extends BaseRepository
         }
 
         return $data;
+    }
+
+    // lấy tỷ lệ phân bổ dự án theo vai trò bên mời thầu, đầu tư và cả hai
+    public function getProjectPercentageByTendererInvestor()
+    {
+        // Tổng số dự án
+        $totalProjects = Project::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'Bên mời thầu' => 0,
+                'Bên đầu tư' => 0,
+                'Cả hai' => 0,
+            ];
+        }
+
+        // dự án mà bên mời thầu khác nhà đầu tư
+        $tendererCount = Project::whereColumn('tenderer_id', '!=', 'investor_id')->count();
+
+        // dự án mà nhà đầu tư khác bên mời thầu
+        $investorCount = Project::whereColumn('investor_id', '!=', 'tenderer_id')->count();
+
+        // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
+        $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
+
+        // 
+        $tendererPercentage = ($tendererCount / $totalProjects) * 100;
+        $investorPercentage = ($investorCount / $totalProjects) * 100;
+        $bothPercentage = ($bothCount / $totalProjects) * 100;
+
+        return [
+            'Bên mời thầu' => round($tendererPercentage, 2),
+            'Bên đầu tư' => round($investorPercentage, 2),
+            'Cả hai' => round($bothPercentage, 2)
+        ];
     }
 }
