@@ -3,9 +3,13 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\FundingSource;
+use App\Models\Industry;
 use App\Models\Project;
+use App\Models\SelectionMethod;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectRepository extends BaseRepository
 {
@@ -16,10 +20,10 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-        if ($data['enterprise_id'] == null){
+        if ($data['enterprise_id'] == null) {
             $query = $this->model->with('children')->whereNull('parent_id');
-        }else{ // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-            $query = $this->model->with('children')->whereNull('parent_id')->where(function($query) use ($data) {
+        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
                 $query->where('investor_id', $data['enterprise_id'])
                     ->orWhere('tenderer_id', $data['enterprise_id']);
             });
@@ -126,5 +130,168 @@ class ProjectRepository extends BaseRepository
         return $this->model->findOrFail($id)->update([
             'status' => ProjectStatus::RESULTS_PUBLICED->value,
         ]);
+    }
+
+    public function getProjectPercentageByIndustry()
+    {
+        // Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy số lượng dự án theo ngành
+        $industries = Industry::withCount('projects')->get();
+        $data = [];
+        foreach ($industries as $industry) {
+            $projectCount = $industry->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$industry->name] = round($percentage, 2);
+        }
+
+        return $data;
+    }
+
+    public function getProjectPercentageByFundingSource()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy số lượng dự án theo nguồn vốn
+        $fundingSources = FundingSource::withCount('projects')->get();
+        $data = [];
+        foreach ($fundingSources as $fundingSource) {
+            $projectCount = $fundingSource->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$fundingSource->name] = round($percentage, 2);
+        }
+
+        return $data;
+    }
+
+    public function getDomesticPercentage()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        if ($totalProjects === 0) {
+            return [
+                'Trong nước' => 0,
+                'Quốc tế' => 0,
+            ];
+        }
+
+        // trong nước
+        $domesticCount = $this->model::where('is_domestic', true)->count();
+        $domesticPercentage = ($domesticCount / $totalProjects) * 100;
+
+        // quốc tế
+        $internationalPercentage = 100 - $domesticPercentage;
+
+        return [
+            'Trong nước' => round($domesticPercentage, 2),
+            'Quốc tế' => round($internationalPercentage, 2),
+        ];
+    }
+
+    public function getProjectPercentageBySubmissionMethod()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        if ($totalProjects === 0) {
+            return [
+                'Online' => 0,
+                'Trực tiếp' => 0,
+            ];
+        }
+
+        // Online
+        $onlineCount = $this->model::where('submission_method', 'online')->count();
+        $onlinePercentage = ($onlineCount / $totalProjects) * 100;
+
+        // Trực tiếp
+        $inPersonPercentage = 100 - $onlinePercentage;
+        return [
+            'Online' => round($onlinePercentage, 2),
+            'Trực tiếp' => round($inPersonPercentage, 2),
+        ];
+    }
+
+    public function getProjectPercentageBySelectionMethod()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // Lấy tỷ lệ dự án theo nguồn vốn
+        $selectionMethods = SelectionMethod::withCount('projects')->get();
+        $data = [];
+        foreach ($selectionMethods as $selectionMethod) {
+            $projectCount = $selectionMethod->projects_count;
+            $percentage = ($projectCount / $totalProjects) * 100;
+            $data[$selectionMethod->method_name] = round($percentage, 2);
+        }
+
+        return $data;
+    }
+
+    // lấy tỷ lệ phân bổ dự án theo vai trò bên mời thầu, đầu tư và cả hai
+    public function getProjectPercentageByTendererInvestor()
+    {
+        // Tổng số dự án
+        $totalProjects = Project::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'Bên mời thầu' => 0,
+                'Bên đầu tư' => 0,
+                'Cả hai' => 0,
+            ];
+        }
+
+        // dự án mà bên mời thầu khác nhà đầu tư
+        $tendererCount = Project::whereColumn('tenderer_id', '!=', 'investor_id')->count();
+
+        // dự án mà nhà đầu tư khác bên mời thầu
+        $investorCount = Project::whereColumn('investor_id', '!=', 'tenderer_id')->count();
+
+        // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
+        $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
+
+        // 
+        $tendererPercentage = ($tendererCount / $totalProjects) * 100;
+        $investorPercentage = ($investorCount / $totalProjects) * 100;
+        $bothPercentage = ($bothCount / $totalProjects) * 100;
+
+        return [
+            'Bên mời thầu' => round($tendererPercentage, 2),
+            'Bên đầu tư' => round($investorPercentage, 2),
+            'Cả hai' => round($bothPercentage, 2)
+        ];
     }
 }

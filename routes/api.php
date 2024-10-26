@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Admin\BiddingFieldController;
 use App\Http\Controllers\Api\Admin\BiddingTypeController;
 use App\Http\Controllers\Api\Admin\BidDocumentController;
 use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
+use App\Http\Controllers\Api\Admin\DashBoardController;
 use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
@@ -183,5 +184,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
 
     Route::resource('tasks', TaskController::class);
+    Route::get('project-by-industry', [DashBoardController::class, 'projectByIndustry']);
+    Route::get('project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
+    Route::get('project-by-domestic', [DashBoardController::class, 'projectByIsDomestic']);
+    Route::get('project-by-submission-method', [DashBoardController::class, 'projectBySubmissionMethod']);
+    Route::get('project-by-selection-method', [DashBoardController::class, 'projectBySelectionMethod']);
+    Route::get('project-by-tenderer-investor', [DashBoardController::class, 'projectByTendererAndInvestor']);
 
+    
 });
