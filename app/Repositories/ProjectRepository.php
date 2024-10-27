@@ -305,4 +305,66 @@ class ProjectRepository extends BaseRepository
             ['name' => 'Cả hai', 'value' => round($bothPercentage, 2)]
         ];
     }
+
+    // lấy thời gian trung bình thực hiện dự án theo ngành
+    public function getAverageProjectDurationByIndustry()
+    {
+        // lấy ra các ngành với dự án có start_time, end_time
+        $industries = Industry::with(['projects' => function ($query) {
+            $query->whereNotNull('start_time')->whereNotNull('end_time')
+                ->select('start_time', 'end_time');
+        }])->get();
+
+        $data = [];
+        foreach ($industries as $industry) {
+            $totalDuration = 0;
+            $projectCount = $industry->projects->count(); // số dự án theo ngành
+
+            // lặp qua từng dự án theo ngành
+            foreach ($industry->projects as $project) {
+                $startDate = Carbon::parse($project->start_time);
+                $endDate = Carbon::parse($project->end_time);
+                $duration = $endDate->diffInDays($startDate); // chênh lệch ngày
+
+                $totalDuration += $duration;
+            }
+
+            // trung bình theo ngày
+            $averageDuration = $projectCount > 0 ? $totalDuration / $projectCount : 0;
+            $data[] = [
+                'name' => $industry->name,
+                'value' => round($averageDuration, 2)
+            ];
+        }
+
+        return $data;
+    }
+
+    // tỷ lệ dự án dựa trên doanh nghiệp nhà nước, ngoài nhà nước
+    public function getProjectPercentageByOrganizationType()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                ['Nhà nước' => 'Bên mời thầu', 'value' => 0],
+                ['Ngoài nhà nước' => 'Bên đầu tư', 'value' => 0],
+            ];
+        }
+
+        // nhà nước
+        $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
+            $query->where('organization_type', 1); 
+        })->count();
+
+        $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
+        $privateOwnedPercentage = 100 - $stateOwnedPercentage; // ngoài nhà nước
+
+        return [
+            ['name' => 'Nhà nước', 'value' => round($stateOwnedPercentage, 2)],
+            ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
+        ];
+    }
 }

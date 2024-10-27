@@ -72,4 +72,22 @@ class DashBoardController extends Controller
             'data' =>  $data
         ], 200);
     }
+
+    public function averageProjectDurationByIndustry(){
+        $data = $this->projectRepository->getAverageProjectDurationByIndustry();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
+        ], 200);
+    }
+
+    public function projectPercentageByOrganizationType(){
+        $data = $this->projectRepository->getProjectPercentageByOrganizationType();
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy thành công',
+            'data' =>  $data
+        ], 200);
+    }
 }
