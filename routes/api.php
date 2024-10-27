@@ -17,14 +17,17 @@ use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
 use App\Http\Controllers\Api\Admin\IndustryController;
+use App\Http\Controllers\Api\Admin\IntroductionController;
 use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
-use App\Http\Controllers\Api\Admin\ProjectController;
+use App\Http\Controllers\Api\Admin\ProjectController;  
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
+use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\StaffController;
 use App\Http\Controllers\Api\Admin\SystemController;
 use App\Http\Controllers\Api\Admin\TaskController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\Introduction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -192,4 +195,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/project-by-tenderer-investor', [DashBoardController::class, 'projectByTendererAndInvestor']);
     Route::get('dashboard/charts/project-by-organization-type', [DashBoardController::class, 'projectPercentageByOrganizationType']);
     Route::get('dashboard/charts/average-project-duration-by-industry', [DashBoardController::class, 'averageProjectDurationByIndustry']);
+      // Introductions
+    Route::resource('introductions', IntroductionController::class);
 });
