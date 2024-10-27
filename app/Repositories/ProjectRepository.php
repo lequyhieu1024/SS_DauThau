@@ -314,7 +314,7 @@ class ProjectRepository extends BaseRepository
             $query->whereNotNull('start_time')->whereNotNull('end_time')
                 ->select('start_time', 'end_time');
         }])->get();
-    
+
         $data = [];
         foreach ($industries as $industry) {
             $totalDuration = 0;
@@ -324,7 +324,7 @@ class ProjectRepository extends BaseRepository
             foreach ($industry->projects as $project) {
                 $startDate = Carbon::parse($project->start_time);
                 $endDate = Carbon::parse($project->end_time);
-                $duration = $endDate->diffInDays($startDate);// chênh lệch ngày
+                $duration = $endDate->diffInDays($startDate); // chênh lệch ngày
 
                 $totalDuration += $duration;
             }
@@ -338,5 +338,33 @@ class ProjectRepository extends BaseRepository
         }
 
         return $data;
+    }
+
+    // tỷ lệ dự án dựa trên doanh nghiệp nhà nước, ngoài nhà nước
+    public function getProjectPercentageByOrganizationType()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                ['Nhà nước' => 'Bên mời thầu', 'value' => 0],
+                ['Ngoài nhà nước' => 'Bên đầu tư', 'value' => 0],
+            ];
+        }
+
+        // nhà nước
+        $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
+            $query->where('organization_type', 1); 
+        })->count();
+
+        $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
+        $privateOwnedPercentage = 100 - $stateOwnedPercentage; // ngoài nhà nước
+
+        return [
+            ['name' => 'Nhà nước', 'value' => round($stateOwnedPercentage, 2)],
+            ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
+        ];
     }
 }

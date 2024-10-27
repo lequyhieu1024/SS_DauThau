@@ -190,6 +190,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/project-by-submission-method', [DashBoardController::class, 'projectBySubmissionMethod']);
     Route::get('dashboard/charts/project-by-selection-method', [DashBoardController::class, 'projectBySelectionMethod']);
     Route::get('dashboard/charts/project-by-tenderer-investor', [DashBoardController::class, 'projectByTendererAndInvestor']);
+    Route::get('dashboard/charts/project-by-organization-type', [DashBoardController::class, 'projectPercentageByOrganizationType']);
     Route::get('dashboard/charts/average-project-duration-by-industry', [DashBoardController::class, 'averageProjectDurationByIndustry']);
-
 });
