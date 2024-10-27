@@ -18,17 +18,25 @@ use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
 use App\Http\Controllers\Api\Admin\IndustryController;
+use App\Http\Controllers\Api\Admin\IntroductionController;
+use App\Http\Controllers\Api\Admin\InstructController;
 use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
+
 use App\Http\Controllers\Api\Admin\ProjectComparisonController;
-use App\Http\Controllers\Api\Admin\ProjectController;
+
 use App\Http\Controllers\Api\Admin\ReputationController;
+
+use App\Http\Controllers\Api\Admin\ProjectController;  
+
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
+use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\StaffController;
 use App\Http\Controllers\Api\Admin\SystemController;
 use App\Http\Controllers\Api\Admin\TaskController;
 use App\Http\Controllers\Api\Admin\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\Introduction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -238,5 +246,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
     Route::post('compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
     Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
+
+
+      // Introductions
+    Route::resource('introductions', IntroductionController::class);
+
+    Route::put('introductions/{introductions}/changeActive', [IntroductionController::class, 'changeActive']);
+
+    // Instructs
+    Route::resource('instructs', InstructController::class);
+    Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
+
 
 });
