@@ -305,4 +305,38 @@ class ProjectRepository extends BaseRepository
             ['name' => 'Cả hai', 'value' => round($bothPercentage, 2)]
         ];
     }
+
+    // lấy thời gian trung bình thực hiện dự án theo ngành
+    public function getAverageProjectDurationByIndustry()
+    {
+        // lấy ra các ngành với dự án có start_time, end_time
+        $industries = Industry::with(['projects' => function ($query) {
+            $query->whereNotNull('start_time')->whereNotNull('end_time')
+                ->select('start_time', 'end_time');
+        }])->get();
+    
+        $data = [];
+        foreach ($industries as $industry) {
+            $totalDuration = 0;
+            $projectCount = $industry->projects->count(); // số dự án theo ngành
+
+            // lặp qua từng dự án theo ngành
+            foreach ($industry->projects as $project) {
+                $startDate = Carbon::parse($project->start_time);
+                $endDate = Carbon::parse($project->end_time);
+                $duration = $endDate->diffInDays($startDate);// chênh lệch ngày
+
+                $totalDuration += $duration;
+            }
+
+            // trung bình theo ngày
+            $averageDuration = $projectCount > 0 ? $totalDuration / $projectCount : 0;
+            $data[] = [
+                'name' => $industry->name,
+                'value' => round($averageDuration, 2)
+            ];
+        }
+
+        return $data;
+    }
 }

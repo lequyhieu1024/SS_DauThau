@@ -42,7 +42,7 @@ class Industry extends Model
     }
     public function projects()
     {
-        return $this->belongsToMany(Project::class,'project_industry');
+        return $this->belongsToMany(Project::class,'project_industry', 'industry_id', 'project_id');
     }
 
     protected function getModelName(): string
