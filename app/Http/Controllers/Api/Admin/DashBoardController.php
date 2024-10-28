@@ -118,5 +118,14 @@ class DashBoardController extends Controller
         ], 200);
     }
 
+    public function topInvestorsByProjectFull(){
+        $data = $this->projectRepository->getTopInvestorsByProjectFull();
+        return response()->json([
+            'result' => true,
+            'message' => '10 đơn vị trúng thầu nhiều nhất theo trọn gói',
+            'data' =>  $data
+        ], 200);
+    }
+
     
 }
