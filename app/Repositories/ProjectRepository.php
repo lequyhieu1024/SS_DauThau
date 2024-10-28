@@ -132,9 +132,9 @@ class ProjectRepository extends BaseRepository
         ]);
     }
 
-    public function getProjectPercentageByIndustry()
+    public function getProjectCountByIndustry()
     {
-        // Lấy tổng số dự án
+        // tổng số dự án
         $totalProjects = $this->model::count();
 
         // Nếu không có dự án nào
@@ -146,15 +146,31 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo ngành
-        $industries = Industry::withCount('projects')->get();
+        // số dự án theo ngành giảm dần
+        $industries = Industry::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        // lấy 10 ngành có số lượng dự án lớn nhất
+        $topIndustries = $industries->take(10);
+        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+
         $data = [];
-        foreach ($industries as $industry) {
-            $projectCount = $industry->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+
+        // số lượng dự án cho 10 ngành hàng đầu
+        foreach ($topIndustries as $industry) {
             $data[] = [
                 'name' => $industry->name,
-                'value' => round($percentage, 2)
+                'value' => $industry->projects_count
+            ];
+        }
+
+        // số lượng dự án cho các ngành còn lại
+        $otherProjectCount = $otherIndustries->sum('projects_count');
+        if ($otherProjectCount > 0) {
+            $data[] = [
+                'name' => 'Other Industries',
+                'value' => $otherProjectCount
             ];
         }
 
@@ -356,7 +372,7 @@ class ProjectRepository extends BaseRepository
 
         // nhà nước
         $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
-            $query->where('organization_type', 1); 
+            $query->where('organization_type', 1);
         })->count();
 
         $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
@@ -367,4 +383,145 @@ class ProjectRepository extends BaseRepository
             ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
         ];
     }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng
+    public function getTopTenderersByProjectCount()
+    {
+        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('COUNT(*) as project_count')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('project_count')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10);
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->project_count
+            ];
+        }
+
+        // tổng số lượng gói thầu của các đơn vị còn lại
+        // $otherCount = $otherTenderers->sum('project_count');
+        // if ($otherCount > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherCount
+        //     ];
+        // }
+
+        return $data;
+    }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo giá
+    public function getTopTenderersByProjectTotalAmount()
+    {
+        // tổng giá từng dự án theo đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10); //
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->total
+            ];
+        }
+
+        // 
+        // $otherTotal = $otherTenderers->sum('total');
+        // if ($otherTotal > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherTotal
+        //     ];
+        // }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo từng phần
+    public function getTopInvestorsByProjectPartial()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->whereNotNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo trọn gói
+    public function getTopInvestorsByProjectFull()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->whereNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo giá
+    public function getTopInvestorsByProjectTotalAmount()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->select('investor_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('investor_id')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->total
+            ];
+        }
+
+        return $data;
+    }
+
+
 }
