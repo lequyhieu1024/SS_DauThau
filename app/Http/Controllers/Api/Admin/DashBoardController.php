@@ -82,8 +82,8 @@ class DashBoardController extends Controller
         ], 200);
     }
 
-    public function projectPercentageByOrganizationType(){
-        $data = $this->projectRepository->getProjectPercentageByOrganizationType();
+    public function enterpriseByOrganizationType(){
+        $data = $this->projectRepository->getEnterpriseByOrganizationType();
         return response()->json([
             'result' => true,
             'message' => 'Lấy thành công',

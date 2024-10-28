@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\Enterprise;
 use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
@@ -169,7 +170,7 @@ class ProjectRepository extends BaseRepository
         $otherProjectCount = $otherIndustries->sum('projects_count');
         if ($otherProjectCount > 0) {
             $data[] = [
-                'name' => 'Other Industries',
+                'name' => 'Ngành khác',
                 'value' => $otherProjectCount
             ];
         }
@@ -191,15 +192,28 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo nguồn vốn
-        $fundingSources = FundingSource::withCount('projects')->get();
-        $data = [];
-        foreach ($fundingSources as $fundingSource) {
-            $projectCount = $fundingSource->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+        // 
+        $fundingSources = FundingSource::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        $topFundingSources = $fundingSources->take(10);
+        $otherFundingSources = $fundingSources->skip(10);
+
+        // 
+        foreach ($topFundingSources as $fundingSource) {
             $data[] = [
                 'name' => $fundingSource->name,
-                'value' => round($percentage, 2)
+                'value' => $fundingSource->projects_count
+            ];
+        }
+
+        // 
+        $otherFundingSources = $otherFundingSources->sum('projects_count');
+        if ($otherFundingSources > 0) {
+            $data[] = [
+                'name' => 'Nguồn tài trợ khác',
+                'value' => $otherFundingSources
             ];
         }
 
@@ -220,14 +234,12 @@ class ProjectRepository extends BaseRepository
 
         // trong nước
         $domesticCount = $this->model::where('is_domestic', true)->count();
-        $domesticPercentage = ($domesticCount / $totalProjects) * 100;
-
         // quốc tế
-        $internationalPercentage = 100 - $domesticPercentage;
+        $internationalCount = $this->model::where('is_domestic', false)->count();
 
         return [
-            ['name' => 'Trong nước', 'value' => round($domesticPercentage, 2)],
-            ['name' => 'Quốc tế', 'value' => round($internationalPercentage, 2)]
+            ['name' => 'Trong nước', 'value' => $domesticCount],
+            ['name' => 'Quốc tế', 'value' => $internationalCount]
         ];
     }
 
@@ -245,14 +257,13 @@ class ProjectRepository extends BaseRepository
 
         // Online
         $onlineCount = $this->model::where('submission_method', 'online')->count();
-        $onlinePercentage = ($onlineCount / $totalProjects) * 100;
 
         // Trực tiếp
-        $inPersonPercentage = 100 - $onlinePercentage;
+        $inPersonCount = $this->model::where('submission_method', 'in_person')->count();
 
         return [
-            ['name' => 'Online', 'value' => round($onlinePercentage, 2)],
-            ['name' => 'Trực tiếp', 'value' => round($inPersonPercentage, 2)]
+            ['name' => 'Online', 'value' => $onlineCount],
+            ['name' => 'Trực tiếp', 'value' => $inPersonCount]
         ];
     }
 
@@ -270,16 +281,28 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy tỷ lệ dự án theo nguồn vốn
-        $selectionMethods = SelectionMethod::withCount('projects')->get();
-        $data = [];
-        foreach ($selectionMethods as $selectionMethod) {
-            $projectCount = $selectionMethod->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+        // 
+        $selectionMethods = SelectionMethod::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
 
+        $topSelectionMethods = $selectionMethods->take(10);
+        $otherSelectionMethods = $selectionMethods->skip(10);
+
+        // 
+        foreach ($topSelectionMethods as $selectionMethod) {
             $data[] = [
                 'name' => $selectionMethod->method_name,
-                'value' => round($percentage, 2)
+                'value' => $selectionMethod->projects_count
+            ];
+        }
+
+        //
+        $otherSelectionMethods = $otherSelectionMethods->sum('projects_count');
+        if ($otherSelectionMethods > 0) {
+            $data[] = [
+                'name' => 'Phương thức khác',
+                'value' => $otherSelectionMethods
             ];
         }
 
@@ -311,14 +334,14 @@ class ProjectRepository extends BaseRepository
         $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
 
         //
-        $tendererPercentage = ($tendererCount / $totalProjects) * 100;
-        $investorPercentage = ($investorCount / $totalProjects) * 100;
-        $bothPercentage = ($bothCount / $totalProjects) * 100;
+        // $tendererPercentage = ($tendererCount / $totalProjects) * 100;
+        // $investorPercentage = ($investorCount / $totalProjects) * 100;
+        // $bothPercentage = ($bothCount / $totalProjects) * 100;
 
         return [
-            ['name' => 'Bên mời thầu', 'value' => round($tendererPercentage, 2)],
-            ['name' => 'Bên đầu tư', 'value' => round($investorPercentage, 2)],
-            ['name' => 'Cả hai', 'value' => round($bothPercentage, 2)]
+            ['name' => 'Bên mời thầu', 'value' => $tendererCount],
+            ['name' => 'Bên đầu tư', 'value' => $investorCount],
+            ['name' => 'Cả hai', 'value' => $bothCount]
         ];
     }
 
@@ -356,31 +379,18 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    // tỷ lệ dự án dựa trên doanh nghiệp nhà nước, ngoài nhà nước
-    public function getProjectPercentageByOrganizationType()
+    // số doanh nghiệp nhà nước, ngoài nhà nước
+    public function getEnterpriseByOrganizationType()
     {
-        // Tổng số dự án
-        $totalProjects = $this->model::count();
-
-        // Nếu không có dự án nào
-        if ($totalProjects === 0) {
-            return [
-                ['Nhà nước' => 'Bên mời thầu', 'value' => 0],
-                ['Ngoài nhà nước' => 'Bên đầu tư', 'value' => 0],
-            ];
-        }
-
         // nhà nước
-        $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
-            $query->where('organization_type', 1);
-        })->count();
+        $stateOwnedCount = Enterprise::where('organization_type', 1)->count();
 
-        $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
-        $privateOwnedPercentage = 100 - $stateOwnedPercentage; // ngoài nhà nước
+        // ngoài nhà nước
+        $privateOwnedCount = Enterprise::where('organization_type', 2)->count();
 
         return [
-            ['name' => 'Nhà nước', 'value' => round($stateOwnedPercentage, 2)],
-            ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
+            ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
+            ['name' => 'Ngoài nhà nước', 'value' => $privateOwnedCount ],
         ];
     }
 
@@ -522,6 +532,4 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
-
-
 }
