@@ -417,4 +417,38 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo giá
+    public function getTopTenderersByProjectTotalAmount()
+    {
+        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10);
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->total
+            ];
+        }
+
+        // 
+        // $otherTotal = $otherTenderers->sum('total');
+        // if ($otherTotal > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherTotal
+        //     ];
+        // }
+
+        return $data;
+    }
 }
