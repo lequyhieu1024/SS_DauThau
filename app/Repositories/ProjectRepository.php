@@ -500,5 +500,28 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
+    // 10 đơn vị trúng thầu nhiều nhất theo giá
+    public function getTopInvestorsByProjectTotalAmount()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->select('investor_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('investor_id')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->total
+            ];
+        }
+
+        return $data;
+    }
+
 
 }

@@ -196,5 +196,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/top-tenderers-by-project-total-amount', [DashBoardController::class, 'topTenderersByProjectTotalAmount']);
     Route::get('dashboard/charts/top-investors-by-project-partial', [DashBoardController::class, 'topInvestorsByProjectPartial']);
     Route::get('dashboard/charts/top-investors-by-project-full', [DashBoardController::class, 'topInvestorsByProjectFull']);
-    
+    Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashBoardController::class, 'topInvestorsByProjectTotalAmount']);
+
 });
