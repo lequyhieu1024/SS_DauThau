@@ -152,7 +152,7 @@ class ProjectRepository extends BaseRepository
             ->get();
 
         // lấy 10 ngành có số lượng dự án lớn nhất
-        $topIndustries = $industries->take(10); 
+        $topIndustries = $industries->take(10);
         $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
 
         $data = [];
@@ -382,5 +382,39 @@ class ProjectRepository extends BaseRepository
             ['name' => 'Nhà nước', 'value' => round($stateOwnedPercentage, 2)],
             ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
         ];
+    }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng
+    public function getTopTenderersByProjectCount()
+    {
+        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('COUNT(*) as project_count')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('project_count')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10);
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->project_count
+            ];
+        }
+
+        // tổng số lượng gói thầu của các đơn vị còn lại
+        // $otherCount = $otherTenderers->sum('project_count');
+        // if ($otherCount > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherCount
+        //     ];
+        // }
+
+        return $data;
     }
 }

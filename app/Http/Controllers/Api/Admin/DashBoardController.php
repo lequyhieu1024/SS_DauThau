@@ -90,4 +90,13 @@ class DashBoardController extends Controller
             'data' =>  $data
         ], 200);
     }
+
+    public function topTenderersByProjectCount(){
+        $data = $this->projectRepository->getTopTenderersByProjectCount();
+        return response()->json([
+            'result' => true,
+            'message' => '10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng',
+            'data' =>  $data
+        ], 200);
+    }
 }
