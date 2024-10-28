@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\Enterprise;
 use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
@@ -132,9 +133,9 @@ class ProjectRepository extends BaseRepository
         ]);
     }
 
-    public function getProjectPercentageByIndustry()
+    public function getProjectCountByIndustry()
     {
-        // Lấy tổng số dự án
+        // tổng số dự án
         $totalProjects = $this->model::count();
 
         // Nếu không có dự án nào
@@ -146,15 +147,31 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo ngành
-        $industries = Industry::withCount('projects')->get();
+        // số dự án theo ngành giảm dần
+        $industries = Industry::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        // lấy 10 ngành có số lượng dự án lớn nhất
+        $topIndustries = $industries->take(10);
+        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+
         $data = [];
-        foreach ($industries as $industry) {
-            $projectCount = $industry->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+
+        // số lượng dự án cho 10 ngành hàng đầu
+        foreach ($topIndustries as $industry) {
             $data[] = [
                 'name' => $industry->name,
-                'value' => round($percentage, 2)
+                'value' => $industry->projects_count
+            ];
+        }
+
+        // số lượng dự án cho các ngành còn lại
+        $otherProjectCount = $otherIndustries->sum('projects_count');
+        if ($otherProjectCount > 0) {
+            $data[] = [
+                'name' => 'Ngành khác',
+                'value' => $otherProjectCount
             ];
         }
 
@@ -175,15 +192,28 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo nguồn vốn
-        $fundingSources = FundingSource::withCount('projects')->get();
-        $data = [];
-        foreach ($fundingSources as $fundingSource) {
-            $projectCount = $fundingSource->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+        // 
+        $fundingSources = FundingSource::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        $topFundingSources = $fundingSources->take(10);
+        $otherFundingSources = $fundingSources->skip(10);
+
+        // 
+        foreach ($topFundingSources as $fundingSource) {
             $data[] = [
                 'name' => $fundingSource->name,
-                'value' => round($percentage, 2)
+                'value' => $fundingSource->projects_count
+            ];
+        }
+
+        // 
+        $otherFundingSources = $otherFundingSources->sum('projects_count');
+        if ($otherFundingSources > 0) {
+            $data[] = [
+                'name' => 'Nguồn tài trợ khác',
+                'value' => $otherFundingSources
             ];
         }
 
@@ -204,14 +234,12 @@ class ProjectRepository extends BaseRepository
 
         // trong nước
         $domesticCount = $this->model::where('is_domestic', true)->count();
-        $domesticPercentage = ($domesticCount / $totalProjects) * 100;
-
         // quốc tế
-        $internationalPercentage = 100 - $domesticPercentage;
+        $internationalCount = $this->model::where('is_domestic', false)->count();
 
         return [
-            ['name' => 'Trong nước', 'value' => round($domesticPercentage, 2)],
-            ['name' => 'Quốc tế', 'value' => round($internationalPercentage, 2)]
+            ['name' => 'Trong nước', 'value' => $domesticCount],
+            ['name' => 'Quốc tế', 'value' => $internationalCount]
         ];
     }
 
@@ -229,14 +257,13 @@ class ProjectRepository extends BaseRepository
 
         // Online
         $onlineCount = $this->model::where('submission_method', 'online')->count();
-        $onlinePercentage = ($onlineCount / $totalProjects) * 100;
 
         // Trực tiếp
-        $inPersonPercentage = 100 - $onlinePercentage;
+        $inPersonCount = $this->model::where('submission_method', 'in_person')->count();
 
         return [
-            ['name' => 'Online', 'value' => round($onlinePercentage, 2)],
-            ['name' => 'Trực tiếp', 'value' => round($inPersonPercentage, 2)]
+            ['name' => 'Online', 'value' => $onlineCount],
+            ['name' => 'Trực tiếp', 'value' => $inPersonCount]
         ];
     }
 
@@ -254,16 +281,28 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy tỷ lệ dự án theo nguồn vốn
-        $selectionMethods = SelectionMethod::withCount('projects')->get();
-        $data = [];
-        foreach ($selectionMethods as $selectionMethod) {
-            $projectCount = $selectionMethod->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+        // 
+        $selectionMethods = SelectionMethod::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
 
+        $topSelectionMethods = $selectionMethods->take(10);
+        $otherSelectionMethods = $selectionMethods->skip(10);
+
+        // 
+        foreach ($topSelectionMethods as $selectionMethod) {
             $data[] = [
                 'name' => $selectionMethod->method_name,
-                'value' => round($percentage, 2)
+                'value' => $selectionMethod->projects_count
+            ];
+        }
+
+        //
+        $otherSelectionMethods = $otherSelectionMethods->sum('projects_count');
+        if ($otherSelectionMethods > 0) {
+            $data[] = [
+                'name' => 'Phương thức khác',
+                'value' => $otherSelectionMethods
             ];
         }
 
@@ -295,14 +334,14 @@ class ProjectRepository extends BaseRepository
         $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
 
         //
-        $tendererPercentage = ($tendererCount / $totalProjects) * 100;
-        $investorPercentage = ($investorCount / $totalProjects) * 100;
-        $bothPercentage = ($bothCount / $totalProjects) * 100;
+        // $tendererPercentage = ($tendererCount / $totalProjects) * 100;
+        // $investorPercentage = ($investorCount / $totalProjects) * 100;
+        // $bothPercentage = ($bothCount / $totalProjects) * 100;
 
         return [
-            ['name' => 'Bên mời thầu', 'value' => round($tendererPercentage, 2)],
-            ['name' => 'Bên đầu tư', 'value' => round($investorPercentage, 2)],
-            ['name' => 'Cả hai', 'value' => round($bothPercentage, 2)]
+            ['name' => 'Bên mời thầu', 'value' => $tendererCount],
+            ['name' => 'Bên đầu tư', 'value' => $investorCount],
+            ['name' => 'Cả hai', 'value' => $bothCount]
         ];
     }
 
@@ -340,31 +379,157 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    // tỷ lệ dự án dựa trên doanh nghiệp nhà nước, ngoài nhà nước
-    public function getProjectPercentageByOrganizationType()
+    // số doanh nghiệp nhà nước, ngoài nhà nước
+    public function getEnterpriseByOrganizationType()
     {
-        // Tổng số dự án
-        $totalProjects = $this->model::count();
+        // nhà nước
+        $stateOwnedCount = Enterprise::where('organization_type', 1)->count();
 
-        // Nếu không có dự án nào
-        if ($totalProjects === 0) {
-            return [
-                ['Nhà nước' => 'Bên mời thầu', 'value' => 0],
-                ['Ngoài nhà nước' => 'Bên đầu tư', 'value' => 0],
+        // ngoài nhà nước
+        $privateOwnedCount = Enterprise::where('organization_type', 2)->count();
+
+        return [
+            ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
+            ['name' => 'Ngoài nhà nước', 'value' => $privateOwnedCount ],
+        ];
+    }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng
+    public function getTopTenderersByProjectCount()
+    {
+        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('COUNT(*) as project_count')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('project_count')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10);
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->project_count
             ];
         }
 
-        // nhà nước
-        $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
-            $query->where('organization_type', 1); 
-        })->count();
+        // tổng số lượng gói thầu của các đơn vị còn lại
+        // $otherCount = $otherTenderers->sum('project_count');
+        // if ($otherCount > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherCount
+        //     ];
+        // }
 
-        $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
-        $privateOwnedPercentage = 100 - $stateOwnedPercentage; // ngoài nhà nước
+        return $data;
+    }
 
-        return [
-            ['name' => 'Nhà nước', 'value' => round($stateOwnedPercentage, 2)],
-            ['name' => 'Ngoài nhà nước', 'value' => round($privateOwnedPercentage, 2)],
-        ];
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo giá
+    public function getTopTenderersByProjectTotalAmount()
+    {
+        // tổng giá từng dự án theo đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10); //
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->total
+            ];
+        }
+
+        // 
+        // $otherTotal = $otherTenderers->sum('total');
+        // if ($otherTotal > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherTotal
+        //     ];
+        // }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo từng phần
+    public function getTopInvestorsByProjectPartial()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->whereNotNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo trọn gói
+    public function getTopInvestorsByProjectFull()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->whereNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo giá
+    public function getTopInvestorsByProjectTotalAmount()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->select('investor_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('investor_id')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->total
+            ];
+        }
+
+        return $data;
     }
 }
