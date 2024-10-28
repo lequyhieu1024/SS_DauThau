@@ -421,7 +421,7 @@ class ProjectRepository extends BaseRepository
     // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo giá
     public function getTopTenderersByProjectTotalAmount()
     {
-        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        // tổng giá từng dự án theo đơn vị mời thầu
         $topTenderers = Project::with('tenderer.user')
             ->select('tenderer_id')
             ->selectRaw('SUM(total_amount) as total')
@@ -429,7 +429,7 @@ class ProjectRepository extends BaseRepository
             ->orderByDesc('total')
             ->get();
 
-        $topTenderers = $topTenderers->take(10);
+        $topTenderers = $topTenderers->take(10); //
         // $otherTenderers = $tenderers->skip(10);
 
         $data = [];
@@ -451,4 +451,30 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo từng phần
+    public function getTopInvestorsByProjectPartial()
+    {
+        // 
+        $topInvestors = Project::with('investor.user')
+            ->whereNotNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+
 }
