@@ -18,7 +18,7 @@ class DashBoardController extends Controller
     // Lấy tỷ lệ dự án theo nghành nghề
     public function projectByIndustry()
     {
-        $data = $this->projectRepository->getProjectPercentageByIndustry();
+        $data = $this->projectRepository->getProjectCountByIndustry();
         return response()->json([
             'result' => true,
             'message' => 'Lấy thành công',

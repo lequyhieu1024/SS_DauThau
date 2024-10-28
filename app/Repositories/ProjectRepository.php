@@ -132,9 +132,9 @@ class ProjectRepository extends BaseRepository
         ]);
     }
 
-    public function getProjectPercentageByIndustry()
+    public function getProjectCountByIndustry()
     {
-        // Lấy tổng số dự án
+        // tổng số dự án
         $totalProjects = $this->model::count();
 
         // Nếu không có dự án nào
@@ -146,15 +146,31 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // Lấy số lượng dự án theo ngành
-        $industries = Industry::withCount('projects')->get();
+        // số dự án theo ngành giảm dần
+        $industries = Industry::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        // lấy 10 ngành có số lượng dự án lớn nhất
+        $topIndustries = $industries->take(10); 
+        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+
         $data = [];
-        foreach ($industries as $industry) {
-            $projectCount = $industry->projects_count;
-            $percentage = ($projectCount / $totalProjects) * 100;
+
+        // số lượng dự án cho 10 ngành hàng đầu
+        foreach ($topIndustries as $industry) {
             $data[] = [
                 'name' => $industry->name,
-                'value' => round($percentage, 2)
+                'value' => $industry->projects_count
+            ];
+        }
+
+        // số lượng dự án cho các ngành còn lại
+        $otherProjectCount = $otherIndustries->sum('projects_count');
+        if ($otherProjectCount > 0) {
+            $data[] = [
+                'name' => 'Other Industries',
+                'value' => $otherProjectCount
             ];
         }
 
@@ -356,7 +372,7 @@ class ProjectRepository extends BaseRepository
 
         // nhà nước
         $stateOwnedCount = Project::whereHas('tenderer', function ($query) {
-            $query->where('organization_type', 1); 
+            $query->where('organization_type', 1);
         })->count();
 
         $stateOwnedPercentage = ($stateOwnedCount / $totalProjects) * 100; // nhà nước
