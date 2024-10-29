@@ -192,7 +192,7 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // 
+        //
         $fundingSources = FundingSource::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
@@ -200,7 +200,7 @@ class ProjectRepository extends BaseRepository
         $topFundingSources = $fundingSources->take(10);
         $otherFundingSources = $fundingSources->skip(10);
 
-        // 
+        //
         foreach ($topFundingSources as $fundingSource) {
             $data[] = [
                 'name' => $fundingSource->name,
@@ -208,7 +208,7 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // 
+        //
         $otherFundingSources = $otherFundingSources->sum('projects_count');
         if ($otherFundingSources > 0) {
             $data[] = [
@@ -281,7 +281,7 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // 
+        //
         $selectionMethods = SelectionMethod::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
@@ -289,7 +289,7 @@ class ProjectRepository extends BaseRepository
         $topSelectionMethods = $selectionMethods->take(10);
         $otherSelectionMethods = $selectionMethods->skip(10);
 
-        // 
+        //
         foreach ($topSelectionMethods as $selectionMethod) {
             $data[] = [
                 'name' => $selectionMethod->method_name,
@@ -390,7 +390,7 @@ class ProjectRepository extends BaseRepository
 
         return [
             ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
-            ['name' => 'Ngoài nhà nước', 'value' => $privateOwnedCount ],
+            ['name' => 'Ngoài nhà nước', 'value' => $privateOwnedCount],
         ];
     }
 
@@ -450,7 +450,7 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // 
+        //
         // $otherTotal = $otherTenderers->sum('total');
         // if ($otherTotal > 0) {
         //     $data[] = [
@@ -465,7 +465,7 @@ class ProjectRepository extends BaseRepository
     // 10 đơn vị trúng thầu nhiều nhất theo từng phần
     public function getTopInvestorsByProjectPartial()
     {
-        // 
+        //
         $topInvestors = Project::with('investor.user')
             ->whereNotNull('parent_id')
             ->select('investor_id')
@@ -489,7 +489,7 @@ class ProjectRepository extends BaseRepository
     // 10 đơn vị trúng thầu nhiều nhất theo trọn gói
     public function getTopInvestorsByProjectFull()
     {
-        // 
+        //
         $topInvestors = Project::with('investor.user')
             ->whereNull('parent_id')
             ->select('investor_id')
@@ -513,7 +513,7 @@ class ProjectRepository extends BaseRepository
     // 10 đơn vị trúng thầu nhiều nhất theo giá
     public function getTopInvestorsByProjectTotalAmount()
     {
-        // 
+        //
         $topInvestors = Project::with('investor.user')
             ->select('investor_id')
             ->selectRaw('SUM(total_amount) as total')
@@ -532,4 +532,107 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+
+
+    // Biểu đồ cột: total amount
+    public function getBarChartDataTotalAmount($projectIds)
+    {
+        return $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name')
+            ->selectRaw('
+            CASE
+                WHEN parent_id IS NULL THEN COALESCE((SELECT SUM(amount) FROM projects AS child WHERE child.parent_id = projects.id), amount)
+                ELSE amount
+            END AS total_amount
+        ')
+            ->get();
+    }
+
+    // Biểu đồ cột: construction time
+    public function getBarChartDataComparingConstructionTime($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'start_time', 'end_time')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $startDate = Carbon::parse($project->start_time);
+            $endDate = Carbon::parse($project->end_time);
+            $duration = $endDate->diffInDays($startDate);
+
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'duration' => $duration,
+            ];
+        });
+
+        return $data;
+    }
+
+    // Biểu đồ cột: bid submission time
+    public function getBarChartDataComparingBidSubmissionTime($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'bid_submission_start', 'bid_submission_end')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $startDate = Carbon::parse($project->bid_submission_start);
+            $endDate = Carbon::parse($project->bid_submission_end);
+            $duration = $endDate->diffInDays($startDate);
+
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'duration' => $duration,
+            ];
+        });
+
+        return $data;
+    }
+
+    // Biểu đồ tròn: total amount
+    public function getPieChartDataAmountAndTotalAmount($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'parent_id', 'total_amount')
+            ->with('children:id,name,parent_id,total_amount')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $projectData = [
+                'id' => $project->id,
+                'name' => $project->name,
+                'value' => $project->children->isNotEmpty() ? $project->children->sum('total_amount') : $project->total_amount,
+            ];
+
+            if ($project->children->isNotEmpty()) {
+                $projectData['children'] = $project->children->map(function ($child) {
+                    return [
+                        'id' => $child->id,
+                        'name' => $child->name,
+                        'value' => $child->total_amount,
+                    ];
+                });
+            }
+
+            return $projectData;
+        });
+
+        return $data;
+    }
+
+    // Số lượng tham gia đấu thầu
+    public function getBarChartDataBidderCount($projectIds)
+    {
+        $data = $this->model->whereIn('projects.id', $projectIds)
+            ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
+            ->select('projects.id', 'projects.name', DB::raw('COUNT(bid_documents.id) as bidder_count'))
+            ->groupBy('projects.id', 'projects.name')
+            ->get();
+
+        return $data;
+    }
+
 }

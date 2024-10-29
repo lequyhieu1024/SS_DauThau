@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
 use App\Http\Controllers\Api\Admin\IndustryController;
 use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
+use App\Http\Controllers\Api\Admin\ProjectComparisonController;
 use App\Http\Controllers\Api\Admin\ProjectController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
@@ -197,5 +198,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/top-investors-by-project-partial', [DashBoardController::class, 'topInvestorsByProjectPartial']);
     Route::get('dashboard/charts/top-investors-by-project-full', [DashBoardController::class, 'topInvestorsByProjectFull']);
     Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashBoardController::class, 'topInvestorsByProjectTotalAmount']);
+
+    // Compare Project
+    Route::post('/compare-projects/compare-bar-chart-total-amount', [ProjectComparisonController::class, 'compareBarChartTotalAmount']);
+    Route::post('/compare-projects/comparing-construction-time', [ProjectComparisonController::class, 'compareBarChartConstructionTime']);
+    Route::post('/compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
+    Route::post('/compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
+    Route::post('/compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
 
 });
