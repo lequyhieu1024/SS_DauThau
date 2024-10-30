@@ -209,12 +209,66 @@ class EnterpriseController extends Controller
             'result' => true,
             'message' => "Lấy danh sách doanh nghiệp thành công",
             'data' => $enterprises->map(function ($enterprise) {
-//                dd($enterprise);
                 return [
                     'id' => $enterprise->id,
                     'name' => $enterprise->user->name
                 ];
             })
+        ], 200);
+    }
+
+    public function employeeQtyStatisticByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê số lượng nhân viên thành công',
+            'data' => $this->enterpriseRepository->employeeQtyStatisticByEnterprise($request->all())
+        ], 200);
+    }
+
+    public function employeeEducationLevelStatisticByEnterprise($id) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê trình độ học vấn của nhân viên thành công',
+            'data' => $this->enterpriseRepository->employeeEducationLevelStatisticByEnterprise($id)
+        ], 200);
+    }
+
+    public function employeeSalaryStatisticByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê lương của nhân viên thành công',
+            'data' => $this->enterpriseRepository->employeeSalaryStatisticByEnterprise($request->all())
+        ], 200);
+    }
+
+    public function employeeWorkingTimeStatisticByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
+            'data' => $this->enterpriseRepository->employeeWorkingTimeStatisticByEnterprise($request->all())
+        ], 200);
+    }
+
+    public function employeeAgeStatisticByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê độ tuổi của nhân viên theo doanh nghiệp',
+            'data' => $this->enterpriseRepository->employeeAgeStatisticByEnterprise($request->all())
+        ], 200);
+    }
+
+    public function employeeProjectStatisticByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê dự án đã đăng tải và dự án đã đầu tư của doanh nghiệp',
+            'data' => $this->enterpriseRepository->tendererAndInvestorProjectStatisticByEnterprise($request->all())
+        ], 200);
+    }
+    public function biddingResultStatisticsByEnterprise(Request $request) {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê số lượng dự án đã trúng,giá trúng thầu trung bình và tổng giá trị thầu đã trúng của doanh nghiệp',
+            'data' => $this->enterpriseRepository->biddingResultStatisticsByEnterprise($request->all())
         ], 200);
     }
 }

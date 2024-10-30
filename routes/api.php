@@ -150,7 +150,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
-    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
+//    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
@@ -185,6 +185,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
 
     Route::resource('tasks', TaskController::class);
+
+    // general chart
     Route::get('dashboard/charts/project-by-industry', [DashBoardController::class, 'projectByIndustry']);
     Route::get('dashboard/charts/project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
     Route::get('dashboard/charts/project-by-domestic', [DashBoardController::class, 'projectByIsDomestic']);
@@ -198,6 +200,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/top-investors-by-project-partial', [DashBoardController::class, 'topInvestorsByProjectPartial']);
     Route::get('dashboard/charts/top-investors-by-project-full', [DashBoardController::class, 'topInvestorsByProjectFull']);
     Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashBoardController::class, 'topInvestorsByProjectTotalAmount']);
+
+
+    // enterprise chart
+    Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
+    Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-age-statistic-by-enterprise', [EnterpriseController::class, 'employeeAgeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-project-statistic-by-enterprise', [EnterpriseController::class, 'employeeProjectStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-result-bidding-statistic-by-enterprise', [EnterpriseController::class, 'biddingResultStatisticsByEnterprise']);
 
     // Compare Project
     Route::post('/compare-projects/compare-bar-chart-total-amount', [ProjectComparisonController::class, 'compareBarChartTotalAmount']);

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\ProjectCollection;
+use App\Http\Resources\ProjectResource;
 use App\Models\Enterprise;
 
 class EnterpriseRepository extends BaseRepository
@@ -58,4 +60,146 @@ class EnterpriseRepository extends BaseRepository
         $enterprise = $this->model->findOrFail($id);
         return $enterprise->industries()->sync($data['industry_id']);
     }
+
+    //chart
+
+    /*
+     * parameter $id is enterprise ID
+     * this function is count employee of enterprises
+     */
+    public function employeeQtyStatisticByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            $data[] = [
+                'enterprise' => $enterprise->user->name,
+                'quantityEmployee' => $enterprise->employees->count(),
+            ];
+        }
+        return $data;
+    }
+
+    public function employeeEducationLevelStatisticByEnterprise($id)
+    {
+        $education_levels = ['primary_school', 'secondary_school', 'high_school', 'college', 'university', 'after_university'];
+        $data = [];
+        foreach ($education_levels as $education_level) {
+            $data[$education_level] = $this->model->findOrFail($id)->employees->where('education_level', $education_level)->count();
+        }
+        return $data;
+    }
+
+    public function employeeSalaryStatisticByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+        foreach ($enterprises as $enterprise) {
+            $data[] = [
+                'enterprise' => $enterprise->user->name,
+                'salaryHighest' => $enterprise->employees->max('salary') ?? 0,
+                'salaryLowest' => $enterprise->employees->min('salary') ?? 0,
+                'salaryAvg' => $enterprise->employees->avg('salary') ?? 0,
+            ];
+        }
+        return $data;
+    }
+
+    public function employeeAgeStatisticByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+        foreach ($enterprises as $enterprise) {
+            $ages = $enterprise->employees->map(function ($employee) {
+                return \Carbon\Carbon::parse($employee->birthday)->diffInYears(\Carbon\Carbon::parse(now()));
+            });
+            $data[] = [
+                'enterprise' => $enterprise->user->name,
+                'ageHighest' => $ages->max(),
+                'ageLowest' => $ages->min(),
+                'ageAvg' => $ages->avg(),
+            ];
+        }
+        return $data;
+    }
+
+    public function tendererAndInvestorProjectStatisticByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            $tendererProjectCount = $this->getProjectCount($enterprise, true);
+            $investorProjectCount = $this->getProjectCount($enterprise, false);
+
+            $data[] = [
+                'enterprise' => $enterprise->user->name,
+                'tendererProjectCount' => $tendererProjectCount,
+                'investorProjectCount' => $investorProjectCount
+            ];
+        }
+
+        return $data;
+    }
+
+    private function getProjectCount($enterprise, $isTenderer)
+    {
+        $projects = $isTenderer ? $enterprise->tendererProjects : $enterprise->investorProjects;
+
+        $parentProjects = $projects->filter(function ($project) {
+            return is_null($project->parent_id);
+        });
+
+        $children = $projects->filter(function ($project) {
+            return !is_null($project->parent_id);
+        });
+
+        $filteredChildren = $children->filter(function ($child) use ($parentProjects) {
+            $parent = $parentProjects->firstWhere('id', $child->parent_id);
+            return !$parent || $parent->tendered_id !== $child->tenderer_id;
+        });
+
+        $parentCount = $parentProjects->count();
+        $childCount = $filteredChildren->count();
+
+        return $parentCount + $childCount;
+    }
+
+    public function biddingResultStatisticsByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            $biddingResults = $enterprise->biddingResults;
+
+            $filteredResults = $biddingResults->filter(function ($result) {
+                return is_null($result->parent_id) || $result->parent_id !== $result->id;
+            });
+
+            $wonCount = $filteredResults->count();
+
+            $totalWinningAmount = $filteredResults->sum('win_amount');
+
+            $averageWinningAmount = $wonCount > 0 ? $totalWinningAmount / $wonCount : 0;
+
+            $data[] = [
+                'enterprise' => $enterprise->user->name,
+                'numberProjectWinning' => $wonCount,
+                'averageWinningAmount' => $averageWinningAmount,
+                'totalWinningAmount' => $totalWinningAmount,
+            ];
+        }
+
+        return $data;
+    }
+
+
+
 }

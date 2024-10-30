@@ -13,6 +13,7 @@ class BiddingResult extends Model
         'project_id',
         'enterprise_id',
         'bid_document_id',
+        'win_amount',
         'decision_number',
         'decision_date',
     ];

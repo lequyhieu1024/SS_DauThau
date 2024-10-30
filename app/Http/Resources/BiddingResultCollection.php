@@ -21,6 +21,7 @@ class BiddingResultCollection extends ResourceCollection
                     'enterprise' => $biddingResult->enterprise,
                     'project' => $biddingResult->project,
                     'bid_document' => $biddingResult->biddingDocument,
+                    'win_amount' => $biddingResult->win_amount,
                     'decision_number' => $biddingResult->decision_number,
                     'decision_date' => $biddingResult->decision_date,
                 ];
