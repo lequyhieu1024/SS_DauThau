@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('enterprise_id');
             $table->unsignedBigInteger('bid_document_id');
+            $table->decimal('win_amount', 20, 2);
             $table->string('decision_number', 100);
             $table->timestamp('decision_date');
             $table->timestamps();

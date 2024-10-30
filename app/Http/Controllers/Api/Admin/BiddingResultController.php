@@ -48,7 +48,6 @@ class BiddingResultController extends Controller
         try {
             DB::beginTransaction();
             $this->biddingResultRepository->create($request->all());
-            $this->projectRepository->publishResultProject($request->all()['project_id']);
             DB::commit();
             return response([
                 'result' => true,

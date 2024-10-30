@@ -22,6 +22,7 @@ class EmployeeResource extends JsonResource
             ],
             'code' => $this->code,
             'name' => $this->name,
+            'avatar' => env('APP_URL') . '/' . $this->avatar,
             'email' => $this->email,
             'phone' => $this->phone,
             'birthday' => $this->birthday,

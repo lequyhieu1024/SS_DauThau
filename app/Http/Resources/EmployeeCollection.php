@@ -24,6 +24,7 @@ class EmployeeCollection extends ResourceCollection
                     ],
                     'code' => $employee->code,
                     'name' => $employee->name,
+                    'avatar' => env('APP_URL') . '/' . $employee->avatar,
                     'email' => $employee->email,
                     'phone' => $employee->phone,
                     'birthday' => $employee->birthday,
