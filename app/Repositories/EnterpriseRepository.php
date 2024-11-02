@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
+use App\Models\Employee;
 use App\Models\Enterprise;
 
 class EnterpriseRepository extends BaseRepository
@@ -232,8 +233,41 @@ class EnterpriseRepository extends BaseRepository
                 // 'taskCount' => $taskCount,
                 'enterprise_name' => $enterprise->user->name,
                 'average_difficulty' => $averageDifficulty,
-                'difficulty_label'=>$this->getDifficultyLabel($averageDifficulty)
+                'difficulty_label' => $this->getDifficultyLabel($averageDifficulty)
             ];
+        }
+
+        return $data;
+    }
+
+    public function averageDifficultyLevelTasksByEmployee($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $employees = Employee::whereIn('id', $ids)->with('tasks')->get();
+
+        $difficultyLevel = [
+            'easy' => 1,
+            'medium' => 2,
+            'hard' => 3,
+            'veryhard' => 4,
+        ];
+
+        foreach ($employees as $employee) {
+            $totalDifficulty = 0;
+            $taskCount = 0;
+            foreach ($employee->tasks as $task) {
+                $difficultyValue = $difficultyLevel[$task->difficulty_level] ?? 0;
+                $totalDifficulty += $difficultyValue;
+                $taskCount++;
+            }
+            $averageDifficulty = $taskCount > 0 ? round($totalDifficulty / $taskCount, 2) : 0;
+    
+            $data[] = [
+                'employee_name' => $employee->name,
+                'average_difficulty' => $averageDifficulty,
+                'difficulty_label' => $this->getDifficultyLabel($averageDifficulty)
+            ];  
         }
 
         return $data;

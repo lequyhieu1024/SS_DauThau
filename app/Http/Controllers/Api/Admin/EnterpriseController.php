@@ -279,4 +279,14 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->averageDifficultyLevelTasksByEnterprise($request->all())
         ], 200);
     }
+
+    public function averageDifficultyLevelTasksByEmployee(Request $request){
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện độ khó trung bình của nhiệm vụ mà nhân viên thực hiện',
+            'data' => $this->enterpriseRepository->averageDifficultyLevelTasksByEmployee($request->all())
+        ], 200);
+    }
+
+    
 }
