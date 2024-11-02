@@ -281,4 +281,50 @@ class EnterpriseRepository extends BaseRepository
         if ($val <= 3.5) return 'Khó';
         return 'Rất khó';
     }
+
+    public function getFeedbackLabel($val)
+    {
+        if ($val === 0) return 'Chưa có đánh giá';
+        if ($val <= 1.5) return 'Tệ';
+        if ($val <= 2.5) return 'Bình thường';
+        if ($val <= 3.5) return 'Tốt';
+        if ($val <= 4.5) return 'Rất tốt';
+        return 'Xuất sắc';
+    }
+
+    public function averageFeedbackByEmployee($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $employees = Employee::whereIn('id', $ids)->get();
+
+        $feedbackLevel = [
+            'poor' => 1,
+            'medium' => 2,
+            'good' => 3,
+            'verygood' => 4,
+            'excellent' => 5,
+        ];
+
+        foreach ($employees as $employee) {
+            $totalFeedback = 0;
+            $feedbackCount = 0;
+            foreach ($employee->tasks as $task) {
+                $feedbackValue = $feedbackLevel[$task->pivot->feedback] ?? 0;
+                $totalFeedback += $feedbackValue;
+                $feedbackCount++;
+            }
+            $averageFeedback = $feedbackCount > 0 ? round($totalFeedback / $feedbackCount, 2) : 0;
+    
+            $data[] = [               
+                // 'totalFeedback' => $totalFeedback,                
+                // 'feedbackCount' => $feedbackCount,                
+                'employee_name' => $employee->name,
+                'average_feedback' => $averageFeedback,
+                'feedback_label' => $this->getFeedbackLabel($averageFeedback)
+            ];  
+        }
+
+        return $data;
+    }
 }

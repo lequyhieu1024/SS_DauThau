@@ -288,5 +288,13 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
+    public function averageFeedbackByEmployee(Request $request){
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê đánh giá trung bình của nhân viên',
+            'data' => $this->enterpriseRepository->averageFeedbackByEmployee($request->all())
+        ], 200);
+    }
+    
     
 }
