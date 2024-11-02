@@ -200,6 +200,51 @@ class EnterpriseRepository extends BaseRepository
         return $data;
     }
 
+    public function averageDifficultyLevelTasksByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->with('employees.tasks')->get();
 
+        $difficultyLevel = [
+            'easy' => 1,
+            'medium' => 2,
+            'hard' => 3,
+            'veryhard' => 4,
+        ];
 
+        foreach ($enterprises as $enterprise) {
+            $totalDifficulty = 0;
+            $taskCount = 0;
+
+            foreach ($enterprise->employees as $employee) {
+                foreach ($employee->tasks as $task) {
+                    $difficultyValue = $difficultyLevel[$task->difficulty_level] ?? 0;
+                    $totalDifficulty += $difficultyValue;
+                    $taskCount++;
+                }
+            }
+
+            $averageDifficulty = $taskCount > 0 ? round($totalDifficulty / $taskCount, 2) : 0;
+
+            $data[] = [
+                // 'totalDifficulty' => $totalDifficulty,
+                // 'taskCount' => $taskCount,
+                'enterprise_name' => $enterprise->user->name,
+                'average_difficulty' => $averageDifficulty,
+                'difficulty_label'=>$this->getDifficultyLabel($averageDifficulty)
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getDifficultyLabel($val)
+    {
+        if ($val === 0) return 'Chưa có nhiệm vụ';
+        if ($val <= 1.5) return 'Dễ';
+        if ($val <= 2.5) return 'Trung bình';
+        if ($val <= 3.5) return 'Khó';
+        return 'Rất khó';
+    }
 }
