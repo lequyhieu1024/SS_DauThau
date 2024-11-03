@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
+use App\Models\Employee;
 use App\Models\Enterprise;
 
 class EnterpriseRepository extends BaseRepository
@@ -200,6 +201,130 @@ class EnterpriseRepository extends BaseRepository
         return $data;
     }
 
+    public function averageDifficultyLevelTasksByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->with('employees.tasks')->get();
 
+        $difficultyLevel = [
+            'easy' => 1,
+            'medium' => 2,
+            'hard' => 3,
+            'veryhard' => 4,
+        ];
 
+        foreach ($enterprises as $enterprise) {
+            $totalDifficulty = 0;
+            $taskCount = 0;
+
+            foreach ($enterprise->employees as $employee) {
+                foreach ($employee->tasks as $task) {
+                    $difficultyValue = $difficultyLevel[$task->difficulty_level] ?? 0;
+                    $totalDifficulty += $difficultyValue;
+                    $taskCount++;
+                }
+            }
+
+            $averageDifficulty = $taskCount > 0 ? round($totalDifficulty / $taskCount, 2) : 0;
+
+            $data[] = [
+                // 'totalDifficulty' => $totalDifficulty,
+                // 'taskCount' => $taskCount,
+                'enterprise_name' => $enterprise->user->name,
+                'average_difficulty' => $averageDifficulty,
+                'difficulty_label' => $this->getDifficultyLabel($averageDifficulty)
+            ];
+        }
+
+        return $data;
+    }
+
+    public function averageDifficultyLevelTasksByEmployee($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $employees = Employee::whereIn('id', $ids)->with('tasks')->get();
+
+        $difficultyLevel = [
+            'easy' => 1,
+            'medium' => 2,
+            'hard' => 3,
+            'veryhard' => 4,
+        ];
+
+        foreach ($employees as $employee) {
+            $totalDifficulty = 0;
+            $taskCount = 0;
+            foreach ($employee->tasks as $task) {
+                $difficultyValue = $difficultyLevel[$task->difficulty_level] ?? 0;
+                $totalDifficulty += $difficultyValue;
+                $taskCount++;
+            }
+            $averageDifficulty = $taskCount > 0 ? round($totalDifficulty / $taskCount, 2) : 0;
+    
+            $data[] = [
+                'employee_name' => $employee->name,
+                'average_difficulty' => $averageDifficulty,
+                'difficulty_label' => $this->getDifficultyLabel($averageDifficulty)
+            ];  
+        }
+
+        return $data;
+    }
+
+    public function getDifficultyLabel($val)
+    {
+        if ($val === 0) return 'Chưa có nhiệm vụ';
+        if ($val <= 1.5) return 'Dễ';
+        if ($val <= 2.5) return 'Trung bình';
+        if ($val <= 3.5) return 'Khó';
+        return 'Rất khó';
+    }
+
+    public function getFeedbackLabel($val)
+    {
+        if ($val === 0) return 'Chưa có đánh giá';
+        if ($val <= 1.5) return 'Tệ';
+        if ($val <= 2.5) return 'Bình thường';
+        if ($val <= 3.5) return 'Tốt';
+        if ($val <= 4.5) return 'Rất tốt';
+        return 'Xuất sắc';
+    }
+
+    public function averageFeedbackByEmployee($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $employees = Employee::whereIn('id', $ids)->get();
+
+        $feedbackLevel = [
+            'poor' => 1,
+            'medium' => 2,
+            'good' => 3,
+            'verygood' => 4,
+            'excellent' => 5,
+        ];
+
+        foreach ($employees as $employee) {
+            $totalFeedback = 0;
+            $feedbackCount = 0;
+            foreach ($employee->tasks as $task) {
+                $feedbackValue = $feedbackLevel[$task->pivot->feedback] ?? 0;
+                $totalFeedback += $feedbackValue;
+                $feedbackCount++;
+            }
+            $averageFeedback = $feedbackCount > 0 ? round($totalFeedback / $feedbackCount, 2) : 0;
+    
+            $data[] = [               
+                // 'totalFeedback' => $totalFeedback,                
+                // 'feedbackCount' => $feedbackCount,                
+                'employee_name' => $employee->name,
+                'average_feedback' => $averageFeedback,
+                'feedback_label' => $this->getFeedbackLabel($averageFeedback)
+            ];  
+        }
+
+        return $data;
+    }
 }

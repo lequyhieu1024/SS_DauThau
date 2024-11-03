@@ -311,4 +311,30 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->biddingResultStatisticsByEnterprise($request->all())
         ], 200);
     }
+
+    public function averageDifficultyLevelTasksByEnterprise(Request $request){
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện độ khó trung bình của nhiệm vụ mà doanh nghiệp thực hiện',
+            'data' => $this->enterpriseRepository->averageDifficultyLevelTasksByEnterprise($request->all())
+        ], 200);
+    }
+
+    public function averageDifficultyLevelTasksByEmployee(Request $request){
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện độ khó trung bình của nhiệm vụ mà nhân viên thực hiện',
+            'data' => $this->enterpriseRepository->averageDifficultyLevelTasksByEmployee($request->all())
+        ], 200);
+    }
+
+    public function averageFeedbackByEmployee(Request $request){
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê đánh giá trung bình của nhân viên',
+            'data' => $this->enterpriseRepository->averageFeedbackByEmployee($request->all())
+        ], 200);
+    }
+    
+    
 }
