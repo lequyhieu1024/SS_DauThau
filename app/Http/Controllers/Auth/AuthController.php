@@ -81,10 +81,19 @@ class AuthController extends Controller
         }
 
         // Lấy thông tin xác thực
-        $credentials = $request->only('taxcode', 'email', 'password');
+        $credentials = $request->only('taxcode', 'email', 'password', 'account_ban_at');
         $credentials = array_filter($credentials); // Xóa các trường rỗng
 
         try {
+            $user = User::where('taxcode', $request->taxcode)
+                ->orWhere('email', $request->email)
+                ->first();
+            if ($user->account_ban_at != NULL) {
+                return response()->json(
+                    ['result' => false, 'message' => 'Tài khoản đã bị cấm'],
+                    400
+                );
+            }
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(
                     ['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'],

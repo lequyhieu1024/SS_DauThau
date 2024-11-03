@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use App\Traits\HandlesValidationFailures;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TaskFormRequest extends FormRequest
+class EvaluateFormRequest extends FormRequest
 {
     use HandlesValidationFailures;
+    protected $project;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,16 +28,14 @@ class TaskFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'project_id' => 'required|exists:projects,id',
-            'code' => [
-                'required',
-                request()->isMethod('POST') ? 'unique:tasks,code' : 'unique:tasks,code,' . $this->route('task'),
+            'project_id' => [
+                'required','numeric','exists:projects,id',
+                request()->isMethod('POST') ? 'unique:evaluates,project_id' : 'unique:evaluates,project_id,' . $this->route('evaluate'),
             ],
-            'description' => 'nullable|max:10000',
-            'difficulty_level' => 'required|in:easy,medium,hard,veryhard',
-            'employee_id' => 'required|exists:employees,id',
-            'feedback' => 'nullable|in:poor,medium,good,verygood,excellent',
+            'enterprise_id' => 'required|integer|exists:enterprises,id',
+            'title' => 'required|max:255',
+            'score' => 'required|numeric|between:0,10',
+            'evaluate' => 'nullable|max:10000',
         ];
     }
 }

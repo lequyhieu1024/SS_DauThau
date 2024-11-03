@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('task_progresses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
-            $table->string('code');
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->enum('difficulty_level', ['easy', 'medium', 'hard', 'veryhard']);
+            $table->unsignedBigInteger('work_progress_id');
+            $table->unsignedBigInteger('task_id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('task_progresses');
     }
 };

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\api\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BiddingResultFormRequest;
 use App\Http\Resources\BiddingResultCollection;
+use App\Http\Resources\BiddingResultResource;
 use App\Repositories\BiddingResultRepository;
+use App\Repositories\BidDocumentRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -15,15 +17,17 @@ use Illuminate\Support\Facades\DB;
 class BiddingResultController extends Controller
 {
     protected $biddingResultRepository;
+    protected $bidDocumentRepository;
     protected $projectRepository;
     protected $userRepository;
 
-    public function __construct(BiddingResultRepository $biddingResultRepository, ProjectRepository $projectRepository, UserRepository $userRepository)
+    public function __construct(BiddingResultRepository $biddingResultRepository, ProjectRepository $projectRepository, UserRepository $userRepository, BidDocumentRepository $bidDocumentRepository)
     {
         // permission here
         $this->biddingResultRepository = $biddingResultRepository;
         $this->projectRepository = $projectRepository;
         $this->userRepository = $userRepository;
+        $this->bidDocumentRepository = $bidDocumentRepository;
     }
 
     /**
@@ -47,11 +51,15 @@ class BiddingResultController extends Controller
     {
         try {
             DB::beginTransaction();
-            $this->biddingResultRepository->create($request->all());
+            $data = $request->all();
+            $bidding_document = $this->bidDocumentRepository->findOrFail($data['bid_document_id']);
+            $data['project_id'] = $bidding_document['project_id'];
+            $data['enterprise_id'] = $bidding_document['enterprise_id'];
+            $this->biddingResultRepository->create($data);
             DB::commit();
             return response([
                 'result' => true,
-                'message' => 'Lựa chọn nhà thầu thành công.',
+                'message' => 'Lưu dữ liệu kết quả đấu thầu thành công.',
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -67,22 +75,36 @@ class BiddingResultController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response([
+            'result' => true,
+            'message' => 'Lấy thông tin kết quả đấu thầu thành công',
+            'data' => new BiddingResultResource($this->biddingResultRepository->findOrFail($id))
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BiddingResultFormRequest $request, string $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $bidding_document = $this->bidDocumentRepository->findOrFail($data['bid_document_id']);
+            $data['project_id'] = $bidding_document['project_id'];
+            $data['enterprise_id'] = $bidding_document['enterprise_id'];
+            $this->biddingResultRepository->update($data, $id);
+            DB::commit();
+            return response([
+                'result' => true,
+                'message' => 'Cập nhật dữ liệu kết quả đấu thầu thành công.',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'result' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

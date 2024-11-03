@@ -24,10 +24,15 @@ class BiddingResultFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => 'required|numeric|exists:projects,id',
-            'enterprise_id' => 'required|numeric|exists:enterprises,id',
-            'bid_document_id' => 'required|numeric|exists:bid_documents,id',
-            'decision_number' => 'required|max:255',
+            'win_amount' => 'required|numeric|min:0',
+            'bid_document_id' => [
+                'required','numeric','exists:bid_documents,id',
+                request()->isMethod('POST') ? 'unique:bidding_results,bid_document_id' : 'unique:bidding_results,bid_document_id,' . $this->route('bidding_result')
+            ],
+            'decision_number' => [
+                'required','max:255',
+                request()->isMethod('POST') ? 'unique:bidding_results,decision_number' : 'unique:bidding_results,decision_number,' . $this->route('bidding_result')
+            ],
             'decision_date' => 'required|date',
         ];
     }

@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('reputations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
-            $table->string('code');
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->enum('difficulty_level', ['easy', 'medium', 'hard', 'veryhard']);
+            $table->unsignedBigInteger('enterprise_id');
+            $table->integer('number_of_blacklist')->default(0);
+            $table->integer('number_of_ban')->default(0);;
+            $table->integer('prestige_score')->default(100);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('reputations');
     }
 };

@@ -68,6 +68,15 @@ class Enterprise extends Model
         return $this->hasMany(BiddingResult::class);
     }
 
+    public function evaluates() {
+        return $this->hasMany(Evaluate::class);
+    }
+
+    public function reputation()
+    {
+        return $this->hasOne(Reputation::class);
+    }
+
     protected function getLogAttributes(): array
     {
         return [

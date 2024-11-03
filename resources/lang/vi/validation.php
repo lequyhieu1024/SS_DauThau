@@ -191,5 +191,7 @@ return [
         'employee_id' => 'nhân viên',
         'feedback' => 'phản hồi',
         'code' => 'mã',
+        'bid_document_id' => 'hồ sơ đấu thầu',
+        'decision_number' => 'số quyết định phê duyệt'
     ],
 ];

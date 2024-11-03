@@ -13,8 +13,8 @@ class ActivityLogController extends Controller
 
     public function __construct(ActivityLogRepository $activityLogRepository)
     {
-        $this->middleware(['permission:list_activity_log'])->only('index');
-        $this->middleware(['permission:detail_activity_log'])->only('show');
+//        $this->middleware(['permission:list_activity_log'])->only('index');
+//        $this->middleware(['permission:detail_activity_log'])->only('show');
 
 
         $this->activityLogRepository = $activityLogRepository;
