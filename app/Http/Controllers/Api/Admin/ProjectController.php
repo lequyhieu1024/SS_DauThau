@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectFormRequest;
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\TreeSelectCollection;
 use App\Jobs\sendApproveProjectJob;
 use App\Repositories\AttachmentRepository;
 use App\Repositories\EnterpriseRepository;
@@ -218,53 +219,61 @@ class ProjectController extends Controller
 
     public function getNameAndIds()
     {
-        $projects = $this->projectRepository->getNameAndIds();
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án và gói thầu thành công",
-            'data' => $projects
+            'data' => new TreeSelectCollection($this->projectRepository->getNameAndIdsProject())
         ], 200);
     }
 
-//    public function approveProject(Request $request, $id)
-//    {
-//        $rules = [
-//            'decision_number_approve' => 'required|max:255',
-//            'status' => 'required|in:3,2',
-//        ];
-//        $validator = Validator::make($request->all(), $rules);
-//        if ($validator->fails()) {
-//            return response()->json([
-//                'result' => false,
-//                'status' => 422,
-//                'errors' => $validator->errors()
-//            ], 422);
-//        }
-//
-//        $project = $this->projectRepository->findOrFail($id);
-//        if ($request->status == ProjectStatus::REJECT->value) {
-//            $this->projectRepository->rejectProject($id);
-//            sendApproveProjectJob::dispatch($project->investor->user, $project->tenderer->user, $request->notes, ProjectStatus::REJECT->value);
-//            return response([
-//                'result' => true,
-//                'message' => 'Từ chối dự án thành công',
-//                'data' => [
-//                    'approve_at' => now(),
-//                    'status' => "Từ chối"
-//                ]
-//            ], 200);
-//        }
-//        $this->projectRepository->approveProject($id, $request->decision_number_approve);
-//        sendApproveProjectJob::dispatch($project->investor->user, $project->tenderer->user, $request->notes, ProjectStatus::RECEIVED->value);
-//        return response([
-//            'result' => true,
-//            'message' => 'Phê duyệt dự án thành công',
-//            'data' => [
-//                'approve_at' => now(),
-//                'decision_number_approve' => $request->decision_number_approve,
-//                'status' => 'Đã phê duyệt'
-//            ]
-//        ], 200);
-//    }
+    public function approveProject(Request $request, $id)
+    {
+        $rules = [
+            'decision_number_approve' => 'required|max:255',
+            'status' => 'required|in:3,2',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'result' => false,
+                'status' => 422,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $project = $this->projectRepository->findOrFail($id);
+        if ($request->status == ProjectStatus::REJECT->value) {
+            $this->projectRepository->rejectProject($id);
+            sendApproveProjectJob::dispatch($project->investor->user, $project->tenderer->user, $request->notes, ProjectStatus::REJECT->value);
+            return response([
+                'result' => true,
+                'message' => 'Từ chối dự án thành công',
+                'data' => [
+                    'approve_at' => now(),
+                    'status' => "Từ chối"
+                ]
+            ], 200);
+        }
+        $this->projectRepository->approveProject($id, $request->decision_number_approve);
+        sendApproveProjectJob::dispatch($project->investor->user, $project->tenderer->user, $request->notes, ProjectStatus::APPROVED->value);
+        return response([
+            'result' => true,
+            'message' => 'Phê duyệt dự án thành công',
+            'data' => [
+                'approve_at' => now(),
+                'decision_number_approve' => $request->decision_number_approve,
+                'status' => 'Đã phê duyệt'
+            ]
+        ], 200);
+    }
+
+    public function getNameAndIdProjectHasBidingResult()
+    {
+        return response([
+            'result' => true,
+            'message' => 'Lấy danh sách dự án và gói thầu đã có kết quả đấu thầu thành công',
+            'data' => new TreeSelectCollection($this->projectRepository->getNameAndIdProjectHasBiddingResult()),
+        ], 200);
+    }
 
 }

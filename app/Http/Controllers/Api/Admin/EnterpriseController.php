@@ -9,6 +9,7 @@ use App\Http\Resources\EnterpriseResource;
 use App\Jobs\sendEmailActiveJob;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\IndustryRepository;
+use App\Repositories\ReputationRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -20,12 +21,14 @@ class EnterpriseController extends Controller
     public $userRepository;
     public $industryRepository;
     public $roleRepository;
+    public $reputationRepository;
 
     public function __construct(
         EnterpriseRepository $enterpriseRepository,
         UserRepository $userRepository,
         IndustryRepository $industryRepository,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
+        ReputationRepository $reputationRepository
     ) {
 //        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
 //        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
@@ -38,6 +41,7 @@ class EnterpriseController extends Controller
         $this->userRepository = $userRepository;
         $this->industryRepository = $industryRepository;
         $this->roleRepository = $roleRepository;
+        $this->reputationRepository = $reputationRepository;
     }
 
     /**
@@ -67,6 +71,9 @@ class EnterpriseController extends Controller
                 $data['avatar'] = upload_image($request->file('avatar'));
             }
             $enterprise = $this->enterpriseRepository->create($data);
+            // thêm dữ liệu vào bảng uy tín
+            $reputationData = ['enterprise_id' => $enterprise->id];
+            $this->reputationRepository->create($reputationData);
             $this->enterpriseRepository->syncIndustry($data, $enterprise->id);
             $data['receiver'] = 'doanh nghiệp';
             unset($data['avatar']);
@@ -171,6 +178,7 @@ class EnterpriseController extends Controller
         $user = $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id);
         if ($user->account_ban_at == null) {
             $user->account_ban_at = now();
+            $this->updateBanReputation($id);
             $user->save();
             return response()->json([
                 'result' => true,
@@ -200,6 +208,38 @@ class EnterpriseController extends Controller
             'message' => 'Thay đổi trạng thái thành công',
             'is_active' => $enterprise->is_active
         ], 200);
+    }
+
+    public function moveToBlacklist($id)
+    {
+        $enterprise = $this->enterpriseRepository->findOrFail($id);
+        $this->updateBlacklistReputation($enterprise->is_blacklist, $id);
+        $enterprise->is_blacklist = !$enterprise->is_blacklist;
+        $enterprise->save();
+        return response()->json([
+            'result' => true,
+            'status' => 200,
+            'message' => 'Thay đổi trạng thái danh sách đen thành công',
+            'is_blacklist' => $enterprise->is_blacklist
+        ], 200);
+    }
+
+    public function updateBlacklistReputation($isBlacklist, $enterpriseId)
+    {
+        if (!$isBlacklist) {
+            $reputation = $this->reputationRepository->getOneBy('enterprise_id', $enterpriseId);
+            $reputation->number_of_blacklist = $reputation->number_of_blacklist + 1;
+            $reputation->prestige_score = $reputation->prestige_score - 1;
+            $reputation->save();
+        }
+    }
+
+    public function updateBanReputation($enterpriseId)
+    {
+        $reputation = $this->reputationRepository->getOneBy('enterprise_id', $enterpriseId);
+        $reputation->number_of_ban = $reputation->number_of_ban + 1;
+        $reputation->prestige_score = $reputation->prestige_score - 1;
+        $reputation->save();
     }
 
     public function getnameAndIds()

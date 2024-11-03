@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->date('end_time')->nullable();
             $table->timestamp('approve_at')->nullable();
             $table->string('decision_number_approve')->nullable();
-            $table->tinyInteger('status')->default(5);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

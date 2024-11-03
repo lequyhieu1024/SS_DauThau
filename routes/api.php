@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\ActivityLogController;
 use App\Http\Controllers\Api\Admin\BiddingResultController;
 use App\Http\Controllers\Api\Admin\EmployeeController;
+use App\Http\Controllers\Api\Admin\EvaluateController;
 use App\Http\Controllers\Api\Admin\PostCatalogController;
 use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\AttachmentController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Api\Admin\IndustryController;
 use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
 use App\Http\Controllers\Api\Admin\ProjectComparisonController;
 use App\Http\Controllers\Api\Admin\ProjectController;
+use App\Http\Controllers\Api\Admin\ReputationController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
 use App\Http\Controllers\Api\Admin\StaffController;
@@ -74,7 +76,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
     // doanh nhghieejp
     Route::resource('enterprises', EnterpriseController::class);
+    // chuyển trạng thái
     Route::put('enterprises/{enterprise}/changeActive', [EnterpriseController::class, 'changeActive']);
+    Route::put('enterprises/{enterprise}/move-to-blacklist', [EnterpriseController::class, 'moveToBlacklist']);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
@@ -150,7 +154,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
-//    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
+    Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
+    Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
@@ -185,6 +190,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
 
     Route::resource('tasks', TaskController::class);
+
+    Route::resource('evaluates', EvaluateController::class);
+
+    Route::get('reputations', [ReputationController::class, 'index']);
 
     // general chart
     Route::get('dashboard/charts/project-by-industry', [DashBoardController::class, 'projectByIndustry']);

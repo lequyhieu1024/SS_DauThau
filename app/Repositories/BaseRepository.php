@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 
+use App\Enums\ProjectStatus;
+
 abstract class BaseRepository implements RepositoryInterface
 {
     protected $model;
@@ -16,6 +18,10 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function getNameAndIds()
     {
+        return $this->model->select('id', 'name')->get();
+    }
+
+    public function getNameAndIdTreeSelect() {
         return $this->model->select('id', 'name')->get();
     }
 
@@ -42,6 +48,21 @@ abstract class BaseRepository implements RepositoryInterface
     public function find($id)
     {
         return $this->model->find($id);
+    }
+
+    public function getOneBy($field, $value)
+    {
+        return $this->model->where($field,$value)->first();
+    }
+
+    public function getBy($field, $value)
+    {
+        return $this->model->where($field, $value)->get();
+    }
+
+    public function getByArray($field, array $values)
+    {
+        return $this->model->whereIn($field, $values)->get();
     }
 
     public function update(array $data, $id)

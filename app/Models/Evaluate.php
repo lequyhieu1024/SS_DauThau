@@ -5,34 +5,33 @@ namespace App\Models;
 use App\Traits\ActivityLogOptionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Task extends Model
+class Evaluate extends Model
 {
+    use HasFactory;
     use LogsActivity;
     use ActivityLogOptionsTrait;
-    use HasFactory, SoftDeletes;
+    protected $table = 'evaluates';
 
     protected $fillable = [
         'project_id',
-        'name',
-        'code',
-        'description',
-        'difficulty_level',
+        'enterprise_id',
+        'title',
+        'score',
+        'evaluate',
     ];
-    public function employees() {
-        return $this->belongsToMany(Employee::class, 'employee_task')
-            ->withPivot('feedback')
-            ->withTimestamps();
-    }
     public function project() {
         return $this->belongsTo(Project::class);
     }
 
+    public function enterprise() {
+        return $this->belongsTo(Enterprise::class);
+    }
+
     protected function getModelName(): string
     {
-        return 'Nhiệm vụ của dự án - Task';
+        return 'Đánh giá kết quả - Evaluate';
     }
 
     protected function getLogAttributes(): array
@@ -42,6 +41,6 @@ class Task extends Model
 
     protected function getFieldName(): string
     {
-        return $this->name;
+        return $this->title;
     }
 }

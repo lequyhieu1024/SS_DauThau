@@ -9,6 +9,8 @@ class BiddingResult extends Model
 {
     use HasFactory;
 
+    protected $table = 'bidding_results';
+
     protected $fillable = [
         'project_id',
         'enterprise_id',

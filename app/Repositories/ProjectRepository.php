@@ -66,7 +66,7 @@ class ProjectRepository extends BaseRepository
      */
     public function getOverdueProjectSubmission()
     {
-        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status", ProjectStatus::RECEIVED->value)->get();
+        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status", ProjectStatus::APPROVED->value)->get();
     }
 
     /**
@@ -99,39 +99,37 @@ class ProjectRepository extends BaseRepository
      * @return mixed
      * Staff quyết định phê duyệt dự án
      */
-//    public function approveProject($id, $decision_number_approve)
-//    {
-//        return $this->model->findOrFail($id)->update([
-//            'approve_at' => now(),
-//            'decision_number_approve' => $decision_number_approve,
-//            'status' => ProjectStatus::RECEIVED->value,
-//        ]);
-//    }
-//
-//    /**
-//     * @param $id
-//     * @return mixed
-//     * Staff quyết định reject dự án
-//     */
-//    public function rejectProject($id)
-//    {
-//        return $this->model->findOrFail($id)->update([
-//            'approve_at' => now(),
-//            'status' => ProjectStatus::REJECT->value,
-//        ]);
-//    }
-//
-//    /**
-//     * @param $id
-//     * @return mixed
-//     * Khi người đăng tải project lựa chọn nhà thầu rồi bấm submit, cùng lúc đó phải update status , dùng hàm publishResultProject
-//     */
-//    public function publishResultProject($id)
-//    {
-//        return $this->model->findOrFail($id)->update([
-//            'status' => ProjectStatus::RESULTS_PUBLICED->value,
-//        ]);
-//    }
+    public function approveProject($id, $decision_number_approve)
+    {
+        return $this->model->findOrFail($id)->update([
+            'approve_at' => now(),
+            'decision_number_approve' => $decision_number_approve,
+            'status' => ProjectStatus::APPROVED->value,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * Staff quyết định reject dự án
+     */
+    public function rejectProject($id)
+    {
+        return $this->model->findOrFail($id)->update([
+            'approve_at' => now(),
+            'status' => ProjectStatus::REJECT->value,
+        ]);
+    }
+
+    public function getNameAndIdsProject()
+    {
+        return $this->model->select('id', 'name')->where('status', ProjectStatus::APPROVED->value)->get();
+    }
+
+    public function getNameAndIdProjectHasBiddingResult()
+    {
+        return $this->model->whereHas('BiddingResult')->select('id','name')->get();
+    }
 
     public function getProjectCountByIndustry()
     {
