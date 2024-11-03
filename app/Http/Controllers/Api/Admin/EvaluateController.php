@@ -132,7 +132,7 @@ class EvaluateController extends Controller
             $this->evaluateRepository->delete($id);
             return response([
                 'result' => true,
-                'message' => 'Lưu trữ đánh giá kết quả hoàn thành gói thầu thành công',
+                'message' => 'Xóa đánh giá kết quả hoàn thành gói thầu thành công',
             ], 200);
         } catch (NotFoundHttpException $e) {
             return response([
