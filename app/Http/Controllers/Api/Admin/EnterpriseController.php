@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EnterpriseFormRequest;
 use App\Http\Resources\EnterpriseCollection;
 use App\Http\Resources\EnterpriseResource;
+use App\Http\Resources\ProjectResource;
 use App\Jobs\sendEmailActiveJob;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\IndustryRepository;
@@ -14,6 +15,7 @@ use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class EnterpriseController extends Controller
 {
@@ -335,6 +337,37 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->averageFeedbackByEmployee($request->all())
         ], 200);
     }
-    
-    
+
+    public function getDetailEnterpriseByIds(Request $request)
+    {
+        $rules = [
+            'enterprise_ids' => 'required|array',
+            'enterprise_ids.*' => 'exists:enterprises,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $enterpriseIds = $request->input('enterprise_ids');
+
+        $enterprises = $this->enterpriseRepository->findWhereIn('id', $enterpriseIds);
+
+        if ($enterprises->isEmpty()) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy doanh nghiệp nào.',
+                'data' => [],
+            ], 404);
+        }
+
+        return response([
+            'result' => true,
+            'message' => "Lấy dữ liệu chi tiết của các doanh nghiệp thành công",
+            'data' => EnterpriseResource::collection($enterprises),
+        ], 200);
+    }
+
 }

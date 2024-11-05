@@ -2,8 +2,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProjectCollection;
+use App\Http\Resources\ProjectResource;
 use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectComparisonController extends Controller
 {
@@ -223,4 +226,37 @@ class ProjectComparisonController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function getDetailProjectByIds(Request $request)
+    {
+        $rules = [
+            'project_ids' => 'required|array',
+            'project_ids.*' => 'exists:projects,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $projectIds = $request->input('project_ids');
+
+        $projects = $this->projectRepository->findWhereIn('id', $projectIds);
+
+        if ($projects->isEmpty()) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Không tìm thấy dự án nào.',
+                'data' => [],
+            ], 404);
+        }
+
+        return response([
+            'result' => true,
+            'message' => "Lấy dữ liệu chi tiết của các dự án thành công",
+            'data' => ProjectResource::collection($projects),
+        ], 200);
+    }
+
 }
