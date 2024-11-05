@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Admin\SelectionMethodController;
 use App\Http\Controllers\Api\Admin\StaffController;
 use App\Http\Controllers\Api\Admin\SystemController;
 use App\Http\Controllers\Api\Admin\TaskController;
+use App\Http\Controllers\Api\Admin\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -194,6 +195,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('evaluates', EvaluateController::class);
 
     Route::get('reputations', [ReputationController::class, 'index']);
+
+    Route::apiResource('work-progresses', WorkProgressController::class);
 
     // general chart
     Route::get('dashboard/charts/project-by-industry', [DashBoardController::class, 'projectByIndustry']);

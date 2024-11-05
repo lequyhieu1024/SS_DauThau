@@ -30,6 +30,11 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function taskProgress()
+    {
+        return $this->hasMany(Task::class, 'task_id', 'id');
+    }
+
     protected function getModelName(): string
     {
         return 'Nhiệm vụ của dự án - Task';
