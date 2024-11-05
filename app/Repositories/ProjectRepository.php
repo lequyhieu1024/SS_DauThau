@@ -57,7 +57,7 @@ class ProjectRepository extends BaseRepository
             });
         }
 
-        return $query->paginate(10 ?? $data['size']);
+        return $query->paginate($data['size'] ?? 10);
     }
 
     /**

@@ -23,7 +23,7 @@ class SupportRepository extends BaseRepository
         $query = $this->model->query();
         // logic loc du an
 
-        return $query->paginate(10 ?? $data['size']);
+        return $query->paginate($data['size'] ?? 10);
     }
 
 }

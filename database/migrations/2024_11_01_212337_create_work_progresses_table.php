@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('work_progresses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('bidding_result_id');
             $table->string('name');
             $table->decimal('progress', 4,2);
             $table->decimal('expense', 20, 2);
