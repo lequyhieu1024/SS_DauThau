@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EnterpriseFormRequest;
 use App\Http\Resources\EnterpriseCollection;
 use App\Http\Resources\EnterpriseResource;
-use App\Http\Resources\ProjectResource;
 use App\Jobs\sendEmailActiveJob;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\IndustryRepository;
