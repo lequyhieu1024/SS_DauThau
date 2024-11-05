@@ -60,9 +60,9 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->where($field, $value)->get();
     }
 
-    public function findWhereIn($column, array $values)
+    public function findWhereIn($field, array $values)
     {
-        return $this->model->whereIn($column, $values)->get();
+        return $this->model->whereIn($field, $values)->get();
     }
 
 
