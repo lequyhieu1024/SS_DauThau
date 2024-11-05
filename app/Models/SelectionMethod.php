@@ -16,4 +16,8 @@ class SelectionMethod extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function projects(){
+        return $this->hasMany(Project::class, 'selection_method_id');
+    }
 }

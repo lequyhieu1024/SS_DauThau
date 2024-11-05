@@ -35,6 +35,11 @@ class Staff extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
     protected function getModelName(): string
     {
         return 'Nhân viên - Staff';

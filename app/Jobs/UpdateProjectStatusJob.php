@@ -36,7 +36,6 @@ class UpdateProjectStatusJob implements ShouldQueue
             foreach ($projects as $project) {
                 $project->status = ProjectStatus::SELECTING_CONTRUCTOR->value;
                 $project->save();
-                Log::info("project on loop: " . $project);
                 event(new UpdateProjectStatusEvent($project));
             }
         }

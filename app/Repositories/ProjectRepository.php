@@ -3,12 +3,17 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\Enterprise;
+use App\Models\FundingSource;
+use App\Models\Industry;
 use App\Models\Project;
+use App\Models\SelectionMethod;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectRepository extends BaseRepository
 {
-
     public function getModel()
     {
         return Project::class;
@@ -16,7 +21,14 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-        $query = $this->model->with('children')->whereNull('parent_id');
+        if ($data['enterprise_id'] == null) {
+            $query = $this->model->with('children')->whereNull('parent_id');
+        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
+                $query->where('investor_id', $data['enterprise_id'])
+                    ->orWhere('tenderer_id', $data['enterprise_id']);
+            });
+        }
         // logic loc du an
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
@@ -45,35 +57,62 @@ class ProjectRepository extends BaseRepository
             });
         }
 
-        return $query->paginate(10 ?? $data['size']);
+        return $query->paginate($data['size'] ?? 10);
     }
 
+    /**
+     * @return mixed
+     * Lấy ra những dự án đã hết hạn nộp hồ sơ rồi update trạng trạng thái từ RECEIVED -> SELECTING_CONTRUCTOR
+     */
     public function getOverdueProjectSubmission()
     {
-        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status",  ProjectStatus::RECEIVED->value)->get();
+        return $this->model->where('bid_submission_end', "<", Carbon::now())->where("status", ProjectStatus::APPROVED->value)->get();
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @return mixed
+     * Đồng bộ ngành nghề khi create || update project
+     */
     public function syncIndustry(array $data, $id)
     {
         $project = $this->model->findOrFail($id);
         return $project->industries()->sync($data['industry_id']);
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @return mixed
+     * Đồng bộ lĩnh vực mua sắm công khi create || update project
+     */
     public function syncProcurement(array $data, $id)
     {
         $project = $this->model->findOrFail($id);
         return $project->procurementCategories()->sync($data['procurement_id']);
     }
 
+    /**
+     * @param $id
+     * @param $decision_number_approve
+     * @return mixed
+     * Staff quyết định phê duyệt dự án
+     */
     public function approveProject($id, $decision_number_approve)
     {
         return $this->model->findOrFail($id)->update([
             'approve_at' => now(),
             'decision_number_approve' => $decision_number_approve,
-            'status' => ProjectStatus::RECEIVED->value,
+            'status' => ProjectStatus::APPROVED->value,
         ]);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * Staff quyết định reject dự án
+     */
     public function rejectProject($id)
     {
         return $this->model->findOrFail($id)->update([
@@ -81,4 +120,517 @@ class ProjectRepository extends BaseRepository
             'status' => ProjectStatus::REJECT->value,
         ]);
     }
+
+    public function getNameAndIdsProject()
+    {
+        return $this->model->select('id', 'name')->where('status', ProjectStatus::APPROVED->value)->get();
+    }
+
+    public function getNameAndIdProjectHasBiddingResult()
+    {
+        return $this->model->whereHas('BiddingResult')->select('id','name')->get();
+    }
+
+    public function getProjectCountByIndustry()
+    {
+        // tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        // số dự án theo ngành giảm dần
+        $industries = Industry::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        // lấy 10 ngành có số lượng dự án lớn nhất
+        $topIndustries = $industries->take(10);
+        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+
+        $data = [];
+
+        // số lượng dự án cho 10 ngành hàng đầu
+        foreach ($topIndustries as $industry) {
+            $data[] = [
+                'name' => $industry->name,
+                'value' => $industry->projects_count
+            ];
+        }
+
+        // số lượng dự án cho các ngành còn lại
+        $otherProjectCount = $otherIndustries->sum('projects_count');
+        if ($otherProjectCount > 0) {
+            $data[] = [
+                'name' => 'Ngành khác',
+                'value' => $otherProjectCount
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getProjectPercentageByFundingSource()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        //
+        $fundingSources = FundingSource::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        $topFundingSources = $fundingSources->take(10);
+        $otherFundingSources = $fundingSources->skip(10);
+
+        //
+        foreach ($topFundingSources as $fundingSource) {
+            $data[] = [
+                'name' => $fundingSource->name,
+                'value' => $fundingSource->projects_count
+            ];
+        }
+
+        //
+        $otherFundingSources = $otherFundingSources->sum('projects_count');
+        if ($otherFundingSources > 0) {
+            $data[] = [
+                'name' => 'Nguồn tài trợ khác',
+                'value' => $otherFundingSources
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getDomesticPercentage()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        if ($totalProjects === 0) {
+            return [
+                ['name' => 'Trong nước', 'value' => 0],
+                ['name' => 'Quốc tế', 'value' => 0]
+            ];
+        }
+
+        // trong nước
+        $domesticCount = $this->model::where('is_domestic', true)->count();
+        // quốc tế
+        $internationalCount = $this->model::where('is_domestic', false)->count();
+
+        return [
+            ['name' => 'Trong nước', 'value' => $domesticCount],
+            ['name' => 'Quốc tế', 'value' => $internationalCount]
+        ];
+    }
+
+    public function getProjectPercentageBySubmissionMethod()
+    {
+        // Tổng số dự án
+        $totalProjects = $this->model::count();
+
+        if ($totalProjects === 0) {
+            return [
+                ['name' => 'Online', 'value' => 0],
+                ['name' => 'Trực tiếp', 'value' => 0]
+            ];
+        }
+
+        // Online
+        $onlineCount = $this->model::where('submission_method', 'online')->count();
+
+        // Trực tiếp
+        $inPersonCount = $this->model::where('submission_method', 'in_person')->count();
+
+        return [
+            ['name' => 'Online', 'value' => $onlineCount],
+            ['name' => 'Trực tiếp', 'value' => $inPersonCount]
+        ];
+    }
+
+    public function getProjectPercentageBySelectionMethod()
+    {
+        // 1. Lấy tổng số dự án
+        $totalProjects = $this->model::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                'result' => true,
+                'message' => 'Không có dự án nào',
+                'data' => []
+            ];
+        }
+
+        //
+        $selectionMethods = SelectionMethod::withCount('projects')
+            ->orderByDesc('projects_count')
+            ->get();
+
+        $topSelectionMethods = $selectionMethods->take(10);
+        $otherSelectionMethods = $selectionMethods->skip(10);
+
+        //
+        foreach ($topSelectionMethods as $selectionMethod) {
+            $data[] = [
+                'name' => $selectionMethod->method_name,
+                'value' => $selectionMethod->projects_count
+            ];
+        }
+
+        //
+        $otherSelectionMethods = $otherSelectionMethods->sum('projects_count');
+        if ($otherSelectionMethods > 0) {
+            $data[] = [
+                'name' => 'Phương thức khác',
+                'value' => $otherSelectionMethods
+            ];
+        }
+
+        return $data;
+    }
+
+    // lấy tỷ lệ phân bổ dự án theo vai trò bên mời thầu, đầu tư và cả hai
+    public function getProjectPercentageByTendererInvestor()
+    {
+        // Tổng số dự án
+        $totalProjects = Project::count();
+
+        // Nếu không có dự án nào
+        if ($totalProjects === 0) {
+            return [
+                ['name' => 'Bên mời thầu', 'value' => 0],
+                ['name' => 'Bên đầu tư', 'value' => 0],
+                ['name' => 'Cả hai', 'value' => 0]
+            ];
+        }
+
+        // dự án mà bên mời thầu khác nhà đầu tư
+        $tendererCount = Project::whereColumn('tenderer_id', '!=', 'investor_id')->count();
+
+        // dự án mà nhà đầu tư khác bên mời thầu
+        $investorCount = Project::whereColumn('investor_id', '!=', 'tenderer_id')->count();
+
+        // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
+        $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
+
+        //
+        // $tendererPercentage = ($tendererCount / $totalProjects) * 100;
+        // $investorPercentage = ($investorCount / $totalProjects) * 100;
+        // $bothPercentage = ($bothCount / $totalProjects) * 100;
+
+        return [
+            ['name' => 'Bên mời thầu', 'value' => $tendererCount],
+            ['name' => 'Bên đầu tư', 'value' => $investorCount],
+            ['name' => 'Cả hai', 'value' => $bothCount]
+        ];
+    }
+
+    // lấy thời gian trung bình thực hiện dự án theo ngành
+    public function getAverageProjectDurationByIndustry()
+    {
+        // lấy ra các ngành với dự án có start_time, end_time
+        $industries = Industry::with(['projects' => function ($query) {
+            $query->whereNotNull('start_time')->whereNotNull('end_time')
+                ->select('start_time', 'end_time');
+        }])->get();
+
+        $data = [];
+        foreach ($industries as $industry) {
+            $totalDuration = 0;
+            $projectCount = $industry->projects->count(); // số dự án theo ngành
+
+            // lặp qua từng dự án theo ngành
+            foreach ($industry->projects as $project) {
+                $startDate = Carbon::parse($project->start_time);
+                $endDate = Carbon::parse($project->end_time);
+                $duration = $endDate->diffInDays($startDate); // chênh lệch ngày
+
+                $totalDuration += $duration;
+            }
+
+            // trung bình theo ngày
+            $averageDuration = $projectCount > 0 ? $totalDuration / $projectCount : 0;
+            $data[] = [
+                'name' => $industry->name,
+                'value' => round($averageDuration, 2)
+            ];
+        }
+
+        return $data;
+    }
+
+    // số doanh nghiệp nhà nước, ngoài nhà nước
+    public function getEnterpriseByOrganizationType()
+    {
+        // nhà nước
+        $stateOwnedCount = Enterprise::where('organization_type', 1)->count();
+
+        // ngoài nhà nước
+        $privateOwnedCount = Enterprise::where('organization_type', 2)->count();
+
+        return [
+            ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
+            ['name' => 'Ngoài nhà nước', 'value' => $privateOwnedCount],
+        ];
+    }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng
+    public function getTopTenderersByProjectCount()
+    {
+        // đếm tổng số lượng dự án cho từng đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('COUNT(*) as project_count')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('project_count')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10);
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->project_count
+            ];
+        }
+
+        // tổng số lượng gói thầu của các đơn vị còn lại
+        // $otherCount = $otherTenderers->sum('project_count');
+        // if ($otherCount > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherCount
+        //     ];
+        // }
+
+        return $data;
+    }
+
+    // 10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo giá
+    public function getTopTenderersByProjectTotalAmount()
+    {
+        // tổng giá từng dự án theo đơn vị mời thầu
+        $topTenderers = Project::with('tenderer.user')
+            ->select('tenderer_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('tenderer_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $topTenderers = $topTenderers->take(10); //
+        // $otherTenderers = $tenderers->skip(10);
+
+        $data = [];
+        foreach ($topTenderers as $tenderer) {
+            $data[] = [
+                'name' => $tenderer->tenderer->user->name,
+                'value' => $tenderer->total
+            ];
+        }
+
+        //
+        // $otherTotal = $otherTenderers->sum('total');
+        // if ($otherTotal > 0) {
+        //     $data[] = [
+        //         'name' => 'Khác',
+        //         'value' => $otherTotal
+        //     ];
+        // }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo từng phần
+    public function getTopInvestorsByProjectPartial()
+    {
+        //
+        $topInvestors = Project::with('investor.user')
+            ->whereNotNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo trọn gói
+    public function getTopInvestorsByProjectFull()
+    {
+        //
+        $topInvestors = Project::with('investor.user')
+            ->whereNull('parent_id')
+            ->select('investor_id')
+            ->selectRaw('COUNT(investor_id) as investor_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('investor_count')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->investor_count
+            ];
+        }
+
+        return $data;
+    }
+
+    // 10 đơn vị trúng thầu nhiều nhất theo giá
+    public function getTopInvestorsByProjectTotalAmount()
+    {
+        //
+        $topInvestors = Project::with('investor.user')
+            ->select('investor_id')
+            ->selectRaw('SUM(total_amount) as total')
+            ->groupBy('investor_id')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+
+        $data = [];
+        foreach ($topInvestors as $investor) {
+            $data[] = [
+                'name' => $investor->investor->user->name,
+                'value' => $investor->total
+            ];
+        }
+
+        return $data;
+    }
+
+
+    // Biểu đồ cột: total amount
+    public function getBarChartDataTotalAmount($projectIds)
+    {
+        return $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name')
+            ->selectRaw('
+            CASE
+                WHEN parent_id IS NULL THEN COALESCE((SELECT SUM(amount) FROM projects AS child WHERE child.parent_id = projects.id), amount)
+                ELSE amount
+            END AS total_amount
+        ')
+            ->get();
+    }
+
+    // Biểu đồ cột: construction time
+    public function getBarChartDataComparingConstructionTime($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'start_time', 'end_time')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $startDate = Carbon::parse($project->start_time);
+            $endDate = Carbon::parse($project->end_time);
+            $duration = $endDate->diffInDays($startDate);
+
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'duration' => $duration,
+            ];
+        });
+
+        return $data;
+    }
+
+    // Biểu đồ cột: bid submission time
+    public function getBarChartDataComparingBidSubmissionTime($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'bid_submission_start', 'bid_submission_end')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $startDate = Carbon::parse($project->bid_submission_start);
+            $endDate = Carbon::parse($project->bid_submission_end);
+            $duration = $endDate->diffInDays($startDate);
+
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'duration' => $duration,
+            ];
+        });
+
+        return $data;
+    }
+
+    // Biểu đồ tròn: total amount
+    public function getPieChartDataAmountAndTotalAmount($projectIds)
+    {
+        $projects = $this->model->whereIn('id', $projectIds)
+            ->select('id', 'name', 'parent_id', 'total_amount')
+            ->with('children:id,name,parent_id,total_amount')
+            ->get();
+
+        $data = $projects->map(function ($project) {
+            $projectData = [
+                'id' => $project->id,
+                'name' => $project->name,
+                'value' => $project->children->isNotEmpty() ? $project->children->sum('total_amount') : $project->total_amount,
+            ];
+
+            if ($project->children->isNotEmpty()) {
+                $projectData['children'] = $project->children->map(function ($child) {
+                    return [
+                        'id' => $child->id,
+                        'name' => $child->name,
+                        'value' => $child->total_amount,
+                    ];
+                });
+            }
+
+            return $projectData;
+        });
+
+        return $data;
+    }
+
+    // Số lượng tham gia đấu thầu
+    public function getBarChartDataBidderCount($projectIds)
+    {
+        $data = $this->model->whereIn('projects.id', $projectIds)
+            ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
+            ->select('projects.id', 'projects.name', DB::raw('COUNT(bid_documents.id) as bidder_count'))
+            ->groupBy('projects.id', 'projects.name')
+            ->get();
+
+        return $data;
+    }
+
 }

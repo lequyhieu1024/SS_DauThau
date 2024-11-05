@@ -1,23 +1,33 @@
 <?php
 
-use App\Http\Controllers\Api\ActivityLogController;
-use App\Http\Controllers\Api\AttachmentController;
-use App\Http\Controllers\Api\BannerController;
-use App\Http\Controllers\Api\BidBondController;
-use App\Http\Controllers\Api\BiddingFieldController;
-use App\Http\Controllers\Api\BiddingTypeController;
-use App\Http\Controllers\Api\BidDocumentController;
-use App\Http\Controllers\Api\BusinessActivityTypeController;
-use App\Http\Controllers\Api\EnterpriseController;
-use App\Http\Controllers\Api\EvaluationCriteriaController;
-use App\Http\Controllers\Api\FundingSourceController;
-use App\Http\Controllers\Api\IndustryController;
-use App\Http\Controllers\Api\ProcurementCategoryController;
-use App\Http\Controllers\Api\ProjectController;
-use App\Http\Controllers\Api\RoleController;
-use App\Http\Controllers\Api\SelectionMethodController;
-use App\Http\Controllers\Api\StaffController;
-use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\Admin\ActivityLogController;
+use App\Http\Controllers\Api\Admin\BiddingResultController;
+use App\Http\Controllers\Api\Admin\EmployeeController;
+use App\Http\Controllers\Api\Admin\EvaluateController;
+use App\Http\Controllers\Api\Admin\PostCatalogController;
+use App\Http\Controllers\Api\Admin\PostController;
+use App\Http\Controllers\Api\Admin\AttachmentController;
+use App\Http\Controllers\Api\Admin\BannerController;
+use App\Http\Controllers\Api\Admin\BidBondController;
+use App\Http\Controllers\Api\Admin\BiddingFieldController;
+use App\Http\Controllers\Api\Admin\BiddingTypeController;
+use App\Http\Controllers\Api\Admin\BidDocumentController;
+use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
+use App\Http\Controllers\Api\Admin\DashBoardController;
+use App\Http\Controllers\Api\Admin\EnterpriseController;
+use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
+use App\Http\Controllers\Api\Admin\FundingSourceController;
+use App\Http\Controllers\Api\Admin\IndustryController;
+use App\Http\Controllers\Api\Admin\ProcurementCategoryController;
+use App\Http\Controllers\Api\Admin\ProjectComparisonController;
+use App\Http\Controllers\Api\Admin\ProjectController;
+use App\Http\Controllers\Api\Admin\ReputationController;
+use App\Http\Controllers\Api\Admin\RoleController;
+use App\Http\Controllers\Api\Admin\SelectionMethodController;
+use App\Http\Controllers\Api\Admin\StaffController;
+use App\Http\Controllers\Api\Admin\SystemController;
+use App\Http\Controllers\Api\Admin\TaskController;
+use App\Http\Controllers\Api\Admin\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -67,7 +77,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
     // doanh nhghieejp
     Route::resource('enterprises', EnterpriseController::class);
+    // chuyển trạng thái
     Route::put('enterprises/{enterprise}/changeActive', [EnterpriseController::class, 'changeActive']);
+    Route::put('enterprises/{enterprise}/move-to-blacklist', [EnterpriseController::class, 'moveToBlacklist']);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
@@ -132,6 +144,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
         [EvaluationCriteriaController::class, 'changeActive']);
+    Route::get('list-evaluation-criterias', [EvaluationCriteriaController::class, 'getNameAndIds']);
 
     // Procurement Categories / Lĩnh vực mua sắm công
     Route::resource('procurement-categories', ProcurementCategoryController::class);
@@ -142,13 +155,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
     Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
     Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
-        [EvaluationCriteriaController::class, 'changeActive']);
 
     // Attachments
     Route::post('attachments', [AttachmentController::class, 'store']);
@@ -161,5 +173,68 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('bid-documents', BidDocumentController::class);
     Route::get('bid-documents/check-bid-participation/{projectId}', [BidDocumentController::class, 'checkBidParticipation']);
     Route::patch('bid-documents/approve/{id}', [BidDocumentController::class, 'approveBidDocument']);
+
+    // Post catalogs
+    Route::resource('post-catalogs', PostCatalogController::class)->except('update');
+    Route::patch('post-catalogs/{id}', [PostCatalogController::class, 'update']);
+    Route::patch('post-catalogs/{id}/toggle-status', [PostCatalogController::class, 'toggleActiveStatus']);
+
+    // Posts
+    Route::resource('posts', PostController::class);
+
+    //support
+    Route::resource('supports', SupportController::class);
+
+    Route::resource('bidding-results', BiddingResultController::class);
+
+    Route::resource('employees', EmployeeController::class);
+    Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
+
+    Route::resource('tasks', TaskController::class);
+
+    Route::resource('evaluates', EvaluateController::class);
+
+    Route::get('reputations', [ReputationController::class, 'index']);
+
+    Route::apiResource('work-progresses', WorkProgressController::class);
+
+    // general chart
+    Route::get('dashboard/charts/project-by-industry', [DashBoardController::class, 'projectByIndustry']);
+    Route::get('dashboard/charts/project-by-fundingsource', [DashBoardController::class, 'projectByFundingSource']);
+    Route::get('dashboard/charts/project-by-domestic', [DashBoardController::class, 'projectByIsDomestic']);
+    Route::get('dashboard/charts/project-by-submission-method', [DashBoardController::class, 'projectBySubmissionMethod']);
+    Route::get('dashboard/charts/project-by-selection-method', [DashBoardController::class, 'projectBySelectionMethod']);
+    Route::get('dashboard/charts/project-by-tenderer-investor', [DashBoardController::class, 'projectByTendererAndInvestor']);
+    Route::get('dashboard/charts/project-by-organization-type', [DashBoardController::class, 'enterpriseByOrganizationType']);
+    Route::get('dashboard/charts/average-project-duration-by-industry', [DashBoardController::class, 'averageProjectDurationByIndustry']);
+    Route::get('dashboard/charts/top-tenderers-by-project-count', [DashBoardController::class, 'topTenderersByProjectCount']);
+    Route::get('dashboard/charts/top-tenderers-by-project-total-amount', [DashBoardController::class, 'topTenderersByProjectTotalAmount']);
+    Route::get('dashboard/charts/top-investors-by-project-partial', [DashBoardController::class, 'topInvestorsByProjectPartial']);
+    Route::get('dashboard/charts/top-investors-by-project-full', [DashBoardController::class, 'topInvestorsByProjectFull']);
+    Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashBoardController::class, 'topInvestorsByProjectTotalAmount']);
+
+
+    // enterprise chart
+    Route::post('compare-projects/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
+    Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
+    Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-age-statistic-by-enterprise', [EnterpriseController::class, 'employeeAgeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-project-statistic-by-enterprise', [EnterpriseController::class, 'employeeProjectStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-result-bidding-statistic-by-enterprise', [EnterpriseController::class, 'biddingResultStatisticsByEnterprise']);
+    Route::post('charts/enterprises/average-difficulty-level-tasks-by-enterprise', [EnterpriseController::class, 'averageDifficultyLevelTasksByEnterprise']);
+    Route::post('charts/enterprises/average-difficulty-level-tasks-by-employee', [EnterpriseController::class, 'averageDifficultyLevelTasksByEmployee']);
+    Route::post('charts/enterprises/average-feedback-by-employee', [EnterpriseController::class, 'averageFeedbackByEmployee']);
+
+
+
+    // Compare Project
+    Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
+    Route::post('compare-projects/compare-bar-chart-total-amount', [ProjectComparisonController::class, 'compareBarChartTotalAmount']);
+    Route::post('compare-projects/comparing-construction-time', [ProjectComparisonController::class, 'compareBarChartConstructionTime']);
+    Route::post('compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
+    Route::post('compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
+    Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
 
 });
