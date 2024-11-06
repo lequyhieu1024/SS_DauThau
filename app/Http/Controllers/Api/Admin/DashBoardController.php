@@ -155,4 +155,9 @@ class DashBoardController extends Controller
     {
         return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByIndustry($id);
     }
+
+    public function topEnterprisesHaveCompletedProjectsByFundingSource($id = null)
+    {
+        return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByFundingSource($id);
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Employee;
 use App\Models\Enterprise;
+use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
 
@@ -340,7 +341,7 @@ class EnterpriseRepository extends BaseRepository
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
             ->groupBy('investor_id')
             ->orderByDesc('completed_projects_count')
-            ->take(5)
+            ->take(10)
             ->with('investor')
             ->get();
 
@@ -356,6 +357,33 @@ class EnterpriseRepository extends BaseRepository
             'result' => true,
             'message' => '10 doanh nghiệp có số lượng dự án hoàn thành nhiều nhất theo ngành ' . $industry->name,
             'data' =>  $data
+        ], 200);
+    }
+
+    public function topEnterprisesHaveCompletedProjectsByFundingSource($idFundingSource = null)
+    {
+        $fundingSource = $idFundingSource ? FundingSource::find($idFundingSource) : FundingSource::first();
+        $topEnterprises = Project::where('funding_source_id', $fundingSource->id)
+            ->where('status', 3) 
+            ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('completed_projects_count')
+            ->take(10)
+            ->with('investor')
+            ->get();
+
+        $data = [];
+        foreach ($topEnterprises as $project) {
+            $data[] = [
+                'enterprise_name' => $project->investor->user->name,
+                'completed_projects_count' => $project->completed_projects_count,
+            ];
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => '10 doanh nghiệp có số lượng dự án hoàn thành theo lĩnh vực mua sắm công ' . $fundingSource->name,
+            'data' => $data
         ], 200);
     }
 }
