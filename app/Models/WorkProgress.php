@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Traits\ActivityLogOptionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class WorkProgress extends Model
 {
     use LogsActivity;
     use ActivityLogOptionsTrait;
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'work_progresses';
     protected $fillable = [
@@ -27,7 +28,7 @@ class WorkProgress extends Model
 
     public function biddingResult()
     {
-        return $this->belongsTo(BiddingResult::class);
+        return $this->belongsTo(BiddingResult::class, 'bidding_result_id');
     }
 
     public function taskProgresses() {
@@ -36,7 +37,7 @@ class WorkProgress extends Model
 
     protected function getModelName(): string
     {
-        return 'Nhiệm vụ của dự án - Task';
+        return 'Tiến độ nhiệm vụ của dự án - WorkProgress';
     }
 
     protected function getLogAttributes(): array
