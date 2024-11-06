@@ -200,7 +200,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('dashboard/charts/top-investors-by-project-partial', [DashBoardController::class, 'topInvestorsByProjectPartial']);
     Route::get('dashboard/charts/top-investors-by-project-full', [DashBoardController::class, 'topInvestorsByProjectFull']);
     Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashBoardController::class, 'topInvestorsByProjectTotalAmount']);
-
+    Route::get('dashboard/charts/top-enterprises-have-completed-projects-by-industry/{industry?}', [DashBoardController::class, 'topEnterprisesHaveCompletedProjectsByIndustry']);
+    
 
     // enterprise chart
     Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);

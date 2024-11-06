@@ -6,6 +6,8 @@ use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Employee;
 use App\Models\Enterprise;
+use App\Models\Industry;
+use App\Models\Project;
 
 class EnterpriseRepository extends BaseRepository
 {
@@ -262,12 +264,12 @@ class EnterpriseRepository extends BaseRepository
                 $taskCount++;
             }
             $averageDifficulty = $taskCount > 0 ? round($totalDifficulty / $taskCount, 2) : 0;
-    
+
             $data[] = [
                 'employee_name' => $employee->name,
                 'average_difficulty' => $averageDifficulty,
                 'difficulty_label' => $this->getDifficultyLabel($averageDifficulty)
-            ];  
+            ];
         }
 
         return $data;
@@ -315,16 +317,45 @@ class EnterpriseRepository extends BaseRepository
                 $feedbackCount++;
             }
             $averageFeedback = $feedbackCount > 0 ? round($totalFeedback / $feedbackCount, 2) : 0;
-    
-            $data[] = [               
+
+            $data[] = [
                 // 'totalFeedback' => $totalFeedback,                
                 // 'feedbackCount' => $feedbackCount,                
                 'employee_name' => $employee->name,
                 'average_feedback' => $averageFeedback,
                 'feedback_label' => $this->getFeedbackLabel($averageFeedback)
-            ];  
+            ];
         }
 
         return $data;
+    }
+
+    public function topEnterprisesHaveCompletedProjectsByIndustry($idIndustry = null)
+    {
+        $industry = $idIndustry ? Industry::find($idIndustry) : Industry::first();
+        $topEnterprises = Project::whereHas('industries', function ($query) use ($industry) {
+            $query->where('industries.id', $industry->id);
+        })
+            ->where('status', 3)
+            ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
+            ->groupBy('investor_id')
+            ->orderByDesc('completed_projects_count')
+            ->take(5)
+            ->with('investor')
+            ->get();
+
+        $data = [];
+        foreach ($topEnterprises as $project) {
+            $data[] = [
+                'enterprise_name' => $project->investor->user->name,
+                'completed_projects_count' => $project->completed_projects_count,
+            ];
+        }
+
+        return response()->json([
+            'result' => true,
+            'message' => '10 doanh nghiệp có số lượng dự án hoàn thành nhiều nhất theo ngành ' . $industry->name,
+            'data' =>  $data
+        ], 200);
     }
 }
