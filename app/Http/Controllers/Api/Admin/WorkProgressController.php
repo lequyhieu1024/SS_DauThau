@@ -99,21 +99,35 @@ class WorkProgressController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $project = $this->projectRepository->findOrFail($data['project_id']);
+
+            $workProgress = $this->workProgressRepository->find($id);
+            if (!$workProgress) {
+                return response([
+                    'result' => false,
+                    'message' => 'Không tìm thấy tiến độ dự án',
+                ], 404);
+            }
+            $project = $this->projectRepository->find($data['project_id']);
             if (!$project || empty($project->biddingResult)) {
                 return response([
                     'result' => false,
                     'message' => 'Dự án không tồn tại hoặc chưa có kết quả đấu thầu',
                 ], 400);
             }
+
             $data['bidding_result_id'] = $project->biddingResult->id;
+
+
             $this->workProgressRepository->update($data, $id);
             $this->workProgressRepository->syncTaskProgresses($data, $id);
+
             DB::commit();
+
             return response([
                 'result' => true,
                 'message' => 'Cập nhật dữ liệu tiến độ dự án thành công'
             ], 201);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response([
@@ -122,6 +136,7 @@ class WorkProgressController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
