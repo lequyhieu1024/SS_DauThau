@@ -50,7 +50,7 @@ class Enterprise extends Model
         return 'Doanh nghiệp - Enterprise';
     }
 
-    public function employees()
+    protected function employees()
     {
         return $this->hasMany(Employee::class);
     }
