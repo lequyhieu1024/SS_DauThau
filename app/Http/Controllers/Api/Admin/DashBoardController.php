@@ -151,13 +151,13 @@ class DashBoardController extends Controller
         ], 200);
     }
 
-    public function topEnterprisesHaveCompletedProjectsByIndustry($id = null)
+    public function topEnterprisesHaveCompletedProjectsByIndustry(Request $request)
     {
-        return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByIndustry($id);
+        return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByIndustry($request->id);
     }
 
-    public function topEnterprisesHaveCompletedProjectsByFundingSource($id = null)
+    public function topEnterprisesHaveCompletedProjectsByFundingSource(Request $request)
     {
-        return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByFundingSource($id);
+        return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByFundingSource($request->id);
     }
 }

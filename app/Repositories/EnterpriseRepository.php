@@ -331,11 +331,11 @@ class EnterpriseRepository extends BaseRepository
         return $data;
     }
 
-    public function topEnterprisesHaveCompletedProjectsByIndustry($idIndustry = null)
+    public function topEnterprisesHaveCompletedProjectsByIndustry($id)
     {
-        $industry = $idIndustry ? Industry::find($idIndustry) : Industry::first();
-        $topEnterprises = Project::whereHas('industries', function ($query) use ($industry) {
-            $query->where('industries.id', $industry->id);
+        $industry = Industry::find($id);
+        $topEnterprises = Project::whereHas('industries', function ($query) use ($id) {
+            $query->where('industries.id', $id);
         })
             ->where('status', 3)
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
@@ -360,10 +360,10 @@ class EnterpriseRepository extends BaseRepository
         ], 200);
     }
 
-    public function topEnterprisesHaveCompletedProjectsByFundingSource($idFundingSource = null)
+    public function topEnterprisesHaveCompletedProjectsByFundingSource($id)
     {
-        $fundingSource = $idFundingSource ? FundingSource::find($idFundingSource) : FundingSource::first();
-        $topEnterprises = Project::where('funding_source_id', $fundingSource->id)
+        $fundingSource = FundingSource::find($id);
+        $topEnterprises = Project::where('funding_source_id', $id)
             ->where('status', 3) 
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
             ->groupBy('investor_id')
