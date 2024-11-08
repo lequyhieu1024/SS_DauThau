@@ -250,12 +250,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
       // Introductions
     Route::resource('introductions', IntroductionController::class);
-
     Route::put('introductions/{introductions}/changeActive', [IntroductionController::class, 'changeActive']);
 
     // Instructs
     Route::resource('instructs', InstructController::class);
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
-
-
 });
