@@ -93,13 +93,13 @@ class InstructController extends Controller
 
             $data = $req->all();
             if ($totalCount > 0 && $data['is_use'] == "1" && $currentInstruct->is_use !== 1) {
-                return response()->json([
+                return response([
                     'result' => false,
                     'message' => "Không thể cập nhật hướng dẫn với trạng thái is_use = 1 vì đã có một bản ghi đang được sử dụng."
                 ], 400);
             }
             $this->instructRepository->update($req->all(), $id);
-            return response()->json([
+            return response([
                 'result' => true,
                 'message' => "Cập nhật hướng dẫn thành công!",
                 'data' => new InstructResource($this->instructRepository->findOrFail($id))
@@ -116,7 +116,7 @@ class InstructController extends Controller
         $instruct = $this->instructRepository->findOrFail($id);
 
         if ($instruct->is_use) {
-            return response()->json([
+            return response([
                 'result' => false,
                 'message' => "instruct đang được sử dụng nên không thể xóa."
             ], 400);
