@@ -632,5 +632,40 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+    public function projectsStatusPerMonth($year)
+    {
+        $data = [
+            'completed' => [],
+            'approved' => [],
+            'opened_bidding' => []
+        ];
 
+        for ($i = 1; $i <= 12; $i++) {
+            $startOfMonth = Carbon::createFromDate($year, $i, 1)->startOfMonth();
+            $endOfMonth = Carbon::createFromDate($year, $i, 1)->endOfMonth();
+
+            $data['completed'][] =[
+                'Tháng ' . $i => $this->model
+                    ->where('end_time', '<', Carbon::now())
+                    ->whereYear('end_time', '=', $year)
+                    ->whereMonth('end_time', '=', $i)
+                    ->count()
+            ];
+
+            $data['approved'][] =[
+                'Tháng ' . $i => $this->model
+                    ->whereBetween('approve_at', [$startOfMonth, $endOfMonth])
+                    ->where('status', ProjectStatus::APPROVED->value)
+                    ->count()
+            ];
+
+            $data['opened_bidding'][] = [
+                'Tháng ' . $i => $this->model
+                    ->whereBetween('bid_opening_date', [$startOfMonth, $endOfMonth])
+                    ->count()
+            ];
+        }
+
+        return $data;
+    }
 }

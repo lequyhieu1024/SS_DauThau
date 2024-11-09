@@ -18,6 +18,7 @@ class WorkProgressController extends Controller
     protected $projectRepository;
     public function __construct(WorkProgressRepository $workProgressRepository, ProjectRepository $projectRepository)
     {
+        // permission
         $this->workProgressRepository = $workProgressRepository;
         $this->projectRepository = $projectRepository;
     }
@@ -26,10 +27,11 @@ class WorkProgressController extends Controller
      */
     public function index(Request $request)
     {
+        $data =$this->workProgressRepository->filter($request->all());
         return [
             'result' => true,
             'message' => 'Lấy tiến độ công việc thành công',
-            'data' => new WorkProgressCollection($this->workProgressRepository->filter($request->all())),
+            'data' => new WorkProgressCollection($data),
         ];
     }
 
@@ -41,6 +43,14 @@ class WorkProgressController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
+            $project = $this->projectRepository->findOrFail($data['project_id']);
+            if (!$project || empty($project->biddingResult)) {
+                return response([
+                    'result' => false,
+                    'message' => 'Dự án không tồn tại hoặc chưa có kết quả đấu thầu',
+                ], 400);
+            }
+            $data['bidding_result_id'] = $project->biddingResult->id;
             $progress = $this->workProgressRepository->create($data);
             $this->workProgressRepository->syncTaskProgresses($data, $progress->id);
             DB::commit();
@@ -65,7 +75,7 @@ class WorkProgressController extends Controller
         try {
             return response([
                 'result' => true,
-                'message' => 'Lấy chi tiết nhiệm vụ thành công',
+                'message' => 'Lấy chi tiết nhiệm tiến độ dự án thành công',
                 'data' => new WorkProgressResource($this->workProgressRepository->findOrFail($id))
             ], 200);
         } catch (ModelNotFoundException) {
@@ -84,16 +94,77 @@ class WorkProgressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(WorkProgressFormRequest $request, string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $workProgress = $this->workProgressRepository->find($id);
+            if (!$workProgress) {
+                return response([
+                    'result' => false,
+                    'message' => 'Không tìm thấy tiến độ dự án',
+                ], 404);
+            }
+            $project = $this->projectRepository->find($data['project_id']);
+            if (!$project || empty($project->biddingResult)) {
+                return response([
+                    'result' => false,
+                    'message' => 'Dự án không tồn tại hoặc chưa có kết quả đấu thầu',
+                ], 400);
+            }
+
+            $data['bidding_result_id'] = $project->biddingResult->id;
+
+
+            $this->workProgressRepository->update($data, $id);
+            $this->workProgressRepository->syncTaskProgresses($data, $id);
+
+            DB::commit();
+
+            return response([
+                'result' => true,
+                'message' => 'Cập nhật dữ liệu tiến độ dự án thành công'
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'result' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+//            $task = $this->workProgressRepository->findOrFail($id);
+//            $task->taskProgresses()->detach(); // xóa mềm nên không xóa bảng phụ
+            $this->workProgressRepository->delete($id);
+            DB::commit();
+            return response([
+                'result' => true,
+                'message' => 'Xóa tiến độ dự án này thành công',
+            ], 200);
+        } catch (ModelNotFoundException) {
+            DB::rollBack();
+            return response([
+                'result' => false,
+                'message' => 'Không tìm thấy tiến độ dự án muốn xóa',
+            ], 404);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'result' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
