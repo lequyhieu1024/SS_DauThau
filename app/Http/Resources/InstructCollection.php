@@ -18,7 +18,7 @@ class InstructCollection extends ResourceCollection
             'data' => $this->collection->map(function ($instruct){
                 return [
                     'id' =>$instruct->id,
-                    'introduction' => $instruct->introduction,
+                    'instruct' => $instruct->instruct,
                     'is_use' => $instruct->is_use,
                 ];
             }),
