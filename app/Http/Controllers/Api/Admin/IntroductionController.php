@@ -71,7 +71,7 @@ class IntroductionController extends Controller
     }
 
     public function edit(string $id){
-        $introduction = $this->introductionRespository->findOrFail($id); 
+        $introduction = $this->introductionRespository->findOrFail($id);
         if(empty($introduction)){
             return response([
                 'result' => true,
@@ -89,7 +89,7 @@ class IntroductionController extends Controller
     public function update(IntroductionFormRequest $req, string $id){
         try{
             $totalCount = $this->introductionRespository->countAll();
-        
+
             $currentIntroduction = $this->introductionRespository->findOrFail($id);
 
             $data = $req->all();
