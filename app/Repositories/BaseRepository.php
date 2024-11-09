@@ -35,6 +35,10 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->all();
     }
 
+    public function getNameAndIdsActive() {
+        return $this->model->select('id', 'name')->where('is_active', 1)->get();
+    }
+
     public function create(array $data)
     {
         return $this->model->create($data);

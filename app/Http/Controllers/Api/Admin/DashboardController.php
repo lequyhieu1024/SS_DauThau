@@ -5,17 +5,21 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectCollection;
 use App\Repositories\EnterpriseRepository;
+use App\Repositories\IndustryRepository;
 use App\Repositories\ProjectRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class DashBoardController extends Controller
+class DashboardController extends Controller
 {
     protected $projectRepository;
     protected $enterpriseRepository;
-    public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository)
+    protected $industryRepository;
+    public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository)
     {
         $this->projectRepository = $projectRepository;
         $this->enterpriseRepository = $enterpriseRepository;
+        $this->industryRepository = $industryRepository;
     }
 
     // Lấy tỷ lệ dự án theo nghành nghề
@@ -159,5 +163,39 @@ class DashBoardController extends Controller
     public function topEnterprisesHaveCompletedProjectsByFundingSource(Request $request)
     {
         return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByFundingSource($request->id);
+    }
+
+    public function timeJoiningWebsiteOfEnterprise(Request $request) {
+        $year = $request->input('year') ?? Carbon::now()->year;
+        return response()->json([
+            'result' => true,
+            'message' => "Biểu đồ thể hiện số lượng doanh nghiệp tham gia hệ thống theo từng tháng trong năm $year",
+            'data' =>  $this->enterpriseRepository->timeJoiningWebsite($year)
+        ], 200);
+    }
+
+    public function projectsStatusPerMonth(Request $request) {
+        $year = $request->input('year') ?? Carbon::now()->year;
+        return response()->json([
+            'result' => true,
+            'message' => "Biểu đồ thể hiện số lượng dự án hoàn thành, số lượng dự án được phê duyệt, số lượng dự án mở thầu theo từng tháng trong năm $year",
+            'data' =>  $this->projectRepository->projectsStatusPerMonth($year)
+        ], 200);
+    }
+
+    public function top10IndustryHasTheMostProject() {
+        return response()->json([
+            'result' => true,
+            'message' => "Biểu đồ thể hiện số lượng dự án theo ngành nghề",
+            'data' =>  $this->industryRepository->top10IndustryHasTheMostProject($this->industryRepository->getNameAndIdsActive())
+        ], 200);
+    }
+
+    public function top10IndustryHasTheMostEnterprise() {
+        return response()->json([
+            'result' => true,
+            'message' => "Biểu đồ thể hiện số lượng doanh nghiệp theo ngành nghề",
+            'data' =>  $this->industryRepository->top10IndustryHasTheMostEnterprise($this->industryRepository->getNameAndIdsActive())
+        ], 200);
     }
 }
