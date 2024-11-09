@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Enums\ProjectStatus;
+
 class IndustryRepository extends BaseRepository
 {
     public function getModel()
@@ -34,6 +36,24 @@ class IndustryRepository extends BaseRepository
         }
 
         return false;
+    }
+
+    public function top10IndustryHasTheMostProject($industries)
+    {
+        $data = [];
+        foreach ($industries as $industry) {
+            $data[] = ["industry" => $industry->name, "total_project" => $industry->projects()->where('status', ProjectStatus::APPROVED->value)->count()];
+        }
+        return $data;
+    }
+
+    public function top10IndustryHasTheMostEnterprise($industries)
+    {
+        $data = [];
+        foreach ($industries as $industry) {
+            $data[] = ["industry" => $industry->name, "total_enterprise" => $industry->enterprises()->count()];
+        }
+        return $data;
     }
 
 }

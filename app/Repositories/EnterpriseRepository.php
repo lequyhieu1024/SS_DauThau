@@ -9,6 +9,7 @@ use App\Models\Enterprise;
 use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
+use Carbon\Carbon;
 
 class EnterpriseRepository extends BaseRepository
 {
@@ -320,8 +321,8 @@ class EnterpriseRepository extends BaseRepository
             $averageFeedback = $feedbackCount > 0 ? round($totalFeedback / $feedbackCount, 2) : 0;
 
             $data[] = [
-                // 'totalFeedback' => $totalFeedback,                
-                // 'feedbackCount' => $feedbackCount,                
+                // 'totalFeedback' => $totalFeedback,
+                // 'feedbackCount' => $feedbackCount,
                 'employee_name' => $employee->name,
                 'average_feedback' => $averageFeedback,
                 'feedback_label' => $this->getFeedbackLabel($averageFeedback)
@@ -364,7 +365,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $fundingSource = FundingSource::find($id);
         $topEnterprises = Project::where('funding_source_id', $id)
-            ->where('status', 3) 
+            ->where('status', 3)
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
             ->groupBy('investor_id')
             ->orderByDesc('completed_projects_count')
@@ -385,5 +386,18 @@ class EnterpriseRepository extends BaseRepository
             'message' => '10 doanh nghiệp có số lượng dự án hoàn thành theo lĩnh vực mua sắm công ' . $fundingSource->name,
             'data' => $data
         ], 200);
+    }
+
+    public function timeJoiningWebsite($year)
+    {
+        $data = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+            $startOfMonth = Carbon::createFromDate($year, $i, 1)->startOfMonth();
+            $endOfMonth = Carbon::createFromDate($year, $i, 1)->endOfMonth();
+
+            $data['Tháng ' . $i] = $this->model->whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+        }
+        return $data;
     }
 }
