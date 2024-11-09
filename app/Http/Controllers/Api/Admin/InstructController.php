@@ -70,7 +70,7 @@ class InstructController extends Controller
     }
 
     public function edit(string $id){
-        $instruct = $this->instructRepository->findOrFail($id); 
+        $instruct = $this->instructRepository->findOrFail($id);
         if(empty($instruct)){
             return response([
                 'result' => true,
@@ -88,7 +88,7 @@ class InstructController extends Controller
     public function update(InstructFormRequest $req, string $id){
         try{
             $totalCount = $this->instructRepository->countAll();
-        
+
             $currentInstruct = $this->instructRepository->findOrFail($id);
 
             $data = $req->all();
