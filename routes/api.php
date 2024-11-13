@@ -215,7 +215,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('charts/enterprises/average-difficulty-level-tasks-by-enterprise', [EnterpriseController::class, 'averageDifficultyLevelTasksByEnterprise']);
     Route::post('charts/enterprises/average-difficulty-level-tasks-by-employee', [EnterpriseController::class, 'averageDifficultyLevelTasksByEmployee']);
     Route::post('charts/enterprises/average-feedback-by-employee', [EnterpriseController::class, 'averageFeedbackByEmployee']);
-    
+    Route::post('charts/enterprises/project-completed-by-enterprise', [EnterpriseController::class, 'projectCompletedByEnterprise']);
+    Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
     
 
     // Compare Project

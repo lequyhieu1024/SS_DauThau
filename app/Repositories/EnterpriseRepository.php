@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
+use App\Models\BiddingResult;
 use App\Models\Employee;
 use App\Models\Enterprise;
 use App\Models\FundingSource;
@@ -385,5 +386,72 @@ class EnterpriseRepository extends BaseRepository
             'message' => '10 doanh nghiệp có số lượng dự án hoàn thành theo lĩnh vực mua sắm công ' . $fundingSource->name,
             'data' => $data
         ], 200);
+    }
+
+    public function projectCompletedByEnterprise($ids, $year)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            // Dự án hoàn thành của doanh nghiệp trong năm được chọn
+            $completedProjects = Project::where('investor_id', $enterprise->id)
+                ->where('status', 3)
+                ->whereYear('end_time', $year)
+                ->selectRaw('MONTH(end_time) as month, COUNT(*) as completed_count')
+                ->groupBy('month')
+                ->pluck('completed_count', 'month');
+
+            $monthlyData = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $monthlyData[] = [
+                    'month' => $month,
+                    'completed_projects' => $completedProjects[$month] ?? 0,
+                ];
+            }
+
+            $data[] = [
+                'enterprise_id' => $enterprise->id,
+                'enterprise_name' => $enterprise->user->name,
+                'year' => $year,
+                'monthly_data' => $monthlyData,
+            ];
+        }
+
+        return $data;
+    }
+
+    public function projectWonByEnterprise($ids, $year)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            // Dự án trúng thầu của doanh nghiệp trong năm được chọn
+            $wonProjects = BiddingResult::where('enterprise_id', $enterprise->id)
+                ->whereYear('decision_date', $year)
+                ->selectRaw('MONTH(decision_date) as month, COUNT(*) as won_count')
+                ->groupBy('month')
+                ->pluck('won_count', 'month');
+
+            $monthlyData = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $monthlyData[] = [
+                    'month' => $month,
+                    'won_projects' => $wonProjects[$month] ?? 0,
+                ];
+            }
+
+            $data[] = [
+                'enterprise_id' => $enterprise->id,
+                'enterprise_name' => $enterprise->user->name,
+                'year' => $year,
+                'monthly_data' => $monthlyData,
+            ];
+        }
+
+        return $data;
     }
 }
