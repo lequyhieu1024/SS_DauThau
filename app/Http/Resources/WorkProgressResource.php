@@ -16,8 +16,8 @@ class WorkProgressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project' => $this->biddingResult->project->id,
-            'enterprise' => $this->biddingResult->enterprise->id,
+            'project' => $this->biddingResult->project,
+            'enterprise' => $this->biddingResult->enterprise,
             'name' => $this->name,
             'progress' => $this->progress,
             'expense' => $this->expense,
