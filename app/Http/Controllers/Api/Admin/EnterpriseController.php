@@ -31,11 +31,11 @@ class EnterpriseController extends Controller
         RoleRepository $roleRepository,
         ReputationRepository $reputationRepository
     ) {
-//        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
-//        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
-//        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
-//        $this->middleware(['permission:detail_enterprise'])->only('show');
-//        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
+        //        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
+        //        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
+        //        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
+        //        $this->middleware(['permission:detail_enterprise'])->only('show');
+        //        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
 
 
         $this->enterpriseRepository = $enterpriseRepository;
@@ -89,7 +89,7 @@ class EnterpriseController extends Controller
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Tạo doanh nghiệp không thành công.".$th,
+                "message" => "Tạo doanh nghiệp không thành công." . $th,
                 "data" => $request->all(),
             ], 500);
         }
@@ -145,7 +145,7 @@ class EnterpriseController extends Controller
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Cập nhật doanh nghiệp không thành công. Error : ".$th,
+                "message" => "Cập nhật doanh nghiệp không thành công. Error : " . $th,
                 "data" => $request->all(),
             ], 500);
         }
@@ -169,7 +169,7 @@ class EnterpriseController extends Controller
             return response()->json([
                 'result' => false,
                 'status' => 400,
-                'message' => 'Xóa doanh nghiệp thất bại, lỗi : '.$th
+                'message' => 'Xóa doanh nghiệp thất bại, lỗi : ' . $th
             ], 400);
         }
     }
@@ -258,7 +258,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeQtyStatisticByEnterprise(Request $request) {
+    public function employeeQtyStatisticByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê số lượng nhân viên thành công',
@@ -266,7 +267,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeEducationLevelStatisticByEnterprise($id) {
+    public function employeeEducationLevelStatisticByEnterprise($id)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê trình độ học vấn của nhân viên thành công',
@@ -274,7 +276,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeSalaryStatisticByEnterprise(Request $request) {
+    public function employeeSalaryStatisticByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê lương của nhân viên thành công',
@@ -282,7 +285,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeWorkingTimeStatisticByEnterprise(Request $request) {
+    public function employeeWorkingTimeStatisticByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
@@ -290,7 +294,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeAgeStatisticByEnterprise(Request $request) {
+    public function employeeAgeStatisticByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê độ tuổi của nhân viên theo doanh nghiệp',
@@ -298,14 +303,16 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeProjectStatisticByEnterprise(Request $request) {
+    public function employeeProjectStatisticByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê dự án đã đăng tải và dự án đã đầu tư của doanh nghiệp',
             'data' => $this->enterpriseRepository->tendererAndInvestorProjectStatisticByEnterprise($request->all())
         ], 200);
     }
-    public function biddingResultStatisticsByEnterprise(Request $request) {
+    public function biddingResultStatisticsByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê số lượng dự án đã trúng,giá trúng thầu trung bình và tổng giá trị thầu đã trúng của doanh nghiệp',
@@ -313,7 +320,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function averageDifficultyLevelTasksByEnterprise(Request $request){
+    public function averageDifficultyLevelTasksByEnterprise(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thể hiện độ khó trung bình của nhiệm vụ mà doanh nghiệp thực hiện',
@@ -321,7 +329,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function averageDifficultyLevelTasksByEmployee(Request $request){
+    public function averageDifficultyLevelTasksByEmployee(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thể hiện độ khó trung bình của nhiệm vụ mà nhân viên thực hiện',
@@ -329,7 +338,8 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function averageFeedbackByEmployee(Request $request){
+    public function averageFeedbackByEmployee(Request $request)
+    {
         return response([
             'result' => true,
             'message' => 'Biểu đồ thống kê đánh giá trung bình của nhân viên',
@@ -386,5 +396,4 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->projectWonByEnterprise($request->ids, $request->year)
         ], 200);
     }
-
 }
