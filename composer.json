@@ -19,7 +19,7 @@
         "rmunate/spell-number": "^4.2",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.9",
-        "symfony/yaml": "^7.1",
+        "symfony/yaml": "^6.0",
         "tecnickcom/tcpdf": "^6.7",
         "tymon/jwt-auth": "^2.1"
     },
