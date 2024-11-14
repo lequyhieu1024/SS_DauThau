@@ -369,4 +369,22 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
+    public function projectCompletedByEnterprise(Request $request)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê số lượng dự án đã hoàn thành của doanh nghiệp theo từng tháng trong năm',
+            'data' => $this->enterpriseRepository->projectCompletedByEnterprise($request->ids, $request->year)
+        ], 200);
+    }
+
+    public function projectWonByEnterprise(Request $request)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thống kê số lượng dự án đã trúng thầu của doanh nghiệp theo từng tháng trong năm',
+            'data' => $this->enterpriseRepository->projectWonByEnterprise($request->ids, $request->year)
+        ], 200);
+    }
+
 }
