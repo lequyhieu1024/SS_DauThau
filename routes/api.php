@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
+use App\Http\Controllers\Api\Admin\FeedbackComplaintController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
 use App\Http\Controllers\Api\Admin\IndustryController;
 use App\Http\Controllers\Api\Admin\IntroductionController;
@@ -26,7 +27,7 @@ use App\Http\Controllers\Api\Admin\ProjectComparisonController;
 
 use App\Http\Controllers\Api\Admin\ReputationController;
 
-use App\Http\Controllers\Api\Admin\ProjectController;  
+use App\Http\Controllers\Api\Admin\ProjectController;
 
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SelectionMethodController;
@@ -147,17 +148,26 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('selection-methods', SelectionMethodController::class)->except('update');
     Route::patch('selection-methods/{id}', [SelectionMethodController::class, 'update']);
     Route::patch('selection-methods/{id}/toggle-status', [SelectionMethodController::class, 'toggleActiveStatus']);
+
+    // Feedback Complaints
+    Route::resource('feedback-complaints', FeedbackComplaintController::class)->except('update');
+    Route::patch('feedback-complaints/{id}', [FeedbackComplaintController::class, 'update']);
+
     Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
-    Route::put('evaluation-criterias/{evaluation_criteria}/changeActive',
-        [EvaluationCriteriaController::class, 'changeActive']);
+    Route::put(
+        'evaluation-criterias/{evaluation_criteria}/changeActive',
+        [EvaluationCriteriaController::class, 'changeActive']
+    );
     Route::get('list-evaluation-criterias', [EvaluationCriteriaController::class, 'getNameAndIds']);
 
     // Procurement Categories / Lĩnh vực mua sắm công
     Route::resource('procurement-categories', ProcurementCategoryController::class);
-    Route::put('procurement-categories/{procurement_category}/changeActive',
-        [ProcurementCategoryController::class, 'changeActive']);
+    Route::put(
+        'procurement-categories/{procurement_category}/changeActive',
+        [ProcurementCategoryController::class, 'changeActive']
+    );
     Route::get('list-procurement-categories', [ProcurementCategoryController::class, 'getNameAndIds']);
 
     // Project - Dự án
@@ -239,8 +249,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('charts/enterprises/average-difficulty-level-tasks-by-enterprise', [EnterpriseController::class, 'averageDifficultyLevelTasksByEnterprise']);
     Route::post('charts/enterprises/average-difficulty-level-tasks-by-employee', [EnterpriseController::class, 'averageDifficultyLevelTasksByEmployee']);
     Route::post('charts/enterprises/average-feedback-by-employee', [EnterpriseController::class, 'averageFeedbackByEmployee']);
-
-
+    Route::post('charts/enterprises/project-completed-by-enterprise', [EnterpriseController::class, 'projectCompletedByEnterprise']);
+    Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
 
     // Compare Project
     Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
@@ -251,7 +261,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
 
 
-      // Introductions
+    // Introductions
     Route::resource('introductions', IntroductionController::class);
     Route::put('introductions/{introductions}/changeActive', [IntroductionController::class, 'changeActive']);
 
