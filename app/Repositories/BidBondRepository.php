@@ -15,10 +15,17 @@ class BidBondRepository extends BaseRepository
     {
         $query = $this->model->query();
 
-        if (isset($data['bond_number '])) {
-            $query->where('bond_number ', 'like', '%' . $data['bond_number '] . '%');
+        if (isset($data['bond_number'])) {
+            $query->where('bond_number', 'like', '%' . $data['bond_number'] . '%');
         }
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
+    }
+
+    public function listAll()
+    {
+        return $this->model->query()
+            ->orderBy('id', 'desc')
+            ->get();
     }
 }

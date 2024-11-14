@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 
+use App\Enums\ProjectStatus;
+
 abstract class BaseRepository implements RepositoryInterface
 {
     protected $model;
@@ -19,6 +21,10 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->select('id', 'name')->get();
     }
 
+    public function getNameAndIdTreeSelect() {
+        return $this->model->select('id', 'name')->get();
+    }
+
     public function getAll($data)
     {
         return $this->model->paginate($data['size'] ?? 10);
@@ -27,6 +33,10 @@ abstract class BaseRepository implements RepositoryInterface
     public function getAllNotPaginate()
     {
         return $this->model->all();
+    }
+
+    public function getNameAndIdsActive() {
+        return $this->model->select('id', 'name')->where('is_active', 1)->get();
     }
 
     public function create(array $data)
@@ -43,6 +53,22 @@ abstract class BaseRepository implements RepositoryInterface
     {
         return $this->model->find($id);
     }
+
+    public function getOneBy($field, $value)
+    {
+        return $this->model->where($field,$value)->first();
+    }
+
+    public function getBy($field, $value)
+    {
+        return $this->model->where($field, $value)->get();
+    }
+
+    public function findWhereIn($field, array $values)
+    {
+        return $this->model->whereIn($field, $values)->get();
+    }
+
 
     public function update(array $data, $id)
     {
@@ -62,5 +88,13 @@ abstract class BaseRepository implements RepositoryInterface
     public function delete($id)
     {
         return $this->model->findOrFail($id)->delete();
+    }
+
+    public function deletes($ids)
+    {
+        if (is_array($ids)) {
+            return $this->model->destroy($ids);
+        }
+        return $this->model->destroy([$ids]);
     }
 }

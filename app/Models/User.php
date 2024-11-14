@@ -3,20 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Staff;
 use App\Traits\ActivityLogOptionsTrait;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\DB;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -41,6 +37,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -74,18 +71,29 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);
     }
+
     public function staff()
     {
         return $this->hasOne(Staff::class);
     }
 
+    public function supports()
+    {
+        return $this->hasMany(Support::class);
+    }
     public function causer()
     {
         return $this->belongsTo(User::class, 'causer_id');
+    }
+
+    public function enterprise()
+    {
+        return $this->hasOne(Enterprise::class);
     }
 
     protected function getModelName(): string
@@ -102,7 +110,6 @@ class User extends Authenticatable implements JWTSubject
             'account_ban_at',
         ];
     }
-
     protected function getFieldName(): string
     {
         return $this->name;

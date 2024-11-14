@@ -50,6 +50,33 @@ class Enterprise extends Model
         return 'Doanh nghiệp - Enterprise';
     }
 
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    protected function investorProjects() {
+        return $this->hasMany(Project::class, 'investor_id');
+    }
+
+    protected function tendererProjects() {
+        return $this->hasMany(Project::class, 'tenderer_id');
+    }
+
+    protected function biddingResults()
+    {
+        return $this->hasMany(BiddingResult::class);
+    }
+
+    public function evaluates() {
+        return $this->hasMany(Evaluate::class);
+    }
+
+    public function reputation()
+    {
+        return $this->hasOne(Reputation::class);
+    }
+
     protected function getLogAttributes(): array
     {
         return [

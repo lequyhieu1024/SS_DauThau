@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\Admin\AttachmentController;
 use Illuminate\Support\Facades\Route;
 
 /*

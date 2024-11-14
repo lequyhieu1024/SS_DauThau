@@ -93,6 +93,16 @@ class Project extends Model
     public function feedbackComplaints(){
         return $this->hasMany(FeedbackComplaint::class);
     }
+    
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function biddingResult()
+    {
+        return $this->belongsTo(BiddingResult::class);
+    }
 
     protected function getModelName(): string
     {
@@ -101,6 +111,10 @@ class Project extends Model
 
     public function attachments(){
         return $this->hasMany(Attachment::class);
+    }
+    public function evaluate()
+    {
+        return $this->hasOne(Evaluate::class);
     }
     protected function getLogAttributes(): array
     {

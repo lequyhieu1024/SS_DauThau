@@ -12,29 +12,29 @@ return new class extends Migration {
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('funding_source_id');                            // nguồn vốn
-            $table->unsignedBigInteger('tenderer_id');                                  // bên mời thầu
-            $table->unsignedBigInteger('investor_id');                                  // nhà đầu tư
-            $table->unsignedBigInteger('staff_id');                                     // người phê duyệt
-            $table->unsignedBigInteger('selection_method_id');                          // hình thức lựa chọn nhà thầu : đấu thầu cạnh tranh / đấu thầu rộng rãi / ...
-            $table->unsignedBigInteger('parent_id')->nullable()->default(null);   // nếu null thì là dự án, không null là gói thầu trong dự án
-            $table->string('decision_number_issued');                                   // số quyết định bban hành
-            $table->string('name');                                                     // tên dự án hoặc gói thầu
-            $table->boolean('is_domestic');                                             // nội địa hay quốc tế
-            $table->string('location');                                                 // nơi thực hiện : tỉnh - huyện - xã
-            $table->decimal('amount', 20, 2);                               // giá trị gói thầu
-            $table->decimal('total_amount', 20, 2);                         //tổng giá trị gói thầu
-            $table->string('description')->nullable();                                  // mô tả
+            $table->unsignedBigInteger('funding_source_id');
+            $table->unsignedBigInteger('tenderer_id');
+            $table->unsignedBigInteger('investor_id');
+            $table->unsignedBigInteger('staff_id');
+            $table->unsignedBigInteger('selection_method_id');
+            $table->unsignedBigInteger('parent_id')->nullable()->default(null);
+            $table->string('decision_number_issued');
+            $table->string('name');
+            $table->boolean('is_domestic');
+            $table->string('location');
+            $table->decimal('amount', 20, 2);
+            $table->decimal('total_amount', 20, 2);
+            $table->string('description')->nullable();
             $table->enum('submission_method', ['online', 'in_person']);
-            $table->text('receiving_place')->nullable();                                // nơi tiếp nhận hồ sơ nếu submission_method = 2
-            $table->timestamp('bid_submission_start')->nullable();                      // ngày bắt đầu nhận hồ sơ
-            $table->timestamp('bid_submission_end')->nullable();                        // ngày kết thúc nhận hồ sơ
-            $table->timestamp('bid_opening_date')->nullable();                          // ngày công bố kết quả ( mở thầu )
-            $table->date('start_time')->nullable();                                     // ngày bắt đầu thực hiện dự án
-            $table->date('end_time')->nullable();                                       // ngày kết thúc dự án
-            $table->timestamp('approve_at')->nullable();                                // ngày phê duyệt
-            $table->string('decision_number_approve')->nullable();                      // số quyết định phê duyệt
-            $table->tinyInteger('status')->default(1);                            // trạng thái
+            $table->text('receiving_place')->nullable();
+            $table->timestamp('bid_submission_start')->nullable();
+            $table->timestamp('bid_submission_end')->nullable();
+            $table->timestamp('bid_opening_date')->nullable();
+            $table->date('start_time')->nullable();
+            $table->date('end_time')->nullable();
+            $table->timestamp('approve_at')->nullable();
+            $table->string('decision_number_approve')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
