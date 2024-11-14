@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('location');
             $table->decimal('amount', 20, 2);
             $table->decimal('total_amount', 20, 2);
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->enum('submission_method', ['online', 'in_person']);
             $table->text('receiving_place')->nullable();
             $table->timestamp('bid_submission_start')->nullable();
