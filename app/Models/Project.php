@@ -90,6 +90,10 @@ class Project extends Model
         return $this->hasMany(BidBond::class);
     }
 
+    public function feedbackComplaints(){
+        return $this->hasMany(FeedbackComplaint::class);
+    }
+    
     public function tasks()
     {
         return $this->hasMany(Task::class);

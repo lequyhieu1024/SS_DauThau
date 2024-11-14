@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\BusinessActivityTypeController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\EnterpriseController;
 use App\Http\Controllers\Api\Admin\EvaluationCriteriaController;
+use App\Http\Controllers\Api\Admin\FeedbackComplaintController;
 use App\Http\Controllers\Api\Admin\FundingSourceController;
 use App\Http\Controllers\Api\Admin\IndustryController;
 use App\Http\Controllers\Api\Admin\IntroductionController;
@@ -147,6 +148,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('selection-methods', SelectionMethodController::class)->except('update');
     Route::patch('selection-methods/{id}', [SelectionMethodController::class, 'update']);
     Route::patch('selection-methods/{id}/toggle-status', [SelectionMethodController::class, 'toggleActiveStatus']);
+
+    // Feedback Complaints
+    Route::resource('feedback-complaints', FeedbackComplaintController::class)->except('update');
+    Route::patch('feedback-complaints/{id}', [FeedbackComplaintController::class, 'update']);
+
     Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
