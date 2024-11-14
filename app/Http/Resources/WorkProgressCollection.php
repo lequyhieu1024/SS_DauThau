@@ -18,8 +18,8 @@ class WorkProgressCollection extends ResourceCollection
             'data' => $this->collection->map(function ($workProgress) {
                 return [
                     'id' => $workProgress->id,
-                    'project' => $workProgress->biddingResult->project->id,
-                    'enterprise' => $workProgress->biddingResult->enterprise->id,
+                    'project' => $workProgress->biddingResult->project,
+                    'enterprise' => $workProgress->biddingResult->enterprise,
                     'name' => $workProgress->name,
                     'progress' => $workProgress->progress,
                     'expense' => $workProgress->expense,
