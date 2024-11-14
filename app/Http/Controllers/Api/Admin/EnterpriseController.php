@@ -285,14 +285,14 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeWorkingTimeStatisticByEnterprise(Request $request)
-    {
-        return response([
-            'result' => true,
-            'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
-            'data' => $this->enterpriseRepository->employeeWorkingTimeStatisticByEnterprise($request->all())
-        ], 200);
-    }
+//    public function employeeWorkingTimeStatisticByEnterprise(Request $request)
+//    {
+//        return response([
+//            'result' => true,
+//            'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
+//            'data' => $this->enterpriseRepository->employeeWorkingTimeStatisticByEnterprise($request->all())
+//        ], 200);
+//    }
 
     public function employeeAgeStatisticByEnterprise(Request $request)
     {
