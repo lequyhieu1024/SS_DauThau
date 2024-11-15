@@ -350,8 +350,8 @@ class EnterpriseController extends Controller
     public function getDetailEnterpriseByIds(Request $request)
     {
         $rules = [
-            'enterprise_ids' => 'required|array',
-            'enterprise_ids.*' => 'exists:enterprises,id',
+            'ids' => 'required|array',
+            'ids.*' => 'exists:enterprises,id',
         ];
 
         $validator = Validator::make($request->all(), $rules);
