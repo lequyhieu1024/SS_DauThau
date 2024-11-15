@@ -238,7 +238,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('dashboard/charts/industry-has-the-most-enterprise', [DashboardController::class, 'top10IndustryHasTheMostEnterprise']);
 
     // enterprise chart
-    Route::post('compare-projects/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
+    Route::post('charts/enterprises/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
     Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
     Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
     Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
