@@ -360,7 +360,7 @@ class EnterpriseController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $enterpriseIds = $request->input('enterprise_ids');
+        $enterpriseIds = $request->input('ids');
 
         $enterprises = $this->enterpriseRepository->findWhereIn('id', $enterpriseIds);
 
