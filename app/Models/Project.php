@@ -86,14 +86,14 @@ class Project extends Model
         return $this->hasMany(EvaluationCriteria::class);
     }
 
-    public function bidBonds(){
-        return $this->hasMany(BidBond::class);
+    public function bidBond(){
+        return $this->hasOne(BidBond::class);
     }
 
     public function feedbackComplaints(){
         return $this->hasMany(FeedbackComplaint::class);
     }
-    
+
     public function tasks()
     {
         return $this->hasMany(Task::class);
