@@ -419,10 +419,12 @@ class EnterpriseRepository extends BaseRepository
 
             $monthlyData = [];
             for ($month = 1; $month <= 12; $month++) {
-                $monthlyData[] = [
-                    'month' => $month,
-                    'completed_projects' => $completedProjects[$month] ?? 0,
-                ];
+                if (isset($completedProjects[$month]) && $completedProjects[$month] > 0) {
+                    $monthlyData[] = [
+                        'month' => $month,
+                        'completed_projects' => $completedProjects[$month],
+                    ];
+                }
             }
 
             $data[] = [
@@ -452,10 +454,12 @@ class EnterpriseRepository extends BaseRepository
 
             $monthlyData = [];
             for ($month = 1; $month <= 12; $month++) {
-                $monthlyData[] = [
-                    'month' => $month,
-                    'won_projects' => $wonProjects[$month] ?? 0,
-                ];
+                if (isset($wonProjects[$month]) && $wonProjects[$month] > 0) {
+                    $monthlyData[] = [
+                        'month' => $month,
+                        'won_projects' => $wonProjects[$month],
+                    ];
+                }
             }
 
             $data[] = [
