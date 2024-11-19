@@ -13,6 +13,7 @@ use App\Jobs\sendApproveProjectJob;
 use App\Repositories\AttachmentRepository;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\ProjectRepository;
+use App\Repositories\StaffRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,8 +26,9 @@ class ProjectController extends Controller
     public $attachmentRepository;
     public $enterpriseRepository;
     public $userRepository;
+    public $staffRepository;
 
-    public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository, EnterpriseRepository $enterpriseRepository, UserRepository $userRepository)
+    public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository, EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, StaffRepository $staffRepository)
     {
         $this->middleware(['permission:list_project'])->only('index', 'getNameAndIds');
         $this->middleware(['permission:create_project'])->only(['store']);
@@ -37,6 +39,7 @@ class ProjectController extends Controller
         $this->attachmentRepository = $attachmentRepository;
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
+        $this->staffRepository = $staffRepository;
     }
 
     /**
@@ -276,4 +279,13 @@ class ProjectController extends Controller
         ], 200);
     }
 
+    public function getProjectByStaff() {
+        dd(Auth::user());
+        $user = $this->userRepository->find(Auth::user());
+        return response([
+            'result' => true,
+            'message' => "Lấy danh sách dự án được giao cho nhân viên phê duyệt thành công",
+            'data' => new ProjectCollection(Auth::user()->id)
+        ], 200);
+    }
 }

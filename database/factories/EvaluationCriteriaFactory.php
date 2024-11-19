@@ -17,7 +17,7 @@ class EvaluationCriteriaFactory extends Factory
      */
     public function definition(): array
     {
-        $projects = Project::where('id', '<', 1000)->get();
+        $projects = Project::all();
         return [
             'project_id' => $projects->random()->id,
             'name' => 'Tiêu chí ' . $this->faker->name(),

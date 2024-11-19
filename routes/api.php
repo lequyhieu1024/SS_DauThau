@@ -175,6 +175,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
     Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
     Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
+    Route::get("projects/get-list-project/by-staff", [ProjectController::class, 'getProjectByStaff']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
