@@ -56,13 +56,13 @@ class DatabaseSeeder extends Seeder
 //        BusinessActivityType::factory(100)->create();
 //        Industry::factory(1000)->create();
 //        FundingSource::factory(10000)->create();
-        $batchSize = 1000;
-        $totalRecords = 100000;
+        $batchSize = 100;
+        $totalRecords = 15577;
 
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
 //            Project::factory($batchSize)->create(); // done
-            EvaluationCriteria::factory($batchSize)->create(); // doing
-//            BidBond::factory($batchSize)->create();  // not done
+//            EvaluationCriteria::factory($batchSize)->create(); // doing
+            BidBond::factory($batchSize)->create();  // not done
 //            BidDocument::factory($batchSize)->create();  // not done
         }
 
