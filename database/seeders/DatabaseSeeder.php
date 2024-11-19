@@ -60,8 +60,8 @@ class DatabaseSeeder extends Seeder
         $totalRecords = 100000;
 
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
-//            Project::factory($batchSize)->create(); // doing
-//            EvaluationCriteria::factory($batchSize)->create(); // not done
+//            Project::factory($batchSize)->create(); // done
+            EvaluationCriteria::factory($batchSize)->create(); // doing
 //            BidBond::factory($batchSize)->create();  // not done
 //            BidDocument::factory($batchSize)->create();  // not done
         }
