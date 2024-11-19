@@ -14,7 +14,7 @@ class InstructRepository extends BaseRepository
     {
         $query = $this->model->query();
 
-        if (isset($data['instruct']) && is_string($data['instruct'])) {
+        if (isset($data["instruct"]) && is_string($data['instruct'])) {
             $query->where('instruct', 'like', '%' . $data['instruct'] . '%');
         }
 
