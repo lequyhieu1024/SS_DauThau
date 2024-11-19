@@ -89,7 +89,6 @@ class IntroductionController extends Controller
     public function update(IntroductionFormRequest $req, string $id){
         try{
             $totalCount = $this->introductionRespository->countAll();
-
             $currentIntroduction = $this->introductionRespository->findOrFail($id);
 
             $data = $req->all();
