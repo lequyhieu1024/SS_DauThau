@@ -35,7 +35,7 @@ class EnterpriseResource extends JsonResource
             'registration_date' => $this->registration_date,
             'registration_number' => $this->registration_number,
             'organization_type' => $this->organization_type,
-            'reputation' => $this->reputation->prestige_score,
+            'reputation' => $this->reputation->prestige_score ?? null,
             'is_active' => $this->is_active,
             'is_blacklist' => $this->is_blacklist,
             'created_at' => $this->created_at,

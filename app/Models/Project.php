@@ -101,7 +101,7 @@ class Project extends Model
 
     public function biddingResult()
     {
-        return $this->belongsTo(BiddingResult::class);
+        return $this->hasOne(BiddingResult::class);
     }
 
     protected function getModelName(): string

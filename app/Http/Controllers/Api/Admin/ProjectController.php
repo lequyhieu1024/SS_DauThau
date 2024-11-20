@@ -279,13 +279,12 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    public function getProjectByStaff() {
-        dd(Auth::user());
-        $user = $this->userRepository->find(Auth::user());
+    public function getProjectByStaff(Request $request) {
+        $projects = $this->projectRepository->getProjectByStaff(Auth::user()->staff->id ?? 0, $request->all());
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án được giao cho nhân viên phê duyệt thành công",
-            'data' => new ProjectCollection(Auth::user()->id)
+            'data' => new ProjectCollection($projects)
         ], 200);
     }
 }
