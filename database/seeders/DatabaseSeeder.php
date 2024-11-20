@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\BidBond;
 use App\Models\BidDocument;
 use App\Models\BusinessActivityType;
+use App\Models\Employee;
 use App\Models\Enterprise;
 use App\Models\EvaluationCriteria;
 use App\Models\FundingSource;
@@ -14,6 +15,7 @@ use App\Models\ProcurementCategory;
 use App\Models\Project;
 use App\Models\SelectionMethod;
 use App\Models\Staff;
+use App\Models\Task;
 use Database\Factories\IndustryFactory;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -56,14 +58,16 @@ class DatabaseSeeder extends Seeder
 //        BusinessActivityType::factory(100)->create();
 //        Industry::factory(1000)->create();
 //        FundingSource::factory(10000)->create();
-        $batchSize = 100;
+        $batchSize = 1000;
         $totalRecords = 15577;
 
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
 //            Project::factory($batchSize)->create(); // done
-//            EvaluationCriteria::factory($batchSize)->create(); // doing
-            BidBond::factory($batchSize)->create();  // not done
-//            BidDocument::factory($batchSize)->create();  // not done
+//            EvaluationCriteria::factory($batchSize)->create(); // done
+            BidBond::factory($batchSize)->create();  // cần = số lượng project
+            BidDocument::factory($batchSize)->create();  // cần = số lượng project
+            Employee::factory($batchSize)->create(); // fake 50k
+            Task::factory($batchSize)->create(); // 100k
         }
 
     }
