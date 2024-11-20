@@ -49,7 +49,7 @@ class ProjectResource extends JsonResource
             'amount' => $this->amount,
             'total_amount' => $this->total_amount,
             'description' => $this->description,
-            'submistion_method' => $this->submistion_method,
+            'submission_method' => $this->submission_method,
             'receiving_place' => $this->receiving_place,
             'bid_submission_start' => $this->bid_submission_start,
             'bid_submission_end' => $this->bid_submission_end,
