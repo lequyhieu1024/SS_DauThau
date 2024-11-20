@@ -669,8 +669,31 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-//    public function getProjectByStaff($user_id) {
-//        $user =
-//        $projects = $this->model->whereIn('id', $user_id);
-//    }
+    public function getProjectByStaff($staff_id, $data) {
+        $query = $this->model->query();
+        if (isset($data['name'])) {
+            $query->where('name', 'like', '%' . $data['name'] . '%');
+        }
+        if (isset($data['upload_time_start'])) {
+            $query->whereDate('created_at', '>=', $data['upload_time_start']);
+        }
+
+        if (isset($data['upload_time_end'])) {
+            $query->whereDate('created_at', '<=', $data['upload_time_end']);
+        }
+
+        if (isset($data['investor'])) {
+            $query->whereHas('investor', function ($q) use ($data) {
+                $q->where('id', $data['investor']);
+            });
+        }
+
+        if (isset($data['tenderer'])) {
+            $query->whereHas('tenderer', function ($q) use ($data) {
+                $q->where('id', $data['tenderer']);
+            });
+        }
+
+        return $query->where('staff_id', $staff_id)->where('status', ProjectStatus::AWAITING->value)->paginate($data['size'] ?? 10);
+    }
 }
