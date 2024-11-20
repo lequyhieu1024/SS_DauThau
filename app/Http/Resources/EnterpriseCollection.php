@@ -37,7 +37,7 @@ class EnterpriseCollection extends ResourceCollection
                     'registration_date' => $enterprise->registration_date,
                     'registration_number' => $enterprise->registration_number,
                     'organization_type' => $enterprise->organization_type,
-                    'reputation' => $enterprise->reputation->prestige_score,
+                    'reputation' => $enterprise->reputation->prestige_score ?? null,
                     'is_active' => $enterprise->is_active,
                     'is_blacklist' => $enterprise->is_blacklist,
                 ];

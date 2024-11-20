@@ -285,14 +285,14 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
-    public function employeeWorkingTimeStatisticByEnterprise(Request $request)
-    {
-        return response([
-            'result' => true,
-            'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
-            'data' => $this->enterpriseRepository->employeeWorkingTimeStatisticByEnterprise($request->all())
-        ], 200);
-    }
+//    public function employeeWorkingTimeStatisticByEnterprise(Request $request)
+//    {
+//        return response([
+//            'result' => true,
+//            'message' => 'Biểu đồ thống kê thời gian gắn bó của nhân viên với doanh nghiệp',
+//            'data' => $this->enterpriseRepository->employeeWorkingTimeStatisticByEnterprise($request->all())
+//        ], 200);
+//    }
 
     public function employeeAgeStatisticByEnterprise(Request $request)
     {
@@ -350,8 +350,8 @@ class EnterpriseController extends Controller
     public function getDetailEnterpriseByIds(Request $request)
     {
         $rules = [
-            'enterprise_ids' => 'required|array',
-            'enterprise_ids.*' => 'exists:enterprises,id',
+            'ids' => 'required|array',
+            'ids.*' => 'exists:enterprises,id',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -360,7 +360,7 @@ class EnterpriseController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $enterpriseIds = $request->input('enterprise_ids');
+        $enterpriseIds = $request->input('ids');
 
         $enterprises = $this->enterpriseRepository->findWhereIn('id', $enterpriseIds);
 

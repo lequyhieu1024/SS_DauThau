@@ -175,6 +175,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
     Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
     Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
+    Route::get("projects/get-list-project/by-staff", [ProjectController::class, 'getProjectByStaff']);
     // Banner
     Route::resource('banners', BannerController::class)->except('update');
     Route::patch('banners/{id}', [BannerController::class, 'update']);
@@ -238,11 +239,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('dashboard/charts/industry-has-the-most-enterprise', [DashboardController::class, 'top10IndustryHasTheMostEnterprise']);
 
     // enterprise chart
-    Route::post('compare-projects/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
+    Route::post('charts/enterprises/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
     Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
     Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
     Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
-    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
+//    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
     Route::post('charts/enterprises/employee-age-statistic-by-enterprise', [EnterpriseController::class, 'employeeAgeStatisticByEnterprise']);
     Route::post('charts/enterprises/employee-project-statistic-by-enterprise', [EnterpriseController::class, 'employeeProjectStatisticByEnterprise']);
     Route::post('charts/enterprises/employee-result-bidding-statistic-by-enterprise', [EnterpriseController::class, 'biddingResultStatisticsByEnterprise']);
@@ -268,4 +269,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Instructs
     Route::resource('instructs', InstructController::class);
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
+
 });

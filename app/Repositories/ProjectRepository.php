@@ -668,4 +668,9 @@ class ProjectRepository extends BaseRepository
 
         return $data;
     }
+
+//    public function getProjectByStaff($user_id) {
+//        $user =
+//        $projects = $this->model->whereIn('id', $user_id);
+//    }
 }
