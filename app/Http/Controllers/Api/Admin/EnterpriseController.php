@@ -396,4 +396,13 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->projectWonByEnterprise($request->ids, $request->year)
         ], 200);
     }
+
+    public function evaluationsStatisticsByEnterprise(Request $request)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện số lượng đánh giá và đánh giá trung bình doanh nghiệp nhận được',
+            'data' => $this->enterpriseRepository->evaluationsStatisticsByEnterprise($request->ids)
+        ], 200);
+    }
 }
