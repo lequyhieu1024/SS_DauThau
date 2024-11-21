@@ -405,4 +405,14 @@ class EnterpriseController extends Controller
             'data' => $this->enterpriseRepository->evaluationsStatisticsByEnterprise($request->ids)
         ], 200);
     }
+
+    public function reputationsStatisticsByEnterprise(Request $request)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện điểm uy tín của doanh nghiệp và lịch sử bị trừ điểm uy tín của doanh nghiệp',
+            'data' => $this->enterpriseRepository->reputationsStatisticsByEnterprise($request->ids)
+        ], 200);
+    }
+
 }

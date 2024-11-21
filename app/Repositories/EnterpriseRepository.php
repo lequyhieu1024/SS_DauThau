@@ -495,4 +495,24 @@ class EnterpriseRepository extends BaseRepository
 
         return $data;
     }
+
+    public function reputationsStatisticsByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+
+            $data[] = [
+                'enterprise_id' => $enterprise->id,
+                'enterprise_name' => $enterprise->user->name,
+                'prestige_score' => $enterprise->reputation->prestige_score ?? 100,
+                'blacklist_count' => $enterprise->reputation->number_of_blacklist ?? 0,
+                'ban_count' => $enterprise->reputation->number_of_ban ?? 0,
+            ];
+        }
+
+        return $data;
+    }
 }
