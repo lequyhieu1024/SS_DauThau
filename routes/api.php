@@ -217,27 +217,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     Route::apiResource('work-progresses', WorkProgressController::class);
 
-    // general chart
-    Route::get('dashboard/charts/project-by-industry', [DashboardController::class, 'projectByIndustry']);
-    Route::get('dashboard/charts/project-by-fundingsource', [DashboardController::class, 'projectByFundingSource']);
-    Route::get('dashboard/charts/project-by-domestic', [DashboardController::class, 'projectByIsDomestic']);
-    Route::get('dashboard/charts/project-by-submission-method', [DashboardController::class, 'projectBySubmissionMethod']);
-    Route::get('dashboard/charts/project-by-selection-method', [DashboardController::class, 'projectBySelectionMethod']);
-    Route::get('dashboard/charts/project-by-tenderer-investor', [DashboardController::class, 'projectByTendererAndInvestor']);
-    Route::get('dashboard/charts/project-by-organization-type', [DashboardController::class, 'enterpriseByOrganizationType']);
-    Route::get('dashboard/charts/average-project-duration-by-industry', [DashboardController::class, 'averageProjectDurationByIndustry']);
-    Route::get('dashboard/charts/top-tenderers-by-project-count', [DashboardController::class, 'topTenderersByProjectCount']);
-    Route::get('dashboard/charts/top-tenderers-by-project-total-amount', [DashboardController::class, 'topTenderersByProjectTotalAmount']);
-    Route::get('dashboard/charts/top-investors-by-project-partial', [DashboardController::class, 'topInvestorsByProjectPartial']);
-    Route::get('dashboard/charts/top-investors-by-project-full', [DashboardController::class, 'topInvestorsByProjectFull']);
-    Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashboardController::class, 'topInvestorsByProjectTotalAmount']);
-    Route::post('dashboard/charts/top-enterprises-have-completed-projects-by-industry', [DashboardController::class, 'topEnterprisesHaveCompletedProjectsByIndustry']);
-    Route::post('dashboard/charts/top-enterprises-have-completed-projects-by-funding-source', [DashboardController::class, 'topEnterprisesHaveCompletedProjectsByFundingSource']);
-    Route::post('dashboard/charts/time-joining-website-of-enterprise', [DashboardController::class, 'timeJoiningWebsiteOfEnterprise']);
-    Route::post('dashboard/charts/projects-status-per-month', [DashboardController::class, 'projectsStatusPerMonth']);
-    Route::post('dashboard/charts/industry-has-the-most-project', [DashboardController::class, 'top10IndustryHasTheMostProject']);
-    Route::post('dashboard/charts/industry-has-the-most-enterprise', [DashboardController::class, 'top10IndustryHasTheMostEnterprise']);
-
     // enterprise chart
     Route::post('charts/enterprises/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
     Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
@@ -270,4 +249,27 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('instructs', InstructController::class);
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
 
+});
+
+Route::group(['prefix' => 'admin'], function () {
+    // general chart
+    Route::get('dashboard/charts/project-by-industry', [DashboardController::class, 'projectByIndustry']);
+    Route::get('dashboard/charts/project-by-fundingsource', [DashboardController::class, 'projectByFundingSource']);
+    Route::get('dashboard/charts/project-by-domestic', [DashboardController::class, 'projectByIsDomestic']);
+    Route::get('dashboard/charts/project-by-submission-method', [DashboardController::class, 'projectBySubmissionMethod']);
+    Route::get('dashboard/charts/project-by-selection-method', [DashboardController::class, 'projectBySelectionMethod']);
+    Route::get('dashboard/charts/project-by-tenderer-investor', [DashboardController::class, 'projectByTendererAndInvestor']);
+    Route::get('dashboard/charts/project-by-organization-type', [DashboardController::class, 'enterpriseByOrganizationType']);
+    Route::get('dashboard/charts/average-project-duration-by-industry', [DashboardController::class, 'averageProjectDurationByIndustry']);
+    Route::get('dashboard/charts/top-tenderers-by-project-count', [DashboardController::class, 'topTenderersByProjectCount']);
+    Route::get('dashboard/charts/top-tenderers-by-project-total-amount', [DashboardController::class, 'topTenderersByProjectTotalAmount']);
+    Route::get('dashboard/charts/top-investors-by-project-partial', [DashboardController::class, 'topInvestorsByProjectPartial']);
+    Route::get('dashboard/charts/top-investors-by-project-full', [DashboardController::class, 'topInvestorsByProjectFull']);
+    Route::get('dashboard/charts/top-investors-by-project-total-amount', [DashboardController::class, 'topInvestorsByProjectTotalAmount']);
+    Route::post('dashboard/charts/top-enterprises-have-completed-projects-by-industry', [DashboardController::class, 'topEnterprisesHaveCompletedProjectsByIndustry']);
+    Route::post('dashboard/charts/top-enterprises-have-completed-projects-by-funding-source', [DashboardController::class, 'topEnterprisesHaveCompletedProjectsByFundingSource']);
+    Route::post('dashboard/charts/time-joining-website-of-enterprise', [DashboardController::class, 'timeJoiningWebsiteOfEnterprise']);
+    Route::post('dashboard/charts/projects-status-per-month', [DashboardController::class, 'projectsStatusPerMonth']);
+    Route::post('dashboard/charts/industry-has-the-most-project', [DashboardController::class, 'top10IndustryHasTheMostProject']);
+    Route::post('dashboard/charts/industry-has-the-most-enterprise', [DashboardController::class, 'top10IndustryHasTheMostEnterprise']);
 });
