@@ -374,8 +374,32 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        return $data;
+        // Sắp xếp theo giá trị trung bình giảm dần
+        usort($data, function ($a, $b) {
+            return $b['value'] <=> $a['value'];
+        });
+
+        // Lấy 15 cột đầu tiên
+        $top15 = array_slice($data, 0, 15);
+
+        // Tổng hợp các ngành còn lại
+        $others = array_slice($data, 15);
+        $othersValue = 0;
+        foreach ($others as $other) {
+            $othersValue += $other['value'];
+        }
+
+        // Nếu có ngành "Còn lại", thêm vào mảng dữ liệu
+        if (count($others) > 0) {
+            $top15[] = [
+                'name' => 'Còn lại',
+                'value' => round($othersValue, 2)
+            ];
+        }
+
+        return $top15;
     }
+
 
     // số doanh nghiệp nhà nước, ngoài nhà nước
     public function getEnterpriseByOrganizationType()
