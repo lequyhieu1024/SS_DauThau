@@ -187,7 +187,7 @@ class DashboardController extends Controller
         return response()->json([
             'result' => true,
             'message' => "Biểu đồ thể hiện số lượng dự án theo ngành nghề",
-            'data' =>  $this->industryRepository->top10IndustryHasTheMostProject($this->industryRepository->getNameAndIdsActive())
+            'data' =>  $this->industryRepository->top10IndustryHasTheMostProjects($this->industryRepository->getNameAndIdsActive())
         ], 200);
     }
 
@@ -195,7 +195,7 @@ class DashboardController extends Controller
         return response()->json([
             'result' => true,
             'message' => "Biểu đồ thể hiện số lượng doanh nghiệp theo ngành nghề",
-            'data' =>  $this->industryRepository->top10IndustryHasTheMostEnterprise($this->industryRepository->getNameAndIdsActive())
+            'data' =>  $this->industryRepository->top10IndustryHasTheMostEnterprises($this->industryRepository->getNameAndIdsActive())
         ], 200);
     }
 }
