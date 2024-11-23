@@ -16,7 +16,7 @@ class EvaluationCriteriaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project_id' => $this->project,
+            'project' => $this->project,
             'name' => $this->name,
             'weight' => $this->weight,
             'description' => $this->description,

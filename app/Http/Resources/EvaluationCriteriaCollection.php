@@ -18,7 +18,7 @@ class EvaluationCriteriaCollection extends ResourceCollection
             'data' => $this->collection->map(function ($data) {
                 return [
                     'id' => $data->id,
-                    'project_id' => $data->project,
+                    'project' => $data->project,
                     'name' => $data->name,
                     'weight' => $data->weight,
                     'description' => $data->description,
