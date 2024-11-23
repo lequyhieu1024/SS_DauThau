@@ -30,7 +30,7 @@ class ProjectController extends Controller
 
     public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository, EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, StaffRepository $staffRepository)
     {
-        $this->middleware(['permission:list_project'])->only('index', 'getNameAndIds');
+        $this->middleware(['permission:list_project'])->only('index');
         $this->middleware(['permission:create_project'])->only(['store']);
         $this->middleware(['permission:update_project'])->only(['update']);
         $this->middleware(['permission:detail_project'])->only('show');
@@ -225,7 +225,7 @@ class ProjectController extends Controller
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án và gói thầu thành công",
-            'data' => new TreeSelectCollection($this->projectRepository->getNameAndIdsProject())
+            'data' => $this->projectRepository->getNameAndIdsProject()// new TreeSelectCollection($this->projectRepository->getNameAndIdsProject())
         ], 200);
     }
 

@@ -31,7 +31,7 @@ class EnterpriseController extends Controller
         RoleRepository $roleRepository,
         ReputationRepository $reputationRepository
     ) {
-        //        $this->middleware(['permission:list_enterprise'])->only('index', 'getnameAndIds');
+        //        $this->middleware(['permission:list_enterprise'])->only('index');
         //        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
         //        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
         //        $this->middleware(['permission:detail_enterprise'])->only('show');
