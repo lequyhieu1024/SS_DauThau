@@ -123,7 +123,7 @@ class ProjectRepository extends BaseRepository
 
     public function getNameAndIdsProject()
     {
-        return $this->model->select('id', 'name')->where('status', ProjectStatus::APPROVED->value)->get();
+        return $this->model->select('id', 'name')->where('status', ProjectStatus::APPROVED->value)->paginate(50);
     }
 
     public function getNameAndIdProjectHasBiddingResult()
