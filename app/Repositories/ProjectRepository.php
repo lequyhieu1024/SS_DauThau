@@ -133,10 +133,8 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectCountByIndustry()
     {
-        // tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -145,18 +143,15 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // số dự án theo ngành giảm dần
         $industries = Industry::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
 
-        // lấy 10 ngành có số lượng dự án lớn nhất
         $topIndustries = $industries->take(10);
-        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+        $otherIndustries = $industries->skip(10);
 
         $data = [];
 
-        // số lượng dự án cho 10 ngành hàng đầu
         foreach ($topIndustries as $industry) {
             $data[] = [
                 'name' => $industry->name,
@@ -164,7 +159,6 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // số lượng dự án cho các ngành còn lại
         $otherProjectCount = $otherIndustries->sum('projects_count');
         if ($otherProjectCount > 0) {
             $data[] = [
@@ -178,10 +172,8 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectPercentageByFundingSource()
     {
-        // 1. Lấy tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -190,15 +182,16 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        //
         $fundingSources = FundingSource::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
 
         $topFundingSources = $fundingSources->take(10);
-        $otherFundingSources = $fundingSources->skip(10);
 
-        //
+        $otherFundingSources = $fundingSources->skip(10);
+        $otherFundingSourcesCount = $otherFundingSources->sum('projects_count');
+
+        $data = [];
         foreach ($topFundingSources as $fundingSource) {
             $data[] = [
                 'name' => $fundingSource->name,
@@ -206,17 +199,16 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        //
-        $otherFundingSources = $otherFundingSources->sum('projects_count');
-        if ($otherFundingSources > 0) {
+        if ($otherFundingSourcesCount > 0) {
             $data[] = [
                 'name' => 'Nguồn tài trợ khác',
-                'value' => $otherFundingSources
+                'value' => $otherFundingSourcesCount
             ];
         }
 
         return $data;
     }
+
 
     public function getDomesticPercentage()
     {
