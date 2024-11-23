@@ -16,7 +16,7 @@ class ProcurementCategoryController extends Controller
 
     public function __construct(ProcurementCategoryRepository $procurementCategoryRepository)
     {
-//        $this->middleware(['permission:list_procurement_categories'])->only(['index', 'getNameAndIds']);
+//        $this->middleware(['permission:list_procurement_categories'])->only(['index']);
 //        $this->middleware(['permission:create_procurement_categories'])->only('store');
 //        $this->middleware(['permission:update_procurement_categories'])->only(['update', 'changeActive']);
 //        $this->middleware(['permission:detail_procurement_categories'])->only('show');
