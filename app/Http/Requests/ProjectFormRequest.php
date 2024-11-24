@@ -25,7 +25,7 @@ class ProjectFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'files' => 'required|array|max:2000',
+            'files' => request()->isMethod('POST') ? 'required|array|max:2000' : '',
             'files.*' => 'mimes:jpeg,png,jpg,gif,svg,doc,docx,pdf,zip,rar,ppt,pptx|max:2000',
             'funding_source_id' => 'required|numeric|exists:funding_sources,id',
             'tenderer_id' => 'required|numeric|exists:enterprises,id',

@@ -104,6 +104,11 @@ class Project extends Model
         return $this->hasOne(BiddingResult::class);
     }
 
+    public function biddingDocument()
+    {
+        return $this->hasOne(BidDocument::class);
+    }
+
     protected function getModelName(): string
     {
         return 'Dự án - Project';

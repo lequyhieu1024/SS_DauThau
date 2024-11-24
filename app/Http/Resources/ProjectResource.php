@@ -23,6 +23,8 @@ class ProjectResource extends JsonResource
             'staff' => new StaffResource($this->staff),
             'selection_method' => $this->selectionMethod,
             'bidding_result' => $this->biddingResult,
+            'bidding_document' => $this->biddingDocument,
+            'bidding_bond' => $this->bidBond,
             'industries' => $this->industries->where('is_active', true)->map(function ($industry) {
                 return [
                     'id' => $industry->id,
