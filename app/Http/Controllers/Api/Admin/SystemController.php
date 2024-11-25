@@ -29,7 +29,7 @@ class SystemController extends Controller
                 "data" => $data
             ], 200);
         } else {
-            return response()->json([
+            return response([
                 'result' => false,
                 'message' => 'Lấy thông tin hệ thống thất bại',
                 'data' => []
@@ -125,7 +125,7 @@ class SystemController extends Controller
             $system->email = $data['email'];
             $system->address = $data['address'];
             $system->save();
-            return response()->json([
+            return response([
                 'result' => true,
                 "message" => "Cập nhật thành công",
                 "data" => $system

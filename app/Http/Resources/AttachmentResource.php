@@ -16,8 +16,12 @@ class AttachmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user' => $this->user,
+            'project' => $this->project,
+            'name' => $this->name,
             'url' => url("/documents/{$this->name}"),
             'type' => $this->type,
+            'size' => $this->size,
         ];
     }
 }
