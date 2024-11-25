@@ -10,6 +10,7 @@ use App\Models\BusinessActivityType;
 use App\Models\Employee;
 use App\Models\EmployeeTask;
 use App\Models\Enterprise;
+use App\Models\Evaluate;
 use App\Models\EvaluationCriteria;
 use App\Models\FundingSource;
 use App\Models\Industry;
@@ -63,6 +64,8 @@ class DatabaseSeeder extends Seeder
         //        Industry::factory(1000)->create();
         //        FundingSource::factory(10000)->create();
         // BiddingResult::factory(200)->create();
+        Evaluate::factory(600)->create();
+
         $batchSize = 1000;
         $totalRecords = 100000;
         
