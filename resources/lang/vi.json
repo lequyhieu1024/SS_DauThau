@@ -156,5 +156,20 @@
     "Evaluation Criteria": "Tiêu chí đánh giá",
     "Procurement Categories": "Lĩnh vực mua sắm công",
     "Post Catalog": "Danh mục bài viết",
-    "Post": "Bài viết"
+    "Post": "Bài viết",
+    "System" : "Hệ thống",
+    "Industry" : "Ngành nghề",
+    "Bid Result" : "Kết quả đấu thầu",
+    "Employee" : "Nhân viên",
+    "Task" : "Nhiệm vụ",
+    "Instruct" : "Hướng dẫn",
+    "Introduction" : "Giới thiệu",
+    "Catalog" : "Danh mục bài viết",
+    "Procurement Category" : "Lĩnh vực mua sắm công",
+    "Question Answer" : "Hỏi đáp",
+    "Support" : "Hỗ trợ",
+    "Work Progress" : "Tiến độ công việc",
+     "Attachment" : "Tài liệu đính kèm",
+    "Evaluate" : "Đánh giá doanh nghiệp",
+    "Reputation" : "Uy tín doanh nghiệp"
 }
