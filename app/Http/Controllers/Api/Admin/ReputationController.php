@@ -13,6 +13,7 @@ class ReputationController extends Controller
 
     public function __construct(ReputationRepository $reputationRepository)
     {
+        $this->middleware(['permission:list_reputation'])->only(['index']);
         $this->reputationRepository = $reputationRepository;
     }
     /**

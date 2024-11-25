@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repositories;
- 
+
 use App\Models\QuestionAnswer;
 
 class QuestionAnswerRepository extends BaseRepository{
@@ -27,6 +27,6 @@ class QuestionAnswerRepository extends BaseRepository{
             $query->where('status', '=', $data['status']);
         }
 
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 }

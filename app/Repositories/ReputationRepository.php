@@ -23,6 +23,6 @@ class ReputationRepository extends BaseRepository {
             $query->where('prestige_score', '<=', $data['score_to']);
         }
 
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 }

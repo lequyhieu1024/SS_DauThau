@@ -15,6 +15,11 @@ class PostController extends Controller
     protected $postRepository;
     public function __construct(PostRepository $postRepository)
     {
+        $this->middleware(['permission:list_post'])->only(['index']);
+        $this->middleware(['permission:create_post'])->only('store');
+        $this->middleware(['permission:update_post'])->only(['update', 'toggleActiveStatus']);
+        $this->middleware(['permission:detail_post'])->only('show');
+        $this->middleware(['permission:destroy_post'])->only('destroy');
         $this->postRepository = $postRepository;
     }
     /**

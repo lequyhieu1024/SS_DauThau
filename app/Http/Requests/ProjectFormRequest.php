@@ -25,8 +25,7 @@ class ProjectFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'files' => request()->isMethod('POST') ? 'required|array|max:2000' : '',
-            'files.*' => 'mimes:jpeg,png,jpg,gif,svg,doc,docx,pdf,zip,rar,ppt,pptx|max:2000',
+            'files' => request()->isMethod('POST') ? 'required|array|max:2000|mimes:jpeg,png,jpg,gif,svg,doc,docx,pdf,zip,rar,ppt,pptx' : 'nullable|array|max:2000|mimes:jpeg,png,jpg,gif,svg,doc,docx,pdf,zip,rar,ppt,pptx',
             'funding_source_id' => 'required|numeric|exists:funding_sources,id',
             'tenderer_id' => 'required|numeric|exists:enterprises,id',
             'investor_id' => 'required|numeric|exists:enterprises,id',
@@ -56,29 +55,6 @@ class ProjectFormRequest extends FormRequest
             'approve_at' => 'nullable|date',
             'decision_number_approve' => 'nullable|max:100|required_if:approve_at,!null',
             'status' => 'numeric',
-
-            // Xác thực cho children
-            'children' => 'nullable|array',
-            'children.*.funding_source_id' => 'required|numeric|exists:funding_sources,id',
-            'children.*.selection_method_id' => 'nullable|numeric|exists:selection_methods,id',
-            'children.*.tenderer_id' => 'required|numeric|exists:enterprises,id',
-            'children.*.investor_id' => 'required|numeric|exists:enterprises,id',
-            'children.*.industry_id' => 'required|array|exists:industries,id',
-            'children.*.name' => 'required|max:255',
-            'children.*.location' => 'required|max:255',
-            'children.*.amount' => 'required|numeric',
-            'children.*.description' => 'nullable|max:10000',
-            'children.*.submission_method' => 'required|in:online,in_person',
-            'children.*.receiving_place' => [
-                'nullable',
-                'string',
-                'max:255',
-                'required_if:children.*.submission_method,in_person',
-            ],
-            'children.*.bid_submission_start' => 'required|date',
-            'children.*.bid_submission_end' => 'required|date|after:children.*.bid_submission_start',
-            'children.*.start_time' => 'nullable|date',
-            'children.*.end_time' => 'nullable|date|after:start_time',
         ];
     }
 }

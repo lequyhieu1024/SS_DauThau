@@ -19,6 +19,11 @@ class EvaluateController extends Controller
     protected $projectRepository;
 
     public function __construct(EvaluateRepository $evaluateRepository, ProjectRepository $projectRepository) {
+        $this->middleware(['permission:list_evaluate'])->only(['index']);
+        $this->middleware(['permission:create_evaluate'])->only('store');
+        $this->middleware(['permission:update_evaluate'])->only(['update']);
+        $this->middleware(['permission:detail_evaluate'])->only('show');
+        $this->middleware(['permission:destroy_evaluate'])->only('destroy');
         $this->evaluateRepository = $evaluateRepository;
         $this->projectRepository = $projectRepository;
     }

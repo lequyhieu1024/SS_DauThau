@@ -31,11 +31,11 @@ class EnterpriseController extends Controller
         RoleRepository $roleRepository,
         ReputationRepository $reputationRepository
     ) {
-        //        $this->middleware(['permission:list_enterprise'])->only('index');
-        //        $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
-        //        $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
-        //        $this->middleware(['permission:detail_enterprise'])->only('show');
-        //        $this->middleware(['permission:destroy_enterprise'])->only('destroy');
+                $this->middleware(['permission:list_enterprise'])->only('index');
+                $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
+                $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
+                $this->middleware(['permission:detail_enterprise'])->only('show');
+                $this->middleware(['permission:destroy_enterprise'])->only('destroy');
 
 
         $this->enterpriseRepository = $enterpriseRepository;
@@ -66,7 +66,7 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14])); //13 là doanh nghiệp nhà nước / 14 là ngoài nhà nước
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             $data['user_id'] = $user->id;
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
@@ -125,8 +125,9 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
-            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['organization_type'] == 1 ? [13] : [14]));
+            $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
+            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
+
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
                 isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
