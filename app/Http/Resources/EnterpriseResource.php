@@ -18,7 +18,7 @@ class EnterpriseResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'industry_id' => $this->industries->where('is_active', true)->map(function ($industry) {
-                return $industry->id;
+                return $industry;
             })->values()->toArray(),
             'name' => $this->user->name,
             'email' => $this->user->email,
