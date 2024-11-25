@@ -33,7 +33,7 @@ class StaffRepository extends BaseRepository
                 $query->where('name', 'like', '%' . $data['name'] . '%');
             });
         }
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
     public function showStaff($id)

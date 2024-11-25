@@ -16,7 +16,6 @@ class ActivityLogController extends Controller
 //        $this->middleware(['permission:list_activity_log'])->only('index');
 //        $this->middleware(['permission:detail_activity_log'])->only('show');
 
-
         $this->activityLogRepository = $activityLogRepository;
     }
 

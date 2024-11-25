@@ -59,7 +59,7 @@ class EnterpriseRepository extends BaseRepository
                 });
             }
         }
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
     public function syncIndustry(array $data, $id)

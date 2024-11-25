@@ -18,7 +18,7 @@ class RoleRepository extends BaseRepository
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
         }
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
     public function getPermissions()

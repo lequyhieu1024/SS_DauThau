@@ -41,6 +41,6 @@ class EmployeeRepository extends BaseRepository
             $dateTo = Carbon::now()->subYears($data['age_to'])->endOfDay()->toDateString();;
             $query->where('birthday', '>=', $dateTo);
         }
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 }
