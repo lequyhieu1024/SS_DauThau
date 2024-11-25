@@ -17,6 +17,7 @@ use App\Models\Industry;
 use App\Models\ProcurementCategory;
 use App\Models\Project;
 use App\Models\ProjectIndustry;
+use App\Models\Reputation;
 use App\Models\SelectionMethod;
 use App\Models\Staff;
 use App\Models\Task;
@@ -64,10 +65,10 @@ class DatabaseSeeder extends Seeder
         //        Industry::factory(1000)->create();
         //        FundingSource::factory(10000)->create();
         // BiddingResult::factory(200)->create();
-        Evaluate::factory(600)->create();
+        // Evaluate::factory(200)->create();
 
         $batchSize = 1000;
-        $totalRecords = 100000;
+        $totalRecords = 10000;
         
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
             // ProjectIndustry::factory($batchSize)->create();
@@ -78,7 +79,7 @@ class DatabaseSeeder extends Seeder
             // Employee::factory($batchSize)->create(); // fake 50k - done
             // Task::factory($batchSize)->create(); // 100k - done
             // EmployeeTask::factory($batchSize)->create(); // 5k - done
-
+            // Reputation::factory($batchSize)->create();
         }
     }
 }

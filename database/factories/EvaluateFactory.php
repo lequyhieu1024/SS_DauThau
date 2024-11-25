@@ -19,7 +19,8 @@ class EvaluateFactory extends Factory
     public function definition(): array
     {
         $projectIds = Project::pluck('id')->toArray();
-        $enterpriseIds = Enterprise::pluck('id')->toArray();
+        // $enterpriseIds = Enterprise::pluck('id')->toArray();
+        $enterpriseIds = Enterprise::limit(100)->pluck('id')->toArray();
         return [
             'project_id' => $this->faker->randomElement($projectIds),
             'enterprise_id' => $this->faker->randomElement($enterpriseIds),
