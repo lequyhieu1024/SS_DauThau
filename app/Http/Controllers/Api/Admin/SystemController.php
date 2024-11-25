@@ -93,7 +93,8 @@ class SystemController extends Controller
         $rules = [
             'name' => 'required',
             'logo' => 'required',
-            'phone' => 'required|regex:/^0\d{9}$/',
+            'phone' => 'required|regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
+
             'email' => 'required|regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
             'address' => 'required',
         ];
@@ -110,7 +111,7 @@ class SystemController extends Controller
         $validator = validator($data, $rules, $messages);
 
         if ($validator->fails()) {
-            return response()->json([
+            return response([
                 'result' => false,
                 "message" => $validator->errors()
             ], 200);
