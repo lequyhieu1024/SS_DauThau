@@ -20,6 +20,11 @@ class BidBondController extends Controller
     {
         $this->bidBondRepository = $bidBondRepository;
         $this->projectRepository = $projectRepository;
+        $this->middleware(['permission:list_bid_bond'])->only(['index']);
+        $this->middleware(['permission:create_bid_bond'])->only('store');
+        $this->middleware(['permission:update_bid_bond'])->only(['update']);
+        $this->middleware(['permission:detail_bid_bond'])->only('show');
+        $this->middleware(['permission:destroy_bid_bond'])->only('destroy');
     }
     /**
      * Display a listing of the resource.

@@ -17,6 +17,11 @@ class TaskController extends Controller
 
     public function __construct(TaskRepository $taskRepository)
     {
+        $this->middleware(['permission:list_task'])->only(['index']);
+        $this->middleware(['permission:create_task'])->only('store');
+        $this->middleware(['permission:update_task'])->only(['update']);
+        $this->middleware(['permission:detail_task'])->only('show');
+        $this->middleware(['permission:destroy_task'])->only('destroy');
         $this->taskRepository = $taskRepository;
     }
 
