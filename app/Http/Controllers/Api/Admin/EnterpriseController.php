@@ -37,7 +37,6 @@ class EnterpriseController extends Controller
                 $this->middleware(['permission:detail_enterprise'])->only('show');
                 $this->middleware(['permission:destroy_enterprise'])->only('destroy');
 
-
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
         $this->industryRepository = $industryRepository;
@@ -66,7 +65,7 @@ class EnterpriseController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['role_id']));
+            $user = $this->userRepository->create($data)->syncRoles($this->roleRepository->getNameById($data['roles']));
             $data['user_id'] = $user->id;
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
@@ -126,7 +125,7 @@ class EnterpriseController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $this->userRepository->update($data, $this->enterpriseRepository->findOrFail($id)->user_id);
-            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
+            $this->userRepository->findOrFail($this->enterpriseRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['roles']));
 
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));

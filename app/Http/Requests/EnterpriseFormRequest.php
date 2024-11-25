@@ -58,6 +58,7 @@ class EnterpriseFormRequest extends FormRequest
             'is_active' => 'required|in:1,0',
             'is_blacklist' => 'required|in:1,0',
             'industry_id' => 'required|array|exists:industries,id',
+            'roles' => 'required|array|exists:roles,id',
         ];
     }
 }

@@ -20,7 +20,7 @@ class EnterpriseCollection extends ResourceCollection
                     'id' => $enterprise->id,
                     'user_id' => $enterprise->user_id,
                     'industry_id' => $enterprise->industries->where('is_active', true)->map(function ($industry) {
-                        return $industry->id;
+                        return $industry;
                     })->values()->toArray(),
                     'name' => $enterprise->user->name,
                     'email' => $enterprise->user->email,
@@ -37,9 +37,11 @@ class EnterpriseCollection extends ResourceCollection
                     'registration_date' => $enterprise->registration_date,
                     'registration_number' => $enterprise->registration_number,
                     'organization_type' => $enterprise->organization_type,
-                    'reputation' => $enterprise->reputation->prestige_score ?? null,
+                    'reputation' => $enterprise->reputation,
+                    'evaluates' => EvaluateResource::collection($enterprise->evaluates),
                     'is_active' => $enterprise->is_active,
                     'is_blacklist' => $enterprise->is_blacklist,
+                    'roles' => $enterprise->user->roles
                 ];
             }),
             'total_elements' => $this->total(),
