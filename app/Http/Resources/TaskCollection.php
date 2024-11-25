@@ -29,7 +29,12 @@ class TaskCollection extends ResourceCollection
                     'description' => $tasks->description,
                     'difficulty_level' => $tasks->difficulty_level,
                 ];
-            })
+            }),
+            'total_elements' => $this->total(),
+            'total_pages' => $this->lastPage(),
+            'page_size' => $this->perPage(),
+            'number_of_elements' => $this->count(),
+            'current_page' => $this->currentPage(),
         ];
     }
 }
