@@ -44,7 +44,9 @@ class ProjectResource extends JsonResource
                     'name' => $attachment->name,
                 ];
             })->values()->toArray(),
-            'children' => $this->children,
+            'children' => $this->children->map(function ($child) {
+                return new ProjectResource($child);
+            }),
             'evaluation_criterias' => $this->evaluationCriterias,
             'decision_number_issued' => $this->decision_number_issued,
             'name' => $this->name,

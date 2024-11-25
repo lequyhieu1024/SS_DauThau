@@ -33,7 +33,7 @@ class ProjectController extends Controller
         $this->middleware(['permission:list_project'])->only('index');
 //        $this->middleware(['permission:create_project'])->only(['store']);
 //        $this->middleware(['permission:update_project'])->only(['update']);
-        $this->middleware(['permission:detail_project'])->only('show');
+//        $this->middleware(['permission:detail_project'])->only('show');
         $this->middleware(['permission:destroy_project'])->only('destroy');
         $this->projectRepository = $projectRepository;
         $this->attachmentRepository = $attachmentRepository;
@@ -68,7 +68,9 @@ class ProjectController extends Controller
             $project = $this->projectRepository->create($data);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
-            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            if(!empty($data['files'])) {
+                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            }
             event(new ProjectCreated(new ProjectResource($project)));
             DB::commit();
             return response([
@@ -124,7 +126,9 @@ class ProjectController extends Controller
             $project = $this->projectRepository->findOrFail($id);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $id);
-            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            if(!empty($data['files'])) {
+                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            }
 
             DB::commit();
             return response([
