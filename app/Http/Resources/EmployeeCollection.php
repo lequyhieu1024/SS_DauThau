@@ -36,7 +36,12 @@ class EmployeeCollection extends ResourceCollection
                     'address' => $employee->address,
                     'status' => $employee->status,
                 ];
-            })
+            }),
+            'total_elements' => $this->total(),
+            'total_pages' => $this->lastPage(),
+            'page_size' => $this->perPage(),
+            'number_of_elements' => $this->count(),
+            'current_page' => $this->currentPage(),
         ];
     }
 }
