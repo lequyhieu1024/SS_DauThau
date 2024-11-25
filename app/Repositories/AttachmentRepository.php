@@ -12,6 +12,20 @@ class AttachmentRepository extends BaseRepository
         return Attachment::class;
     }
 
+    public function filter($data) {
+        $query = $this->model->query();
+        if (isset($data['project'])) {
+            $query->where('project_id', $data['project']);
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'like' , '%' . $data['name'] . '%');
+        }
+        if (isset($data['type'])) {
+            $query->where('type', $data['type']);
+        }
+        return $query->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
+    }
+
     public function createAttachment($files, $projectId, $userId)
     {
         $attachments = [];
