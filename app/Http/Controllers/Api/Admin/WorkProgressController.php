@@ -18,6 +18,11 @@ class WorkProgressController extends Controller
     protected $projectRepository;
     public function __construct(WorkProgressRepository $workProgressRepository, ProjectRepository $projectRepository)
     {
+        $this->middleware(['permission:list_work_progress'])->only(['index']);
+        $this->middleware(['permission:create_work_progress'])->only('store');
+        $this->middleware(['permission:update_work_progress'])->only(['update']);
+        $this->middleware(['permission:detail_work_progress'])->only('show');
+        $this->middleware(['permission:destroy_work_progress'])->only('destroy');
         // permission
         $this->workProgressRepository = $workProgressRepository;
         $this->projectRepository = $projectRepository;

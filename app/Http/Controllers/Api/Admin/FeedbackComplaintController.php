@@ -15,6 +15,11 @@ class FeedbackComplaintController extends Controller
     protected $feedbackComplaintRepository;
     public function __construct(FeedbackComplaintRepository $feedbackComplaintRepository)
     {
+        $this->middleware(['permission:list_feedback_complaint'])->only(['index']);
+        $this->middleware(['permission:create_feedback_complaint'])->only('store');
+        $this->middleware(['permission:update_feedback_complaint'])->only(['update']);
+        $this->middleware(['permission:detail_feedback_complaint'])->only('show');
+        $this->middleware(['permission:destroy_feedback_complaint'])->only('destroy');
         $this->feedbackComplaintRepository = $feedbackComplaintRepository;
     }
 
@@ -28,7 +33,7 @@ class FeedbackComplaintController extends Controller
      *     summary="Get all Feedback complaints",
      *     description="Get all Feedback complaints",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="size",
      *         in="query",
@@ -39,7 +44,7 @@ class FeedbackComplaintController extends Controller
      *             default=10
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -50,7 +55,7 @@ class FeedbackComplaintController extends Controller
      *             default=1
      *         )
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="content",
      *         in="query",
@@ -60,7 +65,7 @@ class FeedbackComplaintController extends Controller
      *             type="string"
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Get Feedback complaints successfully",
@@ -191,7 +196,7 @@ class FeedbackComplaintController extends Controller
      *     summary="Create a new Feedback complaint",
      *     description="Create a new Feedback complaint",
      *     security={{"bearerAuth": {}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

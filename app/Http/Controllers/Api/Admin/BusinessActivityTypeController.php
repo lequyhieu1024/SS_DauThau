@@ -19,7 +19,7 @@ class BusinessActivityTypeController extends Controller
 
     public function __construct(BusinessActivityTypeRepository $businessActivityTypeRepository)
     {
-        $this->middleware(['permission:list_business_activity_type'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:list_business_activity_type'])->only(['index']);
         $this->middleware(['permission:create_business_activity_type'])->only('store');
         $this->middleware(['permission:update_business_activity_type'])->only(['update', 'toggleActiveStatus']);
         $this->middleware(['permission:detail_business_activity_type'])->only('show');

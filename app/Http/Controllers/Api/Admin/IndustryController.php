@@ -17,7 +17,7 @@ class IndustryController extends Controller
 
     public function __construct(IndustryRepository $industryRepository)
     {
-        $this->middleware(['permission:list_industry'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:list_industry'])->only('index');
         $this->middleware(['permission:create_industry'])->only('store');
         $this->middleware(['permission:update_industry'])->only(['update', 'toggleActiveStatus']);
         $this->middleware(['permission:detail_industry'])->only('show');

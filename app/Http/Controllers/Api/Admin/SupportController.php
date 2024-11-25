@@ -16,11 +16,11 @@ class SupportController extends Controller
 
     public function __construct(SupportRepository $supportRepository)
     {
-//        $this->middleware(['permission:list_support'])->only('index');
-//        $this->middleware(['permission:create_support'])->only(['store']);
-//        $this->middleware(['permission:update_support'])->only(['update']);
-//        $this->middleware(['permission:detail_support'])->only('show');
-//        $this->middleware(['permission:destroy_support'])->only('destroy');
+        $this->middleware(['permission:list_support'])->only('index');
+        $this->middleware(['permission:create_support'])->only(['store']);
+        $this->middleware(['permission:update_support'])->only(['update']);
+        $this->middleware(['permission:detail_support'])->only('show');
+        $this->middleware(['permission:destroy_support'])->only('destroy');
         $this->supportRepository = $supportRepository;
     }
 

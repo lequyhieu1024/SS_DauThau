@@ -57,7 +57,7 @@ class ProjectRepository extends BaseRepository
             });
         }
 
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
     /**
@@ -123,8 +123,15 @@ class ProjectRepository extends BaseRepository
 
     public function getNameAndIdsProject()
     {
-        return $this->model->select('id', 'name')->where('status', ProjectStatus::APPROVED->value)->get();
+        return $this->model->select('id', 'name')
+            ->where('status', ProjectStatus::APPROVED->value)
+            ->whereNull('parent_id')
+            ->with(['children' => function ($query) {
+                $query->select('id', 'name', 'parent_id');
+            }])
+            ->get();
     }
+
 
     public function getNameAndIdProjectHasBiddingResult()
     {
@@ -133,10 +140,8 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectCountByIndustry()
     {
-        // tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -145,18 +150,15 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // số dự án theo ngành giảm dần
         $industries = Industry::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
 
-        // lấy 10 ngành có số lượng dự án lớn nhất
         $topIndustries = $industries->take(10);
-        $otherIndustries = $industries->skip(10); // skip 10 và lấy còn lại
+        $otherIndustries = $industries->skip(10);
 
         $data = [];
 
-        // số lượng dự án cho 10 ngành hàng đầu
         foreach ($topIndustries as $industry) {
             $data[] = [
                 'name' => $industry->name,
@@ -164,7 +166,6 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        // số lượng dự án cho các ngành còn lại
         $otherProjectCount = $otherIndustries->sum('projects_count');
         if ($otherProjectCount > 0) {
             $data[] = [
@@ -178,10 +179,8 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectPercentageByFundingSource()
     {
-        // 1. Lấy tổng số dự án
         $totalProjects = $this->model::count();
 
-        // Nếu không có dự án nào
         if ($totalProjects === 0) {
             return [
                 'result' => true,
@@ -190,15 +189,16 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        //
         $fundingSources = FundingSource::withCount('projects')
             ->orderByDesc('projects_count')
             ->get();
 
         $topFundingSources = $fundingSources->take(10);
-        $otherFundingSources = $fundingSources->skip(10);
 
-        //
+        $otherFundingSources = $fundingSources->skip(10);
+        $otherFundingSourcesCount = $otherFundingSources->sum('projects_count');
+
+        $data = [];
         foreach ($topFundingSources as $fundingSource) {
             $data[] = [
                 'name' => $fundingSource->name,
@@ -206,17 +206,16 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        //
-        $otherFundingSources = $otherFundingSources->sum('projects_count');
-        if ($otherFundingSources > 0) {
+        if ($otherFundingSourcesCount > 0) {
             $data[] = [
                 'name' => 'Nguồn tài trợ khác',
-                'value' => $otherFundingSources
+                'value' => $otherFundingSourcesCount
             ];
         }
 
         return $data;
     }
+
 
     public function getDomesticPercentage()
     {
@@ -374,8 +373,32 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        return $data;
+        // Sắp xếp theo giá trị trung bình giảm dần
+        usort($data, function ($a, $b) {
+            return $b['value'] <=> $a['value'];
+        });
+
+        // Lấy 15 cột đầu tiên
+        $top15 = array_slice($data, 0, 15);
+
+        // Tổng hợp các ngành còn lại
+        $others = array_slice($data, 15);
+        $othersValue = 0;
+        foreach ($others as $other) {
+            $othersValue += $other['value'];
+        }
+
+        // Nếu có ngành "Còn lại", thêm vào mảng dữ liệu
+        if (count($others) > 0) {
+            $top15[] = [
+                'name' => 'Còn lại',
+                'value' => round($othersValue, 2)
+            ];
+        }
+
+        return $top15;
     }
+
 
     // số doanh nghiệp nhà nước, ngoài nhà nước
     public function getEnterpriseByOrganizationType()
@@ -669,8 +692,31 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-//    public function getProjectByStaff($user_id) {
-//        $user =
-//        $projects = $this->model->whereIn('id', $user_id);
-//    }
+    public function getProjectByStaff($staff_id, $data) {
+        $query = $this->model->query();
+        if (isset($data['name'])) {
+            $query->where('name', 'like', '%' . $data['name'] . '%');
+        }
+        if (isset($data['upload_time_start'])) {
+            $query->whereDate('created_at', '>=', $data['upload_time_start']);
+        }
+
+        if (isset($data['upload_time_end'])) {
+            $query->whereDate('created_at', '<=', $data['upload_time_end']);
+        }
+
+        if (isset($data['investor'])) {
+            $query->whereHas('investor', function ($q) use ($data) {
+                $q->where('id', $data['investor']);
+            });
+        }
+
+        if (isset($data['tenderer'])) {
+            $query->whereHas('tenderer', function ($q) use ($data) {
+                $q->where('id', $data['tenderer']);
+            });
+        }
+
+        return $query->where('staff_id', $staff_id)->where('status', ProjectStatus::AWAITING->value)->paginate($data['size'] ?? 10);
+    }
 }

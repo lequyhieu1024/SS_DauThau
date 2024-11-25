@@ -31,6 +31,6 @@ class EvaluateRepository extends BaseRepository {
             $query->where('score', '<=', $data['score_to']);
         }
 
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 }

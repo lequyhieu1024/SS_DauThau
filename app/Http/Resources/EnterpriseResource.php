@@ -18,7 +18,7 @@ class EnterpriseResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'industry_id' => $this->industries->where('is_active', true)->map(function ($industry) {
-                return $industry->id;
+                return $industry;
             })->values()->toArray(),
             'name' => $this->user->name,
             'email' => $this->user->email,
@@ -35,11 +35,11 @@ class EnterpriseResource extends JsonResource
             'registration_date' => $this->registration_date,
             'registration_number' => $this->registration_number,
             'organization_type' => $this->organization_type,
-            'reputation' => $this->reputation->prestige_score,
+            'reputation' => new ReputationResource($this->reputation),
+            'evaluates' => EvaluateResource::collection($this->evaluates),
             'is_active' => $this->is_active,
             'is_blacklist' => $this->is_blacklist,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'roles' => $this->user->roles
         ];
     }
 }

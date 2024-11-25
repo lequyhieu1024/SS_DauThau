@@ -24,11 +24,11 @@ class BidDocumentController extends Controller
 
     public function __construct(BidDocumentRepository $bidDocumentRepository, ProjectRepository $projectRepository)
     {
-//        $this->middleware(['permission:list_bid_document'])->only('index');
-//        $this->middleware(['permission:create_bid_document'])->only(['store']);
-//        $this->middleware(['permission:update_bid_document_status'])->only(['approveBidDocument']);
-//        $this->middleware(['permission:detail_bid_document'])->only('show');
-//        $this->middleware(['permission:destroy_bid_document'])->only('destroy');
+        $this->middleware(['permission:list_bid_document'])->only('index');
+        $this->middleware(['permission:create_bid_document'])->only(['store']);
+        $this->middleware(['permission:update_bid_document_status'])->only(['approveBidDocument']);
+        $this->middleware(['permission:detail_bid_document'])->only('show');
+        $this->middleware(['permission:destroy_bid_document'])->only('destroy');
         $this->bidDocumentRepository = $bidDocumentRepository;
         $this->projectRepository = $projectRepository;
     }

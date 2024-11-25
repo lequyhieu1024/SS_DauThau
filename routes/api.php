@@ -82,7 +82,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('role', RoleController::class);
     //Staff
     Route::resource('staff', StaffController::class);
-    Route::get('list-staffs', [StaffController::class, 'getNameAndIds']);
     Route::post('staff/ban/{id}', [StaffController::class, 'banStaff']);
     // doanh nhghieejp
     Route::resource('enterprises', EnterpriseController::class);
@@ -91,12 +90,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::put('enterprises/{enterprise}/move-to-blacklist', [EnterpriseController::class, 'moveToBlacklist']);
     // cấm tài khoản
     Route::post('enterprises/ban/{id}', [EnterpriseController::class, 'banEnterprise']);
-    Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     // Funding Sources
     Route::resource('funding-sources', FundingSourceController::class)->except('update');
     Route::patch('funding-sources/{id}', [FundingSourceController::class, 'update']);
     Route::patch('funding-sources/{id}/toggle-status', [FundingSourceController::class, 'toggleActiveStatus']);
-    Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
 
     // Bidding Fields
     Route::get('bidding-fields/all-ids', [BiddingFieldController::class, 'getAllIds']);
@@ -132,7 +129,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
         'update',
         'destroy'
     ]);
-    Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('industries/{id}', [IndustryController::class, 'show']);
     Route::patch('industries/{id}', [IndustryController::class, 'update']);
     Route::patch(
@@ -153,14 +149,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('feedback-complaints', FeedbackComplaintController::class)->except('update');
     Route::patch('feedback-complaints/{id}', [FeedbackComplaintController::class, 'update']);
 
-    Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
     // Evaluation citeria - Tieu chi danh gia
     Route::resource('evaluation-criterias', EvaluationCriteriaController::class);
     Route::put(
         'evaluation-criterias/{evaluation_criteria}/changeActive',
         [EvaluationCriteriaController::class, 'changeActive']
     );
-    Route::get('list-evaluation-criterias', [EvaluationCriteriaController::class, 'getNameAndIds']);
 
     // Procurement Categories / Lĩnh vực mua sắm công
     Route::resource('procurement-categories', ProcurementCategoryController::class);
@@ -168,12 +162,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
         'procurement-categories/{procurement_category}/changeActive',
         [ProcurementCategoryController::class, 'changeActive']
     );
-    Route::get('list-procurement-categories', [ProcurementCategoryController::class, 'getNameAndIds']);
 
     // Project - Dự án
     Route::resource('projects', ProjectController::class);
-    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
-    Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
     Route::put('projects/{project}/approve', [ProjectController::class, 'approveProject']);
     Route::get("projects/get-list-project/by-staff", [ProjectController::class, 'getProjectByStaff']);
     // Banner
@@ -207,7 +198,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('bidding-results', BiddingResultController::class);
 
     Route::resource('employees', EmployeeController::class);
-    Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
 
     Route::resource('tasks', TaskController::class);
 
@@ -217,6 +207,43 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
 
     Route::apiResource('work-progresses', WorkProgressController::class);
 
+    // enterprise chart
+    Route::post('charts/enterprises/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
+    Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
+    Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
+//    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-age-statistic-by-enterprise', [EnterpriseController::class, 'employeeAgeStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-project-statistic-by-enterprise', [EnterpriseController::class, 'employeeProjectStatisticByEnterprise']);
+    Route::post('charts/enterprises/employee-result-bidding-statistic-by-enterprise', [EnterpriseController::class, 'biddingResultStatisticsByEnterprise']);
+    Route::post('charts/enterprises/average-difficulty-level-tasks-by-enterprise', [EnterpriseController::class, 'averageDifficultyLevelTasksByEnterprise']);
+    Route::post('charts/enterprises/average-difficulty-level-tasks-by-employee', [EnterpriseController::class, 'averageDifficultyLevelTasksByEmployee']);
+    Route::post('charts/enterprises/average-feedback-by-employee', [EnterpriseController::class, 'averageFeedbackByEmployee']);
+    Route::post('charts/enterprises/project-completed-by-enterprise', [EnterpriseController::class, 'projectCompletedByEnterprise']);
+    Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
+    Route::post('charts/enterprises/evaluations-statistics-by-enterprise', [EnterpriseController::class, 'evaluationsStatisticsByEnterprise']);
+    Route::post('charts/enterprises/reputations-statistics-by-enterprise', [EnterpriseController::class, 'reputationsStatisticsByEnterprise']);
+
+    // Compare Project
+    Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
+    Route::post('compare-projects/compare-bar-chart-total-amount', [ProjectComparisonController::class, 'compareBarChartTotalAmount']);
+    Route::post('compare-projects/comparing-construction-time', [ProjectComparisonController::class, 'compareBarChartConstructionTime']);
+    Route::post('compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
+    Route::post('compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
+    Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
+
+
+    // Introductions
+    Route::resource('introductions', IntroductionController::class);
+    Route::put('introductions/{introductions}/changeActive', [IntroductionController::class, 'changeActive']);
+
+    // Instructs
+    Route::resource('instructs', InstructController::class);
+    Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
+
+});
+
+Route::group(['prefix' => 'admin'], function () {
     // general chart
     Route::get('dashboard/charts/project-by-industry', [DashboardController::class, 'projectByIndustry']);
     Route::get('dashboard/charts/project-by-fundingsource', [DashboardController::class, 'projectByFundingSource']);
@@ -238,36 +265,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('dashboard/charts/industry-has-the-most-project', [DashboardController::class, 'top10IndustryHasTheMostProject']);
     Route::post('dashboard/charts/industry-has-the-most-enterprise', [DashboardController::class, 'top10IndustryHasTheMostEnterprise']);
 
-    // enterprise chart
-    Route::post('charts/enterprises/detail-enterprise-by-ids', [EnterpriseController::class, 'getDetailEnterpriseByIds']);
-    Route::post('charts/enterprises/employee-qty-statistic-by-enterprise', [EnterpriseController::class, 'employeeQtyStatisticByEnterprise']);
-    Route::get('charts/enterprises/{enterprise}/employee-education-level-statistic-by-enterprise', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprise']);
-    Route::post('charts/enterprises/employee-salary-statistic-by-enterprise', [EnterpriseController::class, 'employeeSalaryStatisticByEnterprise']);
-//    Route::post('charts/enterprises/employee-working-time-statistic-by-enterprise', [EnterpriseController::class, 'employeeWorkingTimeStatisticByEnterprise']);
-    Route::post('charts/enterprises/employee-age-statistic-by-enterprise', [EnterpriseController::class, 'employeeAgeStatisticByEnterprise']);
-    Route::post('charts/enterprises/employee-project-statistic-by-enterprise', [EnterpriseController::class, 'employeeProjectStatisticByEnterprise']);
-    Route::post('charts/enterprises/employee-result-bidding-statistic-by-enterprise', [EnterpriseController::class, 'biddingResultStatisticsByEnterprise']);
-    Route::post('charts/enterprises/average-difficulty-level-tasks-by-enterprise', [EnterpriseController::class, 'averageDifficultyLevelTasksByEnterprise']);
-    Route::post('charts/enterprises/average-difficulty-level-tasks-by-employee', [EnterpriseController::class, 'averageDifficultyLevelTasksByEmployee']);
-    Route::post('charts/enterprises/average-feedback-by-employee', [EnterpriseController::class, 'averageFeedbackByEmployee']);
-    Route::post('charts/enterprises/project-completed-by-enterprise', [EnterpriseController::class, 'projectCompletedByEnterprise']);
-    Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
-
-    // Compare Project
-    Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
-    Route::post('compare-projects/compare-bar-chart-total-amount', [ProjectComparisonController::class, 'compareBarChartTotalAmount']);
-    Route::post('compare-projects/comparing-construction-time', [ProjectComparisonController::class, 'compareBarChartConstructionTime']);
-    Route::post('compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
-    Route::post('compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
-    Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
-
-
-    // Introductions
-    Route::resource('introductions', IntroductionController::class);
-    Route::put('introductions/{introductions}/changeActive', [IntroductionController::class, 'changeActive']);
-
-    // Instructs
-    Route::resource('instructs', InstructController::class);
-    Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
+    Route::get('list-projects', [ProjectController::class, 'getNameAndIds']);
+    Route::get('list-employees', [EmployeeController::class, 'getNameAndIds']);
+    Route::get('list-project-has-bidding-result', [ProjectController::class, 'getNameAndIdProjectHasBidingResult']);
+    Route::get('list-procurement-categories', [ProcurementCategoryController::class, 'getNameAndIds']);
+    Route::get('list-staffs', [StaffController::class, 'getNameAndIds']);
+    Route::get('list-evaluation-criterias', [EvaluationCriteriaController::class, 'getNameAndIds']);
+    Route::get('list-selection-methods', [SelectionMethodController::class, 'getNameAndIds']);
+    Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
+    Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
+    Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
 
 });

@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\EvaluationCriteria;
+use App\Models\QuestionAnswer;
 
-class EvaluationCriteriaRepository extends BaseRepository
-{
+class QuestionAnswerRepository extends BaseRepository{
+
     public function getModel()
     {
-        return EvaluationCriteria::class;
+        return QuestionAnswer::class;
     }
 
     public function filter($data)
@@ -23,8 +23,8 @@ class EvaluationCriteriaRepository extends BaseRepository
             $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
-        if (isset($data['is_active'])) {
-            $query->where('is_active', '=', $data['is_active']);
+        if (isset($data['status'])) {
+            $query->where('status', '=', $data['status']);
         }
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);

@@ -17,7 +17,7 @@ class BiddingFieldController extends Controller
 
     public function __construct(BiddingFieldRepository $biddingFieldRepository)
     {
-        $this->middleware(['permission:list_bidding_field'])->only(['index', 'getAllIds']);
+        $this->middleware(['permission:list_bidding_field'])->only(['index']);
         $this->middleware(['permission:create_bidding_field'])->only('store');
         $this->middleware(['permission:update_bidding_field'])->only(['update', 'toggleActiveStatus']);
         $this->middleware(['permission:detail_bidding_field'])->only('show');

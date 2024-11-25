@@ -30,7 +30,7 @@ class ProjectController extends Controller
 
     public function __construct(ProjectRepository $projectRepository, AttachmentRepository $attachmentRepository, EnterpriseRepository $enterpriseRepository, UserRepository $userRepository, StaffRepository $staffRepository)
     {
-        $this->middleware(['permission:list_project'])->only('index', 'getNameAndIds');
+        $this->middleware(['permission:list_project'])->only('index');
         $this->middleware(['permission:create_project'])->only(['store']);
         $this->middleware(['permission:update_project'])->only(['update']);
         $this->middleware(['permission:detail_project'])->only('show');
@@ -68,16 +68,8 @@ class ProjectController extends Controller
             $project = $this->projectRepository->create($data);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
-            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
-            if (isset($data['children'])) {
-                foreach ($data['children'] as $child) {
-                    $child['staff_id'] = $project->staff_id;
-                    $child['decision_number_issued'] = $project->decision_number_issued;
-                    $child['total_amount'] = $project->total_amount;
-                    $child['is_domestic'] = $project->is_domestic;
-                    $newChild = $project->children()->create($child);
-                    $this->projectRepository->syncIndustry($child, $newChild->id);
-                }
+            if(!empty($data['files'])) {
+                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
             }
             event(new ProjectCreated(new ProjectResource($project)));
             DB::commit();
@@ -130,42 +122,13 @@ class ProjectController extends Controller
         $data = $request->all();
         try {
             DB::beginTransaction();
-
             $this->projectRepository->update($data, $id);
             $project = $this->projectRepository->findOrFail($id);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $id);
-            $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
-
-            $newChildIds = [];
-
-            if (isset($data['children'])) {
-                foreach ($data['children'] as $child) {
-                    if (isset($child['id']) && $child['id']) {
-                        $project->children()->updateOrCreate(
-                            ['id' => $child['id']],
-                            array_merge($child, [
-                                'staff_id' => $project->staff_id,
-                                'decision_number_issued' => $project->decision_number_issued,
-                                'total_amount' => $project->total_amount,
-                                'is_domestic' => $project->is_domestic,
-                            ])
-                        );
-                        $newChildIds[] = $child['id'];
-                    } else {
-                        $newChild = $project->children()->create(array_merge($child, [
-                            'staff_id' => $project->staff_id,
-                            'decision_number_issued' => $project->decision_number_issued,
-                            'total_amount' => $project->total_amount,
-                            'is_domestic' => $project->is_domestic,
-                        ]));
-                        $newChildIds[] = $newChild->id;
-                    }
-                    $this->projectRepository->syncIndustry($child, $child['id']);
-                }
+            if(!empty($data['files'])) {
+                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
             }
-
-            $project->children()->whereNotIn('id', $newChildIds)->delete();
 
             DB::commit();
             return response([
@@ -225,7 +188,7 @@ class ProjectController extends Controller
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án và gói thầu thành công",
-            'data' => new TreeSelectCollection($this->projectRepository->getNameAndIdsProject())
+            'data' => $this->projectRepository->getNameAndIdsProject()// new TreeSelectCollection($this->projectRepository->getNameAndIdsProject())
         ], 200);
     }
 
@@ -279,13 +242,12 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    public function getProjectByStaff() {
-        dd(Auth::user());
-        $user = $this->userRepository->find(Auth::user());
+    public function getProjectByStaff(Request $request) {
+        $projects = $this->projectRepository->getProjectByStaff(Auth::user()->staff->id ?? 0, $request->all());
         return response([
             'result' => true,
             'message' => "Lấy danh sách dự án được giao cho nhân viên phê duyệt thành công",
-            'data' => new ProjectCollection(Auth::user()->id)
+            'data' => new ProjectCollection($projects)
         ], 200);
     }
 }

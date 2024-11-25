@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\BiddingResult;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,6 +22,9 @@ class ProjectResource extends JsonResource
             'investor' => new EnterpriseResource($this->investor),
             'staff' => new StaffResource($this->staff),
             'selection_method' => $this->selectionMethod,
+            'bidding_result' => $this->biddingResult,
+            'bidding_document' => $this->biddingDocument,
+            'bidding_bond' => $this->bidBond,
             'industries' => $this->industries->where('is_active', true)->map(function ($industry) {
                 return [
                     'id' => $industry->id,
@@ -40,7 +44,9 @@ class ProjectResource extends JsonResource
                     'name' => $attachment->name,
                 ];
             })->values()->toArray(),
-            'children' => $this->children,
+            'children' => $this->children->map(function ($child) {
+                return new ProjectResource($child);
+            }),
             'evaluation_criterias' => $this->evaluationCriterias,
             'decision_number_issued' => $this->decision_number_issued,
             'name' => $this->name,

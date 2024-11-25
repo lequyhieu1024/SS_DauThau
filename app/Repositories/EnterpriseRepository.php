@@ -7,6 +7,7 @@ use App\Http\Resources\ProjectResource;
 use App\Models\BiddingResult;
 use App\Models\Employee;
 use App\Models\Enterprise;
+use App\Models\Evaluate;
 use App\Models\FundingSource;
 use App\Models\Industry;
 use App\Models\Project;
@@ -58,7 +59,7 @@ class EnterpriseRepository extends BaseRepository
                 });
             }
         }
-        return $query->paginate($data['size'] ?? 10);
+        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
     public function syncIndustry(array $data, $id)
@@ -467,6 +468,48 @@ class EnterpriseRepository extends BaseRepository
                 'enterprise_name' => $enterprise->user->name,
                 'year' => $year,
                 'monthly_data' => $monthlyData,
+            ];
+        }
+
+        return $data;
+    }
+
+    public function evaluationsStatisticsByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            $evaluationStats = Evaluate::where('enterprise_id', $enterprise->id)
+                ->selectRaw('COUNT(*) as total_evaluations, AVG(score) as average_score')
+                ->first();
+
+            $data[] = [
+                'enterprise_id' => $enterprise->id,
+                'enterprise_name' => $enterprise->user->name,
+                'total_evaluations' => $evaluationStats->total_evaluations ?? 0,
+                'average_score' => round($evaluationStats->average_score, 2) ?? 0,
+            ];
+        }
+
+        return $data;
+    }
+
+    public function reputationsStatisticsByEnterprise($ids)
+    {
+        $data = [];
+        $ids = collect($ids)->flatten()->unique()->toArray();
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+
+            $data[] = [
+                'enterprise_id' => $enterprise->id,
+                'enterprise_name' => $enterprise->user->name,
+                'prestige_score' => $enterprise->reputation->prestige_score ?? 100,
+                'blacklist_count' => $enterprise->reputation->number_of_blacklist ?? 0,
+                'ban_count' => $enterprise->reputation->number_of_ban ?? 0,
             ];
         }
 

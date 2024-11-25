@@ -34,7 +34,7 @@ class EmployeeFormRequest extends FormRequest
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'name' => 'required|string|max:255',
             'phone' => [
-                'nullable', 'string', 'max:15',
+                'nullable', 'string', 'max:20',
                 request()->isMethod('POST')
                     ? 'unique:employees,phone'
                     : 'unique:employees,phone,' . $this->route('employee')

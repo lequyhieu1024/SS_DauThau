@@ -13,6 +13,11 @@ class PostCatalogController extends Controller
 {
     protected $postCatalogRepository;
     public function __construct(PostCatalogRepository $postCatalogRepository){
+        $this->middleware(['permission:list_catalog'])->only(['index']);
+        $this->middleware(['permission:create_catalog'])->only('store');
+        $this->middleware(['permission:update_catalog'])->only(['update']);
+        $this->middleware(['permission:detail_catalog'])->only('show');
+        $this->middleware(['permission:destroy_catalog'])->only('destroy');
         $this->postCatalogRepository = $postCatalogRepository;
     }
     /**
