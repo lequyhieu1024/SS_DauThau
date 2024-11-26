@@ -21,6 +21,7 @@ use App\Models\Reputation;
 use App\Models\SelectionMethod;
 use App\Models\Staff;
 use App\Models\Task;
+use App\Models\WorkProgress;
 use Database\Factories\IndustryFactory;
 use Database\Factories\ProjectIndustryFactory;
 use Illuminate\Database\Seeder;
@@ -66,10 +67,9 @@ class DatabaseSeeder extends Seeder
         //        FundingSource::factory(10000)->create();
         // BiddingResult::factory(200)->create();
         // Evaluate::factory(200)->create();
-
         $batchSize = 1000;
-        $totalRecords = 10000;
-        
+        $totalRecords = 20000;
+
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
             // ProjectIndustry::factory($batchSize)->create();
             // Project::factory($batchSize)->create(); // done
@@ -80,6 +80,7 @@ class DatabaseSeeder extends Seeder
             // Task::factory($batchSize)->create(); // 100k - done
             // EmployeeTask::factory($batchSize)->create(); // 5k - done
             // Reputation::factory($batchSize)->create();
+            WorkProgress::factory($batchSize)->create();
         }
     }
 }
