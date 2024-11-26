@@ -20,7 +20,7 @@ if (!function_exists('upload_image')) {
             mkdir(public_path('uploads/images/'), 0755, true);
         }
         // Resize và lưu ảnh
-        Image::make($file->getRealPath())->resize(300, 200)->save($path);
+        Image::make($file->getRealPath())->save($path);
 
         // Trả về đường dẫn của hình ảnh
         return 'uploads/images/' . $filename;
