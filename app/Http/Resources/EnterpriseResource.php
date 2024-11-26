@@ -20,6 +20,19 @@ class EnterpriseResource extends JsonResource
             'industry_id' => $this->industries->where('is_active', true)->map(function ($industry) {
                 return $industry;
             })->values()->toArray(),
+            'attachments' => $this->attachments,
+            'project_investor' => $this->projectInvestors->map(function ($projectInvestor) {
+                return [
+                    'id' => $projectInvestor->id,
+                    'name' => $projectInvestor->name,
+                ];
+            }),
+            'project_tenderer' => $this->projectTenderers->map(function ($projectTenderer) {
+                return [
+                    'id' => $projectTenderer->id,
+                    'name' => $projectTenderer->name,
+                ];
+            }),
             'name' => $this->user->name,
             'email' => $this->user->email,
             'taxcode' => $this->user->taxcode,
