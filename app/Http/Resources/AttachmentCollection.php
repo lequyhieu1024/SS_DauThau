@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TaskCollection extends ResourceCollection
+class AttachmentCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,19 +15,15 @@ class TaskCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection->map(function ($tasks) {
+            'data' => $this->collection->map(function ($attachment) {
                 return [
-                    'id' => $tasks->id,
-                    'employees' =>$tasks->employees->map(function ($employee) {
-                        return [
-                            'id' => $employee->id,
-                            'name' => $employee->name,
-                        ];
-                    }),
-                    'code' => $tasks->code,
-                    'name' => $tasks->name,
-                    'description' => $tasks->description,
-                    'difficulty_level' => $tasks->difficulty_level,
+                    'id' => $attachment->id,
+                    'user' => $attachment->user,
+                    'project' => $attachment->project,
+                    'name' => $attachment->name,
+                    'url' => url("/documents/{$attachment->name}"),
+                    'type' => $attachment->type,
+                    'size' => $attachment->size,
                 ];
             }),
             'total_elements' => $this->total(),

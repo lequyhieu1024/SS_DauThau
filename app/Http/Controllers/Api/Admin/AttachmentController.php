@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttachmentFormRequest;
+use App\Http\Resources\AttachmentCollection;
 use App\Http\Resources\AttachmentResource;
 use App\Repositories\AttachmentRepository;
 use Illuminate\Http\Request;
@@ -26,9 +27,13 @@ class AttachmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response([
+            'result' => 'true',
+            'message' => 'Lấy danh sách liệu đính kèm thành công',
+            'attachments' => new AttachmentCollection($this->attachmentRepository->filter($request->all()))
+        ], 200);
     }
 
     /**

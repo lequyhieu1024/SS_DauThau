@@ -71,6 +71,7 @@ Route::group(['prefix' => 'auth'], function () {
     // API cần đăng nhập
     Route::group(['middleware' => ['auth.jwt']], function () {
         Route::get('profile', [AuthController::class, 'profile']);
+        Route::get('edit-profile', [AuthController::class, 'editProfile']);
         Route::post('logout', [AuthController::class, 'logout']);
     });
 });
@@ -173,7 +174,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::patch('banners/{id}/toggle-status', [BannerController::class, 'toggleActiveStatus']);
 
     // Attachments
-    Route::post('attachments', [AttachmentController::class, 'store']);
+    Route::resource('attachments', AttachmentController::class);
 
     // Bid bonds
     Route::resource('bid-bonds', BidBondController::class)->except('update');
