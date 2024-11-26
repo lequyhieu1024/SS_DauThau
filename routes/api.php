@@ -179,6 +179,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Bid bonds
     Route::resource('bid-bonds', BidBondController::class)->except('update');
     Route::patch('bid-bonds/{id}', [BidBondController::class, 'update']);
+    Route::get('list-bid-bonds', [BidBondController::class, 'listAll']);
 
     // Bid documents
     Route::resource('bid-documents', BidDocumentController::class);
