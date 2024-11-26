@@ -3,15 +3,29 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use OpenApi\Annotations as OA;
 
 class AuthController extends Controller
 {
+    protected $userRepository;
+    protected $enterpriseRepository;
+    protected $staffRepository;
+    public function __construct(UserRepository $userRepository, EnterpriseRepository $enterpriseRepository, StaffRepository $staffRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->enterpriseRepository = $enterpriseRepository;
+        $this->staffRepository = $staffRepository;
+    }
+
     public function notYetAuthenticated()
     {
         return response()->json(['message' => 'Vui lòng đăng nhập để tiếp tục.'], 401);
@@ -167,6 +181,26 @@ class AuthController extends Controller
                 'profile' => $user->staff ?? $user->enterprise
             ]
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $user = $this->userRepository->findOrFail(Auth::user()->id);
+            $this->userRepository->update($data, Auth::user()->id);
+            if ($data['account_type'] == 'enterprise') {
+                $this->enterpriseRepository->update($data, $user->enterprise->id);
+            }
+            if ($data['account_type'] == 'staff') {
+                $this->staffRepository->update($data, $user->staff->id);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['result' => false, 'message' => 'Có lỗi sảy ra, ' . $e], 500);
+        }
     }
 
     public function logout()

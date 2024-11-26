@@ -41,6 +41,11 @@ class Enterprise extends Model
         return $this->belongsToMany(Industry::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class, 'user_id', 'user_id');
+    }
+
     public function bidBonds(){
         return $this->hasMany(BidBond::class);
     }
@@ -48,6 +53,16 @@ class Enterprise extends Model
     protected function getModelName(): string
     {
         return 'Doanh nghiệp - Enterprise';
+    }
+
+    protected function projectInvestors()
+    {
+        return $this->hasMany(Project::class, 'investor_id', 'id');
+    }
+
+    protected function projectTenderers()
+    {
+        return $this->hasMany(Project::class, 'tenderer_id', 'id');
     }
 
     public function employees()
