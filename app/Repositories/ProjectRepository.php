@@ -124,7 +124,6 @@ class ProjectRepository extends BaseRepository
     public function getNameAndIdsProject()
     {
         return $this->model->select('id', 'name')
-            ->where('status', ProjectStatus::APPROVED->value)
             ->whereNull('parent_id')
             ->with(['children' => function ($query) {
                 $query->select('id', 'name', 'parent_id');
