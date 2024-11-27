@@ -19,7 +19,7 @@ class BannerController extends Controller
         $this->middleware(['permission:create_banner'])->only('store');
         $this->middleware(['permission:update_banner'])->only(['update', 'toggleActiveStatus']);
         $this->middleware(['permission:detail_banner'])->only('show');
-//        $this->middleware(['permission:destroy_banner'])->only('destroy');
+        $this->middleware(['permission:destroy_banner'])->only('destroy');
 
         $this->bannerRepository = $bannerRepository;
     }
