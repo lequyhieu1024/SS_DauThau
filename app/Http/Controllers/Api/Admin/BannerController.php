@@ -19,7 +19,7 @@ class BannerController extends Controller
         $this->middleware(['permission:create_banner'])->only('store');
         $this->middleware(['permission:update_banner'])->only(['update', 'toggleActiveStatus']);
         $this->middleware(['permission:detail_banner'])->only('show');
-        $this->middleware(['permission:destroy_banner'])->only('destroy');
+//        $this->middleware(['permission:destroy_banner'])->only('destroy');
 
         $this->bannerRepository = $bannerRepository;
     }
@@ -513,6 +513,13 @@ class BannerController extends Controller
     public function destroy($id)
     {
         try {
+            DB::beginTransaction();
+            if (count($this->bannerRepository->filter([])) < 2) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Phải để lại ít nhất 1 banner.',
+                ], 200);
+            }
             $banner = $this->bannerRepository->deleteBanner($id);
             isset($banner->path) ? unlink($banner->path) : "";
 
@@ -522,6 +529,7 @@ class BannerController extends Controller
                     'message' => 'Banner không tồn tại',
                 ], 404);
             }
+            DB::commit();
 
             return response()->json([
                 'result' => true,
@@ -529,7 +537,6 @@ class BannerController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi xóa banner.',
