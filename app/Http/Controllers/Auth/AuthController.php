@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Validator;
 use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use OpenApi\Annotations as OA;
 
 class AuthController extends Controller
 {
@@ -191,22 +190,13 @@ class AuthController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $user = $this->userRepository->findOrFail(Auth::user()->id);
-            if ($request->hasFile('avatar')) {
-                if ($user->staff && $user->staff->avatar && file_exists($user->staff->avatar)) {
-                    unlink($user->staff->avatar);
-                }
-                if ($user->enterprise && $user->enterprise->avatar && file_exists($user->enterprise->avatar)) {
-                    unlink($user->enterprise->avatar);
-                }
-                $data['avatar'] = upload_image($request->file('avatar'));
-            }
             if ($data['account_type'] == 'enterprise') {
                 $rules = [
                     'name' => 'required|max:50',
                     'taxcode' => 'required',
                     'email' => 'email',
                     'representative' => 'required|max:191',
-//                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'phone' =>  [
                         'required',
                         'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
@@ -220,6 +210,12 @@ class AuthController extends Controller
                     'industry_id' => 'required|array|exists:industries,id',
                 ];
                 $validator = Validator::make($data, $rules);
+                if ($request->hasFile('avatar')) {
+                    if ($user->enterprise && $user->enterprise->avatar && file_exists($user->enterprise->avatar)) {
+                        unlink($user->enterprise->avatar);
+                    }
+                    $data['avatar'] = upload_image($request->file('avatar'));
+                }
                 if ($validator->fails()) {
                     return response()->json(['result' => false, 'message' => $validator->errors()], 422);
                 }
@@ -230,7 +226,7 @@ class AuthController extends Controller
                     'name' => 'required',
                     'birthday' => 'required',
                     'gender' => 'required',
-//                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'taxcode' => 'required',
                     'email' => 'required',
                     'phone' => [
@@ -241,6 +237,12 @@ class AuthController extends Controller
                 $validator = Validator::make($data, $rules);
                 if ($validator->fails()) {
                     return response()->json(['result' => false, 'message' => $validator->errors()], 422);
+                }
+                if ($request->hasFile('avatar')) {
+                    if ($user->staff && $user->staff->avatar && file_exists($user->staff->avatar)) {
+                        unlink($user->staff->avatar);
+                    }
+                    $data['avatar'] = upload_image($request->file('avatar'));
                 }
                 $this->staffRepository->update($data, $user->staff->id);
             }

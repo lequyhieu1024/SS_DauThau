@@ -8,6 +8,7 @@ use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Repositories\PostCatalogRepository;
 use App\Repositories\PostRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,9 @@ class PostController extends Controller
 {
     protected $postRepository;
     protected $postCatalogRepository;
-    public function __construct(PostRepository $postRepository, PostCatalogRepository $postCatalogRepository)
+
+    protected $userRepository;
+    public function __construct(PostRepository $postRepository, PostCatalogRepository $postCatalogRepository, UserRepository $userRepository)
     {
         $this->middleware(['permission:list_post'])->only(['index']);
         $this->middleware(['permission:create_post'])->only('store');
@@ -24,6 +27,7 @@ class PostController extends Controller
         $this->middleware(['permission:destroy_post'])->only('destroy');
         $this->postRepository = $postRepository;
         $this->postCatalogRepository = $postCatalogRepository;
+        $this->userRepository = $userRepository;
     }
     /**
      * Display a listing of the resource.
@@ -356,9 +360,8 @@ class PostController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $data = $request->all();
-            $data['author_id'] = auth()->id();
+            $data['author_id'] = $this->userRepository->findOrFail(auth()->id())->staff->id;
             if ($request->hasFile('thumbnail')) {
                 $data['thumbnail'] = upload_image($request->file('thumbnail'));
             }
@@ -376,7 +379,7 @@ class PostController extends Controller
             DB::rollBack();
             return response()->json([
                 "result" => false,
-                "message" => "Tạo bảo lãnh dự thầu không thành công.",
+                "message" => "Tạo bài viết không thành công.",
                 'error' => $e->getMessage(),
             ], 500);
         }
