@@ -276,14 +276,6 @@ class BidDocumentController extends Controller
 
 
         $project = $this->projectRepository->find($data['project_id']);
-
-        if ($project->status != ProjectStatus::RECEIVED->value) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Dự án không ở trạng thái cho phép gửi hồ sơ dự thầu.',
-            ], 400);
-        }
-
         if ($data['submission_date'] < $project->bid_submission_start) {
             return response()->json([
                 'result' => false,
