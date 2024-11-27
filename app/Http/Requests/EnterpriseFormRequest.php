@@ -27,7 +27,7 @@ class EnterpriseFormRequest extends FormRequest
         $isPutOrPatch = request()->isMethod('PUT') || request()->isMethod('PATCH');
         $userId = $isPutOrPatch ? Enterprise::where('id', $this->route('enterprise'))->pluck('user_id')->first() : '';
         return [
-            'name' => 'required|max:50',
+            'name' => 'required|max:255',
             'taxcode' => [
                 'required',
                 'regex:/^[0-9]{10,14}$/',
