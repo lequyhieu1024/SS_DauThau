@@ -67,7 +67,20 @@ class IntroductionController extends Controller
 
     public function show(string $id)
     {
-        //
+        return response([
+            'result' => true,
+            'message' => "Lấy phần giới thiệu thành công",
+            'data' => new IntroductionResource($this->introductionRespository->findOrFail($id)),
+        ], 200);
+    }
+
+    public function getIntroductionLandipage()
+    {
+        return response([
+            'result' => true,
+            'message' => "Lấy phần giới thiệu thành công",
+            'data' => empty($this->introductionRespository->getIntroductionLandipage()) ? null : new IntroductionResource($this->introductionRespository->getIntroductionLandipage()),
+        ], 200);
     }
 
     public function edit(string $id){

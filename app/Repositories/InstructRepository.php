@@ -43,6 +43,9 @@ class InstructRepository extends BaseRepository
         return $this->model->count();
     }
 
+    public function getInstructLandipage() {
+        return $this->model->where('is_use', true)->first();
+    }
 
 
 }

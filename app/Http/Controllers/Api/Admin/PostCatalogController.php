@@ -167,6 +167,16 @@ class PostCatalogController extends Controller
         ], 200);
     }
 
+    public function getCatalogsLandipage(Request $request)
+    {
+        $postCatalogs = $this->postCatalogRepository->filter($request->all());
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách danh mục bài viết thành công.',
+            'data' => new PostCatalogCollection($postCatalogs),
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

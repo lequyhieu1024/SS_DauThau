@@ -277,5 +277,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
-
 });
+
+
+// Landing page
+Route::get('get-banners', [BannerController::class, 'getBannersLandipage']);
+Route::get('get-posts', [PostController::class, 'getPostsLandipage']);
+Route::get('get-catalogs', [PostCatalogController::class, 'getCatalogsLandipage']);
+Route::get('get-post-by-catalog/{catalog}', [PostController::class, 'getPostsByCatalogLandipage']);
+Route::get('get-post/{post}', [PostController::class, 'getPostLandipage']);
+Route::get('get-introduction', [IntroductionController::class, 'getIntroductionLandipage']);
+Route::get('get-instruct', [InstructController::class, 'getInstructLandipage']);
+Route::post('create-support', [SupportController::class, 'createSupportLandipage']);
+
+
