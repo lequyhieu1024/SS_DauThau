@@ -463,7 +463,7 @@ class BannerController extends Controller
             $data = $request->all();
             if ($request->hasFile('path')) {
                 $data['path'] = upload_image($request->file('path'));
-                isset($this->bannerRepository->findOrFail($id)->path) ? unlink($this->bannerRepository->findOrFail($id)->path) : "";
+                isset($this->bannerRepository->findOrFail($id)->path) && file_exists($this->bannerRepository->findOrFail($id)->path) ? unlink($this->bannerRepository->findOrFail($id)->path) : "";
             } else {
                 $data['path'] = $this->bannerRepository->findOrFail($id)->path;
             }
@@ -521,7 +521,7 @@ class BannerController extends Controller
                 ], 200);
             }
             $banner = $this->bannerRepository->deleteBanner($id);
-            isset($banner->path) ? unlink($banner->path) : "";
+            isset($banner->path) && file_exists($banner->path) ? unlink($banner->path) : "";
 
             if (!$banner) {
                 return response()->json([

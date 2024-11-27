@@ -129,7 +129,7 @@ class EnterpriseController extends Controller
 
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
-                isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
+                isset($this->enterpriseRepository->findOrFail($id)->avatar) && file_exists($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
             } else {
                 $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
             }

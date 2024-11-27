@@ -181,7 +181,7 @@ class StaffController extends Controller
             $this->userRepository->findOrFail($this->staffRepository->findOrFail($id)->user_id)->syncRoles($this->roleRepository->getNameById($data['role_id']));
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
-                isset($this->staffRepository->findOrFail($id)->avatar) ? unlink($this->staffRepository->findOrFail($id)->avatar) : "";
+                isset($this->staffRepository->findOrFail($id)->avatar) && file_exists($this->staffRepository->findOrFail($id)->avatar) ? unlink($this->staffRepository->findOrFail($id)->avatar) : "";
             } else {
                 $data['avatar'] = $this->staffRepository->findOrFail($id)->avatar;
             }
