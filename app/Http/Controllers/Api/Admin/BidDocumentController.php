@@ -274,23 +274,6 @@ class BidDocumentController extends Controller
         $data = $request->all();
         $data['submission_date'] = now();
 
-
-        $project = $this->projectRepository->find($data['project_id']);
-        if ($data['submission_date'] < $project->bid_submission_start) {
-            return response()->json([
-                'result' => false,
-                'message' => "Dự án sẽ nhận hồ sơ từ ngày {$project->bid_submission_start} đến ngày {$project->bid_submission_end}.",
-
-            ], 400);
-        }
-
-        if ($data['submission_date'] > $project->bid_submission_end) {
-            return response()->json([
-                'result' => false,
-                'message' => "Dự án đã dừng nhận hồ sơ từ ngày {$project->bid_submission_end}.",
-            ], 400);
-        }
-
         // Check if a bid document already exists for the given project_id and enterprise_id
         if ($this->bidDocumentRepository->findByProjectAndEnterprise($data['project_id'], $data['enterprise_id'])) {
             return response()->json([
