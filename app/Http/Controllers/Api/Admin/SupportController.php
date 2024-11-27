@@ -53,6 +53,20 @@ class SupportController extends Controller
         ], 201);
     }
 
+    public function createSupportLandipage(SupportFormRequest $request)
+    {
+        $data = $request->all();
+        if (isset($data['document'])) {
+            $data['document'] = upload_file($data['document']);
+        }
+        $this->supportRepository->create($data);
+        return response([
+            'result' => true,
+            'message' => 'Gửi thư hỗ trợ thành công',
+            'data' => $data,
+        ], 201);
+    }
+
     /**
      * Display the specified resource.
      */

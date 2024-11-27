@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostFormRequest;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
+use App\Repositories\PostCatalogRepository;
 use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 class PostController extends Controller
 {
     protected $postRepository;
-    public function __construct(PostRepository $postRepository)
+    protected $postCatalogRepository;
+    public function __construct(PostRepository $postRepository, PostCatalogRepository $postCatalogRepository)
     {
         $this->middleware(['permission:list_post'])->only(['index']);
         $this->middleware(['permission:create_post'])->only('store');
@@ -21,6 +23,7 @@ class PostController extends Controller
         $this->middleware(['permission:detail_post'])->only('show');
         $this->middleware(['permission:destroy_post'])->only('destroy');
         $this->postRepository = $postRepository;
+        $this->postCatalogRepository = $postCatalogRepository;
     }
     /**
      * Display a listing of the resource.
@@ -197,6 +200,25 @@ class PostController extends Controller
             'result' => true,
             'message' => 'Lấy danh sách bài viết thành công',
             'data' => new PostCollection($posts),
+        ], 200);
+    }
+
+    public function getPostsLandipage(Request $request)
+    {
+        $posts = $this->postRepository->filter($request->all());
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách bài viết thành công',
+            'data' => new PostCollection($posts),
+        ], 200);
+    }
+
+    public function getPostsByCatalogLandipage($id)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Lấy bài viết theo danh mục thành công',
+            'data' => new PostCollection($this->postCatalogRepository->getPostsByCatalogLandipage($id))
         ], 200);
     }
 
@@ -463,6 +485,25 @@ class PostController extends Controller
      * )
      */
     public function show(string $id)
+    {
+        $post = $this->postRepository->find($id);
+        if (!$post) {
+            return response()->json([
+                'result' => false,
+                'status' => 404,
+                'message' => 'Không tìm thấy bài viết.'
+            ], 404);
+        } else {
+            return response()->json([
+                'result' => true,
+                'status' => 200,
+                'message' => 'Lấy bài viết thành công.',
+                'data' => new PostResource($post)
+            ], 200);
+        }
+    }
+
+    public function getPostLandipage(string $id)
     {
         $post = $this->postRepository->find($id);
         if (!$post) {

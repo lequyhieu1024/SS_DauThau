@@ -43,7 +43,8 @@ class IntroductionRespository extends BaseRepository
         return $this->model->count();
     }
 
-
-
+    public function getIntroductionLandipage() {
+        return $this->model->where('is_use', true)->first();
+    }
 }
 

@@ -170,6 +170,17 @@ class BannerController extends Controller
         ], 200);
     }
 
+    public function getBannersLandipage(Request $request)
+    {
+        $banners = $this->bannerRepository->filter($request->all());
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách banner thành công.',
+            'data' => new BannerCollection($banners)
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

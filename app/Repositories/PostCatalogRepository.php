@@ -21,4 +21,9 @@ class PostCatalogRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+    public function getPostsByCatalogLandipage($id)
+    {
+        $catalog = $this->model->findOrFail($id);
+        return $catalog->posts()->paginate(10);
+    }
 }
