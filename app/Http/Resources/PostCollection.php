@@ -18,14 +18,8 @@ class PostCollection extends ResourceCollection
             'data' => $this->collection->map(function ($post) {
                 return [
                     'id' => $post->id,
-                    'author_id' => $post->author_id,
-                    'author_name' => $post->staff->user->name,
-                    'post_catalog_id' => $post->postCatalogs->map(function ($postCatalog) {
-                        return $postCatalog->id;
-                    })->values()->toArray(),
-                    'post_catalog_name' => $post->postCatalogs->map(function ($postCatalog) {
-                        return $postCatalog->name;
-                    })->values()->toArray(),
+                    'author' => new StaffResource($post->staff),
+                    'catalog' => $post->postCatalogs,
                     'short_title' => $post->short_title,
                     'title' => $post->title,
                     'content' => $post->content,

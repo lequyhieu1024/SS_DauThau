@@ -3,15 +3,30 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Repositories\EnterpriseRepository;
+use App\Repositories\StaffRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use OpenApi\Annotations as OA;
 
 class AuthController extends Controller
 {
+    protected $userRepository;
+    protected $enterpriseRepository;
+    protected $staffRepository;
+    public function __construct(UserRepository $userRepository, EnterpriseRepository $enterpriseRepository, StaffRepository $staffRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->enterpriseRepository = $enterpriseRepository;
+        $this->staffRepository = $staffRepository;
+    }
+
     public function notYetAuthenticated()
     {
         return response()->json(['message' => 'Vui lòng đăng nhập để tiếp tục.'], 401);
@@ -167,6 +182,80 @@ class AuthController extends Controller
                 'profile' => $user->staff ?? $user->enterprise
             ]
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $user = $this->userRepository->findOrFail(Auth::user()->id);
+            if ($data['account_type'] == 'enterprise') {
+                $rules = [
+                    'name' => 'required|max:50',
+                    'taxcode' => 'required',
+                    'email' => 'email',
+                    'representative' => 'required|max:191',
+                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'phone' =>  [
+                        'required',
+                        'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
+                    ],
+                    'address' => 'required|max:191',
+                    'website' => 'required|max:191',
+                    'establish_date' => 'required|date|before:today|after_or_equal:1900-01-01',
+                    'registration_date' => 'required|date|before:today|after_or_equal:1900-01-01',
+                    'registration_number' => 'required|max:50',
+                    'organization_type' => 'required|in:1,2',
+                    'industry_id' => 'required|array|exists:industries,id',
+                ];
+                $validator = Validator::make($data, $rules);
+                if ($request->hasFile('avatar')) {
+                    if ($user->enterprise && $user->enterprise->avatar && file_exists($user->enterprise->avatar)) {
+                        unlink($user->enterprise->avatar);
+                    }
+                    $data['avatar'] = upload_image($request->file('avatar'));
+                }
+                if ($validator->fails()) {
+                    return response()->json(['result' => false, 'message' => $validator->errors()], 422);
+                }
+                $this->enterpriseRepository->update($data, $user->enterprise->id);
+            }
+            if ($data['account_type'] == 'staff') {
+                $rules = [
+                    'name' => 'required',
+                    'birthday' => 'required',
+                    'gender' => 'required',
+                    'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'taxcode' => 'required',
+                    'email' => 'required',
+                    'phone' => [
+                        'required',
+                        'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
+                    ],
+                ];
+                $validator = Validator::make($data, $rules);
+                if ($validator->fails()) {
+                    return response()->json(['result' => false, 'message' => $validator->errors()], 422);
+                }
+                if ($request->hasFile('avatar')) {
+                    if ($user->staff && $user->staff->avatar && file_exists($user->staff->avatar)) {
+                        unlink($user->staff->avatar);
+                    }
+                    $data['avatar'] = upload_image($request->file('avatar'));
+                }
+                $this->staffRepository->update($data, $user->staff->id);
+            }
+            $this->userRepository->update($data, Auth::user()->id);
+            DB::commit();
+            return response([
+                'result' => true,
+                'message' => "Cập nhật thông tin thành công"
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['result' => false, 'message' => 'Có lỗi sảy ra, ' . $e], 500);
+        }
     }
 
     public function logout()

@@ -13,13 +13,12 @@ class BannerRepository extends BaseRepository
 
     public function filter($data)
     {
-        $query = $this->model->query();
+        return $this->model->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
+    }
 
-        if (isset($data['name'])) {
-            $query->where('name', 'like', '%' . $data['name'] . '%');
-        }
-
-        return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
+    public function getBannersLangipage()
+    {
+        return $this->model->where('is_active', true)->orderBy('id', 'desc')->get();
     }
 
     public function deleteBanner($id)

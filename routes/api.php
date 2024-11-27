@@ -72,6 +72,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => ['auth.jwt']], function () {
         Route::get('profile', [AuthController::class, 'profile']);
         Route::get('edit-profile', [AuthController::class, 'editProfile']);
+        Route::post('update-profile', [AuthController::class, 'updateProfile']);
         Route::post('logout', [AuthController::class, 'logout']);
     });
 });
@@ -179,6 +180,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     // Bid bonds
     Route::resource('bid-bonds', BidBondController::class)->except('update');
     Route::patch('bid-bonds/{id}', [BidBondController::class, 'update']);
+    Route::get('list-bid-bonds', [BidBondController::class, 'listAll']);
 
     // Bid documents
     Route::resource('bid-documents', BidDocumentController::class);
@@ -276,5 +278,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
-
 });
+
+
+// Landing page
+Route::get('get-banners', [BannerController::class, 'getBannersLandipage']);
+Route::get('get-posts', [PostController::class, 'getPostsLandipage']);
+Route::get('get-catalogs', [PostCatalogController::class, 'getCatalogsLandipage']);
+Route::get('get-post-by-catalog/{catalog}', [PostController::class, 'getPostsByCatalogLandipage']);
+Route::get('get-post/{post}', [PostController::class, 'getPostLandipage']);
+Route::get('get-introduction', [IntroductionController::class, 'getIntroductionLandipage']);
+Route::get('get-instruct', [InstructController::class, 'getInstructLandipage']);
+Route::post('create-support', [SupportController::class, 'createSupportLandipage']);
+
+

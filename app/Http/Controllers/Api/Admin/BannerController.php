@@ -170,6 +170,17 @@ class BannerController extends Controller
         ], 200);
     }
 
+    public function getBannersLandipage()
+    {
+        $banners = $this->bannerRepository->getBannersLangipage();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Lấy danh sách banner thành công.',
+            'data' => $banners
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -502,6 +513,13 @@ class BannerController extends Controller
     public function destroy($id)
     {
         try {
+            DB::beginTransaction();
+            if (count($this->bannerRepository->filter([])) < 2) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Phải để lại ít nhất 1 banner.',
+                ], 200);
+            }
             $banner = $this->bannerRepository->deleteBanner($id);
             isset($banner->path) ? unlink($banner->path) : "";
 
@@ -511,6 +529,7 @@ class BannerController extends Controller
                     'message' => 'Banner không tồn tại',
                 ], 404);
             }
+            DB::commit();
 
             return response()->json([
                 'result' => true,
@@ -518,7 +537,6 @@ class BannerController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'result' => false,
                 'message' => 'Lỗi khi xóa banner.',

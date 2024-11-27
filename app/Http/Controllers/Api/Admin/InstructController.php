@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Instruct;
 use App\Http\Requests\InstructFormRequest;
 use App\Http\Resources\InstructResource;
 use App\Http\Resources\InstructCollection;
@@ -66,7 +65,20 @@ class InstructController extends Controller
 
     public function show(string $id)
     {
-        //
+        return response([
+            'result' => true,
+            'message' => "Lấy phần giới thiệu thành công",
+            'data' => new InstructResource($this->instructRepository->findOrFail($id)),
+        ], 200);
+    }
+
+    public function getInstructLandipage()
+    {
+        return response([
+            'result' => true,
+            'message' => "Lấy phần giới thiệu thành công",
+            'data' => empty($this->instructRepository->getInstructLandipage()) ? null : new InstructResource($this->instructRepository->getInstructLandipage()),
+        ], 200);
     }
 
     public function edit(string $id){
