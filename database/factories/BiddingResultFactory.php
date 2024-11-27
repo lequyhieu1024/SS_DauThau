@@ -19,9 +19,9 @@ class BiddingResultFactory extends Factory
      */
     public function definition(): array
     {
-        $projectIds = Project::pluck('id')->toArray();
-        $enterpriseIds = Enterprise::pluck('id')->toArray();
-        $bidDocumentIds = BidDocument::pluck('id')->toArray();
+        $projectIds = Project::limit(200)->pluck('id')->toArray();
+        $enterpriseIds = Enterprise::limit(200)->pluck('id')->toArray();
+        $bidDocumentIds = BidDocument::limit(200)->pluck('id')->toArray();
         return [
             'project_id' => $this->faker->randomElement($projectIds),
             'enterprise_id' => $this->faker->randomElement($enterpriseIds), 

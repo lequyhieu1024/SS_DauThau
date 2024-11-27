@@ -19,7 +19,7 @@ class ProjectIndustryFactory extends Factory
     public function definition(): array
     {
         $projectIds = Project::pluck('id')->toArray();
-        $industryIds = Industry::pluck('id')->toArray();
+        $industryIds = Industry::limit(10)->pluck('id')->toArray();
 
         return [
             'project_id' => $this->faker->randomElement($projectIds),

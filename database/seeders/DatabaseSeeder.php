@@ -70,9 +70,10 @@ class DatabaseSeeder extends Seeder
         // Evaluate::factory(200)->create();
 
         $batchSize = 1000;
-        $totalRecords = 5000;
+        $totalRecords = 2000;
 
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
+            BiddingResult::factory($batchSize)->create();
             // ProjectIndustry::factory($batchSize)->create();
             // Project::factory($batchSize)->create(); // done
             // EvaluationCriteria::factory($batchSize)->create(); // done
@@ -83,7 +84,7 @@ class DatabaseSeeder extends Seeder
             // EmployeeTask::factory($batchSize)->create(); // 5k - done
             // Reputation::factory($batchSize)->create();
             // WorkProgress::factory($batchSize)->create();
-            TaskProgress::factory($batchSize)->create();
+            // TaskProgress::factory($batchSize)->create();
         }
     }
 }
