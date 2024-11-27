@@ -67,13 +67,20 @@ class DatabaseSeeder extends Seeder
         //        Industry::factory(1000)->create();
         //        FundingSource::factory(10000)->create();
         // BiddingResult::factory(200)->create();
-        // Evaluate::factory(200)->create();
+        // $biddingResults = BiddingResult::select('project_id', 'enterprise_id')->get();
+        // fake Evaluate
+        // foreach ($biddingResults as $result) {
+        //     Evaluate::factory()->create([
+        //         'project_id' => $result->project_id,
+        //         'enterprise_id' => $result->enterprise_id,
+        //     ]);
+        // }
 
         $batchSize = 1000;
         $totalRecords = 2000;
 
         for ($i = 0; $i < $totalRecords; $i += $batchSize) {
-            BiddingResult::factory($batchSize)->create();
+            // BiddingResult::factory($batchSize)->create();
             // ProjectIndustry::factory($batchSize)->create();
             // Project::factory($batchSize)->create(); // done
             // EvaluationCriteria::factory($batchSize)->create(); // done

@@ -22,8 +22,8 @@ class EvaluateFactory extends Factory
         // $enterpriseIds = Enterprise::pluck('id')->toArray();
         $enterpriseIds = Enterprise::limit(100)->pluck('id')->toArray();
         return [
-            'project_id' => $this->faker->randomElement($projectIds),
-            'enterprise_id' => $this->faker->randomElement($enterpriseIds),
+            'project_id' => null,
+            'enterprise_id' => null,
             'title' => $this->faker->sentence(6),
             'score' => $this->faker->randomFloat(2, 0, 100),
             'evaluate' => $this->faker->paragraph(3, true)
