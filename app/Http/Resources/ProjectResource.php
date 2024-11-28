@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\BidDocument\BidDocumentResource;
 use App\Models\BiddingResult;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,7 +24,7 @@ class ProjectResource extends JsonResource
             'staff' => new StaffResource($this->staff),
             'selection_method' => $this->selectionMethod,
             'bidding_result' => $this->biddingResult,
-            'bidding_document' => $this->biddingDocument,
+            'bidding_document' => BidDocumentResource::collection($this->biddingDocuments),
             'bidding_bond' => $this->bidBond,
             'industries' => $this->industries->where('is_active', true)->map(function ($industry) {
                 return [

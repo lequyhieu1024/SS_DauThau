@@ -62,13 +62,13 @@ class ProjectController extends Controller
      */
     public function store(ProjectFormRequest $request)
     {
-        $data = $request->all();
         try {
+            $data = $request->all();
             DB::beginTransaction();
             $project = $this->projectRepository->create($data);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
-            if(!empty($data['files'])) {
+            if($request->hasFile($data['files'])) {
                 $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
             }
             event(new ProjectCreated(new ProjectResource($project)));

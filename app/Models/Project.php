@@ -104,9 +104,9 @@ class Project extends Model
         return $this->hasOne(BiddingResult::class);
     }
 
-    public function biddingDocument()
+    public function biddingDocuments()
     {
-        return $this->hasOne(BidDocument::class);
+        return $this->hasMany(BidDocument::class);
     }
 
     protected function getModelName(): string
