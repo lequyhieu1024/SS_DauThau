@@ -57,6 +57,10 @@ class ProjectRepository extends BaseRepository
             });
         }
 
+        if (isset($data['staff'])) {
+            $query->where('staff_id',$data['staff']);
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
