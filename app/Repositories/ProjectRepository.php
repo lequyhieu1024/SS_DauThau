@@ -716,6 +716,10 @@ class ProjectRepository extends BaseRepository
             });
         }
 
-        return $query->where('staff_id', $staff_id)->where('status', ProjectStatus::AWAITING->value)->paginate($data['size'] ?? 10);
+        if (isset($data['status'])) {
+            $query->where('status', $data['status']);
+        }
+
+        return $query->where('staff_id', $staff_id)->orderBy('status', 'ASC')->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 }
