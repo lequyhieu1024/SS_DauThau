@@ -14,6 +14,13 @@ class ProjectComparisonController extends Controller
 
     public function __construct(ProjectRepository $projectRepository)
     {
+        $this->middleware(['permission:compare_bar_chart_total_amount'])->only('compareBarChartTotalAmount');
+        $this->middleware(['permission:compare_bar_chart_construction_time'])->only('compareBarChartConstructionTime');
+        $this->middleware(['permission:compare_bar_chart_bid_submission_time'])->only('compareBarChartBidSubmissionTime');
+        $this->middleware(['permission:compare_pie_chart_total_amount'])->only('comparePieChartTotalAmount');
+        $this->middleware(['permission:compare_bar_chart_bidder_count'])->only('compareBarChartBidderCount');
+        $this->middleware(['permission:get_detail_project_by_ids'])->only('getDetailProjectByIds');
+
         $this->projectRepository = $projectRepository;
     }
 
