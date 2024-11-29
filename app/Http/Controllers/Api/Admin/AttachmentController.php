@@ -20,6 +20,8 @@ class AttachmentController extends Controller
 
     public function __construct(AttachmentRepository $attachmentRepository)
     {
+        $this->middleware(['permission:list_attachment'])->only('index');
+        $this->middleware(['permission:create_attachment'])->only('store');
         $this->attachmentRepository = $attachmentRepository;
     }
 
