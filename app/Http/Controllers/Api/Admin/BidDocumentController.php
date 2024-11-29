@@ -284,6 +284,10 @@ class BidDocumentController extends Controller
 
         DB::beginTransaction();
         try {
+            if ($request->hasFile($data['file'])) {
+                $data['file'] = upload_file($data['file']);
+            }
+            $data['status'] = BidDocumentStatus::ACCEPTED->value;
             $bidDocument = $this->bidDocumentRepository->create($data);
             DB::commit();
             return response()->json([
