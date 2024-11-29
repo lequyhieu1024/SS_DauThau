@@ -24,6 +24,7 @@ class BidDocument extends Model
         'validity_period',
         'status',
         'note',
+        'file',
     ];
 
     // N-1 relationship with Project

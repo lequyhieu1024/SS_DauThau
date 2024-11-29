@@ -33,6 +33,7 @@ class EnterpriseResource extends JsonResource
                     'name' => $projectTenderer->name,
                 ];
             }),
+            'project_wont' => BiddingResultResource::collection($this->biddingResults),
             'name' => $this->user->name,
             'email' => $this->user->email,
             'taxcode' => $this->user->taxcode,

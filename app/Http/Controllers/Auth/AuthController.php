@@ -161,6 +161,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'taxcode' => $user->taxcode,
                 'email' => $user->email,
+                'avatar' => $user->staff && !empty($user->staff) ? $user->staff->avatar : $user->enterprise->avatar,
                 'email_verified' => $user->email_verified_at != null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
             ]
