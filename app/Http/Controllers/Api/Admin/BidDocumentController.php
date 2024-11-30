@@ -147,6 +147,13 @@ class BidDocumentController extends Controller
         ], 200);
     }
 
+    public function getNameAndIds() {
+        return response()->json([
+            'result' => true,
+            'data' => $this->bidDocumentRepository->getNameAndIds(),
+        ], 200);
+    }
+
 
     /**
      * @OA\Get(
