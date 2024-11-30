@@ -148,9 +148,15 @@ class BidDocumentController extends Controller
     }
 
     public function getNameAndIds() {
+        $bidDocuments = $this->bidDocumentRepository->getNameAndIds();
         return response()->json([
             'result' => true,
-            'data' => $this->bidDocumentRepository->getNameAndIds(),
+            'data' => $bidDocuments->map(function ($bidDocument) {
+                return [
+                    "id" => $bidDocument->id,
+                    "name" => 'HSDT của doanh nghiệp ' . $bidDocument->enterprise_name . ' nộp cho dự án '  . $bidDocument->project_name,
+                ];
+            }),
         ], 200);
     }
 

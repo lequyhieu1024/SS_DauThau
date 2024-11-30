@@ -299,12 +299,11 @@ class BidBondController extends Controller
      *     )
      * )
      */
-    public function listAll(){
-        $bidBonds = $this->bidBondRepository->listAll();
+    public function getBondNumberAndIds(){
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách bảo lãnh dự thầu thành công.',
-            'data' =>  (new BidBondCollection($bidBonds))->toArrayWithoutPagination()
+            'data' =>  $this->bidBondRepository->getBondNumberAndIds()
         ], 200);
     }
 
