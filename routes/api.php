@@ -67,6 +67,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);
 
     Route::post('send-mail-forgot-password', [AuthController::class, 'sendMailForPasswordReset']);
+    Route::post('change-password', [AuthController::class, 'changePassword']);
 
     // Api gửi email khi bấm quên mật khẩu
     Route::post('send-email', [AuthController::class, 'forgotPasswordApi']);

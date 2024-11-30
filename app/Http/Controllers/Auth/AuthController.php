@@ -272,13 +272,13 @@ class AuthController extends Controller
                     'message' => "Người dùng không tồn tại",
                 ], 200);
             }
-            $data['password'] = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, 12);
-            $this->userRepository->update($data, $user->id);
+//            $data['password'] = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, 12);
+//            $this->userRepository->update($data, $user->id);
 //            $user['newPassword'] = $data['password'];
-            $userData = $user->toArray();
-            $userData['newPassword'] = $data['password'];
-            SendForgotPasswordJob::dispatch($userData);
-            $this->userRepository->update($data, $user->id);
+//            $userData = $user->toArray();
+//            $userData['newPassword'] = $data['password'];
+            SendForgotPasswordJob::dispatch($user);
+//            $this->userRepository->update($data, $user->id);
             DB::commit();
             return response([
                 'result' => true,
@@ -288,6 +288,29 @@ class AuthController extends Controller
             DB::rollBack();
             return response()->json(['result' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function changePassword(Request $request) {
+        $data = $request->all();
+        if ($data['password'] !== $data['password_confirmation']) {
+            return response([
+                'result' => false,
+                'message' => "Mật khẩu xác nhận không khớp",
+            ], 422);
+        }
+        $user = $this->userRepository->firstWhere('email', $data['email']);
+        if (!$user) {
+            return response([
+                'result' => false,
+                'message' => "Người dùng không tồn tại",
+            ], 400);
+        }
+        $data = array_intersect_key($data, ['password' => '']);
+        $this->userRepository->update($data, $user->id);
+        return response([
+            'result' => true,
+            'message' => 'Cập nhật mật khẩu mới thành công',
+        ], 200);
     }
 
     public function logout()
