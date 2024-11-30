@@ -18,6 +18,7 @@ class BiddingResultCollection extends ResourceCollection
             'data' => $this->collection->map(function ($biddingResult) {
                 return [
                     'id' => $biddingResult->id,
+                    'user' => $biddingResult->enterprise->user,
                     'enterprise' => $biddingResult->enterprise,
                     'project' => $biddingResult->project,
                     'bid_document' => $biddingResult->biddingDocument,

@@ -63,7 +63,10 @@ Route::get('not-yet-authenticated', [AuthController::class, 'notYetAuthenticated
 Route::group(['prefix' => 'auth'], function () {
     // API không cần đăng nhập
     // Route::post('register', [AuthController::class, 'register']);
+
     Route::post('login', [AuthController::class, 'login']);
+
+    Route::post('send-mail-forgot-password', [AuthController::class, 'sendMailForPasswordReset']);
 
     // Api gửi email khi bấm quên mật khẩu
     Route::post('send-email', [AuthController::class, 'forgotPasswordApi']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Jobs\SendForgotPasswordJob;
 use App\Models\User;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\StaffRepository;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -256,6 +258,35 @@ class AuthController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['result' => false, 'message' => 'Có lỗi sảy ra, ' . $e], 500);
+        }
+    }
+
+    public function sendMailForPasswordReset(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $user = $this->userRepository->firstWhere('email', $request->input('email'));
+            if (!$user) {
+                return response([
+                    'result' => false,
+                    'message' => "Người dùng không tồn tại",
+                ], 200);
+            }
+            $data['password'] = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, 12);
+            $this->userRepository->update($data, $user->id);
+//            $user['newPassword'] = $data['password'];
+            $userData = $user->toArray();
+            $userData['newPassword'] = $data['password'];
+            SendForgotPasswordJob::dispatch($userData);
+            $this->userRepository->update($data, $user->id);
+            DB::commit();
+            return response([
+                'result' => true,
+                'message' => 'Gửi email cập nhật mật khẩu mới thành công',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['result' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
