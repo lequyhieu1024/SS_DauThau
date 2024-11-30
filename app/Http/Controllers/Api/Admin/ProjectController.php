@@ -69,7 +69,7 @@ class ProjectController extends Controller
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
             if($request->hasFile('files')) {
-                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id);
+                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id, $project->name);
             }
             event(new ProjectCreated($project));
             DB::commit();
@@ -127,7 +127,7 @@ class ProjectController extends Controller
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $id);
             if($request->hasFile('files')) {
-                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id);
+                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id, $project->name);
             }
 
             DB::commit();

@@ -12,13 +12,14 @@ class AttachmentRepository extends BaseRepository
         return Attachment::class;
     }
 
-    public function filter($data) {
+    public function filter($data)
+    {
         $query = $this->model->query();
         if (isset($data['project'])) {
             $query->where('project_id', $data['project']);
         }
         if (isset($data['name'])) {
-            $query->where('name', 'like' , '%' . $data['name'] . '%');
+            $query->where('name', 'like', '%' . $data['name'] . '%');
         }
         if (isset($data['type'])) {
             $query->where('type', $data['type']);
@@ -26,12 +27,12 @@ class AttachmentRepository extends BaseRepository
         return $query->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 
-    public function createAttachment($files, $projectId, $userId)
+    public function createAttachment($files, $projectId, $userId, $projectName)
     {
         $attachments = [];
 
         foreach ($files as $file) {
-            $newFilename = now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $newFilename = $projectName . '.' . now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $relativePath = "uploads/documents/{$newFilename}";
 
             $file->move(public_path('uploads/documents'), $newFilename);

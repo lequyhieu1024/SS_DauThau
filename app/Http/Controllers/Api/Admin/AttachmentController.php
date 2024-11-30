@@ -7,6 +7,7 @@ use App\Http\Requests\AttachmentFormRequest;
 use App\Http\Resources\AttachmentCollection;
 use App\Http\Resources\AttachmentResource;
 use App\Repositories\AttachmentRepository;
+use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -18,11 +19,14 @@ class AttachmentController extends Controller
 {
     protected $attachmentRepository;
 
-    public function __construct(AttachmentRepository $attachmentRepository)
+    protected $projectRepository;
+
+    public function __construct(AttachmentRepository $attachmentRepository, ProjectRepository $projectRepository)
     {
         $this->middleware(['permission:list_attachment'])->only('index');
         $this->middleware(['permission:create_attachment'])->only('store');
         $this->attachmentRepository = $attachmentRepository;
+        $this->projectRepository = $projectRepository;
     }
 
 
@@ -57,8 +61,11 @@ class AttachmentController extends Controller
             $files = $request->file('files');
             $attachments = [];
 
+            // lấy tên project theo project_id
+            $project = $this->projectRepository->find($request->input('project_id'));
+
             foreach ($files as $file) {
-                $newFilename = now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $newFilename = $project->name . '_' . now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 $relativePath = "uploads/documents/{$newFilename}";
 
                 $file->move(public_path('uploads/documents'), $newFilename);
@@ -100,7 +107,7 @@ class AttachmentController extends Controller
 
     public function serveDocumentFile($filename)
     {
-        $path = public_path().'/uploads/documents/'.$filename;
+        $path = public_path() . '/uploads/documents/' . $filename;
 
         if (!File::exists($path)) {
             return response()->json(['message' => 'File not found.'], 404);
@@ -111,7 +118,7 @@ class AttachmentController extends Controller
 
         $response = Response::make($file, 200);
         $response->header("Content-Type", $type);
-        $response->header("Content-Disposition", 'inline; filename="'.basename($path).'"');
+        $response->header("Content-Disposition", 'inline; filename="' . basename($path) . '"');
 
         return $response;
     }
