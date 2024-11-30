@@ -25,6 +25,14 @@ Route::get('/{any}', function () {
     return redirect('/');
 })->where('any', '.*');
 
+Route::get('/clear-cache-config', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('permission:cache-reset');
+    return "All Artisan commands executed successfully!";
+});
+
 //Route::get('/assignee-role', function () {
 //    $industries = Industry::all(); // Lấy danh sách tất cả các ngành nghề
 //
