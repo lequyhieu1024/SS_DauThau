@@ -29,6 +29,7 @@ class AttachmentRepository extends BaseRepository
 
     public function createAttachment($files, $projectId, $userId, $projectName)
     {
+
         $attachments = [];
 
         foreach ($files as $file) {
