@@ -49,3 +49,12 @@ if (!function_exists('convertText')) {
     }
 }
 
+if (!function_exists('convertVietnameseToEnglish')) {
+    function convertVietnameseToEnglish($string)
+    {
+        // Use the voku/portable-ascii library to transliterate Vietnamese to ASCII
+        $transliterated = \voku\helper\ASCII::to_ascii($string);
+        // Replace spaces with underscores
+        return str_replace(' ', '_', strtolower($transliterated));
+    }
+}
