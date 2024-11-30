@@ -71,7 +71,7 @@ class ProjectController extends Controller
             if($request->hasFile('files')) {
                 $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id);
             }
-            event(new ProjectCreated(new ProjectResource($project)));
+            event(new ProjectCreated($project));
             DB::commit();
             return response([
                 'result' => true,
@@ -126,8 +126,8 @@ class ProjectController extends Controller
             $project = $this->projectRepository->findOrFail($id);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $id);
-            if(!empty($data['files'])) {
-                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            if($request->hasFile('files')) {
+                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id);
             }
 
             DB::commit();
