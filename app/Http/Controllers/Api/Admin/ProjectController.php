@@ -68,8 +68,8 @@ class ProjectController extends Controller
             $project = $this->projectRepository->create($data);
             $this->projectRepository->syncProcurement($data, $project->id);
             $this->projectRepository->syncIndustry($data, $project->id);
-            if($request->hasFile($data['files'])) {
-                $this->attachmentRepository->createAttachment($data['files'], $project->id, auth()->user()->id);
+            if($request->hasFile('files')) {
+                $this->attachmentRepository->createAttachment($request->file('files'), $project->id, auth()->user()->id);
             }
             event(new ProjectCreated(new ProjectResource($project)));
             DB::commit();

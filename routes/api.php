@@ -278,6 +278,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-funding-sources', [FundingSourceController::class, 'getnameAndIds']);
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
+    Route::get('list-bid-documents', [BidDocumentController::class, 'getNameAndIds']);
 });
 
 
