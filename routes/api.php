@@ -248,6 +248,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('instructs', InstructController::class);
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
 
+    // count
     Route::get('count-projects', [DashboardController::class, 'countProjects']);
     Route::get('count-enterprises', [DashboardController::class, 'countEnterprises']);
     Route::get('count-industries', [DashboardController::class, 'countIndustries']);
@@ -261,7 +262,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-post-catalog', [DashboardController::class, 'countPostCatalog']);
     Route::get('count-post', [DashboardController::class, 'countPost']);
     Route::get('count-procurement-category', [DashboardController::class, 'countProcurementCategory']);
-
+    Route::get('count-selection-method', [DashboardController::class, 'countSelectionMethod']);
+    Route::get('count-support', [DashboardController::class, 'countSupport']);
+    Route::get('count-task', [DashboardController::class, 'countTask']);
+    
 });
 
 Route::group(['prefix' => 'admin'], function () {

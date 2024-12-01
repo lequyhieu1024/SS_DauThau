@@ -26,4 +26,9 @@ class SupportRepository extends BaseRepository
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
+    public function countSupport()
+    {
+        return $this->model->count();
+    }
+
 }

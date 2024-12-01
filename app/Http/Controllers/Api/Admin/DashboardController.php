@@ -16,7 +16,10 @@ use App\Repositories\PostCatalogRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\ProcurementCategoryRepository;
 use App\Repositories\ProjectRepository;
+use App\Repositories\SelectionMethodRepository;
 use App\Repositories\StaffRepository;
+use App\Repositories\SupportRepository;
+use App\Repositories\TaskRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -32,10 +35,12 @@ class DashboardController extends Controller
     protected $evaluationCriteriaRepository;
     protected $feedbackComplaintRepository;
     protected $fundingSourceRepository;
-
     protected $postCatalogRepository;
     protected $postRepository;
     protected $procurementCategoryRepository;
+    protected $selectionMethodRepository;
+    protected $supportRepository;
+    protected $taskRepository;
 
 
 
@@ -43,7 +48,8 @@ class DashboardController extends Controller
 
     public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository, StaffRepository $staffRepository, BidBondRepository $bidBondRepository, 
     BiddingResultRepository $biddingResultRepository, EvaluateRepository $evaluateRepository, EvaluationCriteriaRepository $evaluationCriteriaRepository, FeedbackComplaintRepository $feedbackComplaintRepository,
-    FundingSourceRepository $fundingSourceRepository, PostCatalogRepository $postCatalogRepository, PostRepository $postRepository, ProcurementCategoryRepository $procurementCategoryRepository)
+    FundingSourceRepository $fundingSourceRepository, PostCatalogRepository $postCatalogRepository, PostRepository $postRepository, ProcurementCategoryRepository $procurementCategoryRepository,
+    SelectionMethodRepository $selectionMethodRepository, SupportRepository $supportRepository, TaskRepository $taskRepository)
     {
         //        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
         //        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
@@ -78,6 +84,9 @@ class DashboardController extends Controller
         $this->postCatalogRepository = $postCatalogRepository;
         $this->postRepository = $postRepository;
         $this->procurementCategoryRepository = $procurementCategoryRepository;
+        $this->selectionMethodRepository = $selectionMethodRepository;
+        $this->supportRepository = $supportRepository;
+        $this->taskRepository = $taskRepository;
     }
 
     // Lấy tỷ lệ dự án theo nghành nghề
@@ -375,6 +384,33 @@ class DashboardController extends Controller
             'result' => true,
             'message' => "Lấy thành công",
             'data' => $this->procurementCategoryRepository->countProcurementCategory()
+        ], 200);
+    }
+
+    public function countSelectionMethod()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->selectionMethodRepository->countSelectionMethod()
+        ], 200);
+    }
+
+    public function countSupport()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->supportRepository->countSupport()
+        ], 200);
+    }
+
+    public function countTask()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->taskRepository->countTask()
         ], 200);
     }
     
