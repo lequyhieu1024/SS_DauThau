@@ -14,7 +14,7 @@ class SupportRepository extends BaseRepository
 
     /**
      * @param $data
-     * @return mixed\
+     * @return mixed
      * GET ALL + filter
      */
 
