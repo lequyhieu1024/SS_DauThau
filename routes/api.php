@@ -258,7 +258,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-evaluation-criteria', [DashboardController::class, 'countEvaluationCriteria']);
     Route::get('count-feedback-complaint', [DashboardController::class, 'countFeedbackComplaint']);
     Route::get('count-funding-source', [DashboardController::class, 'countFundingSource']);
- 
+    Route::get('count-post-catalog', [DashboardController::class, 'countPostCatalog']);
+    Route::get('count-post', [DashboardController::class, 'countPost']);
+    Route::get('count-procurement-category', [DashboardController::class, 'countProcurementCategory']);
+
 });
 
 Route::group(['prefix' => 'admin'], function () {
