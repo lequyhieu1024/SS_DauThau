@@ -39,6 +39,7 @@ use App\Http\Controllers\Api\Admin\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\Introduction;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -247,6 +248,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::resource('instructs', InstructController::class);
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
 
+    Route::get('count-projects', [DashboardController::class, 'countProjects']);
+    Route::get('count-enterprises', [DashboardController::class, 'countEnterprises']);
+    Route::get('count-industries', [DashboardController::class, 'countIndustries']);
 });
 
 Route::group(['prefix' => 'admin'], function () {

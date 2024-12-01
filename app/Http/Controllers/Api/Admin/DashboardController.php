@@ -17,25 +17,25 @@ class DashboardController extends Controller
     protected $industryRepository;
     public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository)
     {
-//        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
-//        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
-//        $this->middleware(['permission:dashboard'])->only('projectByIsDomestic');
-//        $this->middleware(['permission:dashboard'])->only('projectBySubmissionMethod');
-//        $this->middleware(['permission:dashboard'])->only('projectBySelectionMethod');
-//        $this->middleware(['permission:dashboard'])->only('projectByTendererAndInvestor');
-//        $this->middleware(['permission:dashboard'])->only('averageProjectDurationByIndustry');
-//        $this->middleware(['permission:dashboard'])->only('enterpriseByOrganizationType');
-//        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectCount');
-//        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectTotalAmount');
-//        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectPartial');
-//        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectFull');
-//        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectTotalAmount');
-//        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByIndustry');
-//        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByFundingSource');
-//        $this->middleware(['permission:dashboard'])->only('timeJoiningWebsiteOfEnterprise');
-//        $this->middleware(['permission:dashboard'])->only('projectsStatusPerMonth');
-//        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostProject');
-//        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostEnterprise');
+        //        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
+        //        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
+        //        $this->middleware(['permission:dashboard'])->only('projectByIsDomestic');
+        //        $this->middleware(['permission:dashboard'])->only('projectBySubmissionMethod');
+        //        $this->middleware(['permission:dashboard'])->only('projectBySelectionMethod');
+        //        $this->middleware(['permission:dashboard'])->only('projectByTendererAndInvestor');
+        //        $this->middleware(['permission:dashboard'])->only('averageProjectDurationByIndustry');
+        //        $this->middleware(['permission:dashboard'])->only('enterpriseByOrganizationType');
+        //        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectCount');
+        //        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectTotalAmount');
+        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectPartial');
+        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectFull');
+        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectTotalAmount');
+        //        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByIndustry');
+        //        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByFundingSource');
+        //        $this->middleware(['permission:dashboard'])->only('timeJoiningWebsiteOfEnterprise');
+        //        $this->middleware(['permission:dashboard'])->only('projectsStatusPerMonth');
+        //        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostProject');
+        //        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostEnterprise');
 
         $this->projectRepository = $projectRepository;
         $this->enterpriseRepository = $enterpriseRepository;
@@ -185,7 +185,8 @@ class DashboardController extends Controller
         return $this->enterpriseRepository->topEnterprisesHaveCompletedProjectsByFundingSource($request->id);
     }
 
-    public function timeJoiningWebsiteOfEnterprise(Request $request) {
+    public function timeJoiningWebsiteOfEnterprise(Request $request)
+    {
         $year = $request->input('year') ?? Carbon::now()->year;
         return response()->json([
             'result' => true,
@@ -194,7 +195,8 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function projectsStatusPerMonth(Request $request) {
+    public function projectsStatusPerMonth(Request $request)
+    {
         $year = $request->input('year') ?? Carbon::now()->year;
         return response()->json([
             'result' => true,
@@ -203,7 +205,8 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function top10IndustryHasTheMostProject() {
+    public function top10IndustryHasTheMostProject()
+    {
         return response()->json([
             'result' => true,
             'message' => "Biểu đồ thể hiện số lượng dự án theo ngành nghề",
@@ -211,11 +214,39 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function top10IndustryHasTheMostEnterprise() {
+    public function top10IndustryHasTheMostEnterprise()
+    {
         return response()->json([
             'result' => true,
             'message' => "Biểu đồ thể hiện số lượng doanh nghiệp theo ngành nghề",
             'data' =>  $this->industryRepository->top10IndustryHasTheMostEnterprises($this->industryRepository->getNameAndIdsActive())
+        ], 200);
+    }
+
+    public function countProjects()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->projectRepository->countProjects()
+        ], 200);
+    }
+
+    public function countEnterprises()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->enterpriseRepository->countEnterprises()
+        ], 200);
+    }
+
+    public function countIndustries()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->industryRepository->countIndustries()
         ], 200);
     }
 }
