@@ -28,6 +28,7 @@ class StaffController extends Controller
         $this->middleware(['permission:update_staff'])->only(['edit', 'update']);
         $this->middleware(['permission:detail_staff'])->only('show');
         $this->middleware(['permission:destroy_staff'])->only('destroy');
+        $this->middleware(['permission:ban_staff'])->only('banStaff');
         $this->staffRepository = $staffRepository;
         $this->roleRepository = $roleRepository;
         $this->userRepository = $userRepository;

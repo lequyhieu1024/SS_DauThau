@@ -515,4 +515,8 @@ class EnterpriseRepository extends BaseRepository
 
         return $data;
     }
+
+    public function countEnterprises(){
+        return $this->model->count();
+    }
 }

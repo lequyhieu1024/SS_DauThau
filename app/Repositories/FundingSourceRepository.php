@@ -56,4 +56,9 @@ class FundingSourceRepository extends BaseRepository
         }
         return $fundingSource;
     }
+
+    public function countFundingSource()
+    {
+        return $this->model->count();
+    }
 }

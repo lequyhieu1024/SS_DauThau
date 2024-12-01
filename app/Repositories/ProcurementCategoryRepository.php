@@ -21,4 +21,9 @@ class ProcurementCategoryRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function countProcurementCategory()
+    {
+        return $this->model->count();
+    }
 }

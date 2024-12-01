@@ -26,4 +26,9 @@ class PostCatalogRepository extends BaseRepository
         $catalog = $this->model->findOrFail($id);
         return $catalog->posts()->paginate(10);
     }
+
+    public function countPostCatalog()
+    {
+        return $this->model->count();
+    }
 }

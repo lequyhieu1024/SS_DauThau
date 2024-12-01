@@ -35,6 +35,8 @@ class ProjectController extends Controller
         $this->middleware(['permission:update_project'])->only(['update']);
         $this->middleware(['permission:detail_project'])->only('show');
         $this->middleware(['permission:destroy_project'])->only('destroy');
+        $this->middleware(['permission:approve_project'])->only('approveProject');
+        $this->middleware(['permission:project_by_staff'])->only('getProjectByStaff');
         $this->projectRepository = $projectRepository;
         $this->attachmentRepository = $attachmentRepository;
         $this->enterpriseRepository = $enterpriseRepository;

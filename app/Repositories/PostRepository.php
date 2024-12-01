@@ -28,4 +28,9 @@ class PostRepository extends BaseRepository
         $post = $this->model->findOrFail($id);
         return $post->postCatalogs()->sync($data['post_catalog_id']);
     }
+
+    public function countPost()
+    {
+        return $this->model->count();
+    }
 }

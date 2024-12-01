@@ -728,4 +728,8 @@ class ProjectRepository extends BaseRepository
 
         return $query->where('staff_id', $staff_id)->orderBy('status', 'ASC')->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
+
+    public function countProjects(){
+        return $this->model->count();
+    }
 }
