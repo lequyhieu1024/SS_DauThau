@@ -24,7 +24,7 @@ class BidBondRepository extends BaseRepository
 
     public function getBondNumberAndIds()
     {
-        return $this->model->select('id','bond_number')->get();
+        return $this->model->select('id','bond_number')->orderBy('id', 'desc')->get();
     }
 
     public function countBidBond()

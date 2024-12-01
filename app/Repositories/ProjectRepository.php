@@ -131,7 +131,7 @@ class ProjectRepository extends BaseRepository
             ->whereNull('parent_id')
             ->with(['children' => function ($query) {
                 $query->select('id', 'name', 'parent_id');
-            }])
+            }])->orderBy('id','desc')
             ->get();
     }
 
