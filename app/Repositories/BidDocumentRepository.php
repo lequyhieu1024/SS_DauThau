@@ -44,4 +44,21 @@ class BidDocumentRepository extends BaseRepository
             ->where('enterprise_id', $enterpriseId)
             ->first();
     }
+
+    public function getNameAndIds()
+    {
+        $query = $this->model
+            ->select([
+                'bid_documents.id',
+                'projects.name as project_name',
+                'users.name as enterprise_name'
+            ])
+            ->join('projects', 'projects.id', '=', 'bid_documents.project_id')
+            ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
+            ->join('users', 'users.id', '=', 'enterprises.user_id');
+
+        return $query->get();
+    }
+
+
 }

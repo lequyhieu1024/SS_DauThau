@@ -57,6 +57,10 @@ class ProjectRepository extends BaseRepository
             });
         }
 
+        if (isset($data['staff'])) {
+            $query->where('staff_id',$data['staff']);
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
@@ -188,32 +192,34 @@ class ProjectRepository extends BaseRepository
             ];
         }
 
-        $fundingSources = FundingSource::withCount('projects')
+        $rawData = FundingSource::query()
+            ->selectRaw('funding_sources.name as funding_source_name, COUNT(projects.id) as projects_count')
+            ->leftJoin('projects', 'funding_sources.id', '=', 'projects.funding_source_id')
+            ->groupBy('funding_sources.id', 'funding_sources.name')
             ->orderByDesc('projects_count')
             ->get();
 
-        $topFundingSources = $fundingSources->take(10);
 
-        $otherFundingSources = $fundingSources->skip(10);
-        $otherFundingSourcesCount = $otherFundingSources->sum('projects_count');
+        $topFundingSources = $rawData->take(10);
+        $otherFundingSourcesCount = $rawData->skip(10)->sum('projects_count');
 
-        $data = [];
-        foreach ($topFundingSources as $fundingSource) {
-            $data[] = [
-                'name' => $fundingSource->name,
-                'value' => $fundingSource->projects_count
+        $data = $topFundingSources->map(function ($fundingSource) {
+            return [
+                'name' => $fundingSource->funding_source_name,
+                'value' => $fundingSource->projects_count,
             ];
-        }
+        })->toArray();
 
         if ($otherFundingSourcesCount > 0) {
             $data[] = [
                 'name' => 'Nguồn tài trợ khác',
-                'value' => $otherFundingSourcesCount
+                'value' => $otherFundingSourcesCount,
             ];
         }
 
         return $data;
     }
+
 
 
     public function getDomesticPercentage()
@@ -378,10 +384,10 @@ class ProjectRepository extends BaseRepository
         });
 
         // Lấy 15 cột đầu tiên
-        $top15 = array_slice($data, 0, 15);
+        $top15 = array_slice($data, 0, 10);
 
         // Tổng hợp các ngành còn lại
-        $others = array_slice($data, 15);
+        $others = array_slice($data, 10);
         $othersValue = 0;
         foreach ($others as $other) {
             $othersValue += $other['value'];
@@ -716,6 +722,10 @@ class ProjectRepository extends BaseRepository
             });
         }
 
-        return $query->where('staff_id', $staff_id)->where('status', ProjectStatus::AWAITING->value)->paginate($data['size'] ?? 10);
+        if (isset($data['status'])) {
+            $query->where('status', $data['status']);
+        }
+
+        return $query->where('staff_id', $staff_id)->orderBy('status', 'ASC')->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 }

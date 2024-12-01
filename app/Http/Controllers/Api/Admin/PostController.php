@@ -608,7 +608,7 @@ class PostController extends Controller
             $data = $request->all();
             if ($request->hasFile('thumbnail')) {
                 $data['thumbnail'] = upload_image($request->file('thumbnail'));
-                isset($this->postRepository->findOrFail($id)->thumbnail) ? unlink($this->postRepository->findOrFail($id)->thumbnail) : "";
+                isset($this->postRepository->findOrFail($id)->thumbnail) && file_exists($this->postRepository->findOrFail($id)->thumbnail) ? unlink($this->postRepository->findOrFail($id)->thumbnail) : "";
             } else {
                 $data['thumbnail'] = $this->postRepository->findOrFail($id)->thumbnail;
             }
@@ -661,7 +661,7 @@ class PostController extends Controller
         try {
             $post = $this->postRepository->find($id);
             $this->postRepository->delete($id);
-            isset($post->thumbnail) ? unlink($post->thumbnail) : "";
+            isset($post->thumbnail) && file_exists($post->thumbnail) ? unlink($post->thumbnail) : "";
 
             return response()->json([
                 'result' => true,

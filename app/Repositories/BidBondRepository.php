@@ -22,10 +22,8 @@ class BidBondRepository extends BaseRepository
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
-    public function listAll()
+    public function getBondNumberAndIds()
     {
-        return $this->model->query()
-            ->orderBy('id', 'desc')
-            ->get();
+        return $this->model->select('id','bond_number')->get();
     }
 }

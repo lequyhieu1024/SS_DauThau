@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Requests\ChangePasswordRequest;
+use App\Jobs\SendForgotPasswordJob;
 use App\Models\User;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\StaffRepository;
@@ -10,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -161,6 +164,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'taxcode' => $user->taxcode,
                 'email' => $user->email,
+                'avatar' => $user->staff && !empty($user->staff) ? $user->staff->avatar : $user->enterprise->avatar,
                 'email_verified' => $user->email_verified_at != null,
                 'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
             ]
@@ -256,6 +260,55 @@ class AuthController extends Controller
             DB::rollBack();
             return response()->json(['result' => false, 'message' => 'Có lỗi sảy ra, ' . $e], 500);
         }
+    }
+
+    public function sendMailForPasswordReset(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $user = $this->userRepository->firstWhere('email', $request->input('email'));
+            if (!$user) {
+                return response([
+                    'result' => false,
+                    'message' => "Người dùng không tồn tại",
+                ], 200);
+            }
+            $token = Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->input('email')],
+                [
+                    'token' => $token,
+                    'created_at' => now(),
+                ]
+            );
+            $userData = $user->toArray();
+            $userData['token'] = $token;
+            SendForgotPasswordJob::dispatch($userData);
+            DB::commit();
+            return response([
+                'result' => true,
+                'message' => 'Gửi email cập nhật mật khẩu mới thành công',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['result' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $request) {
+        $data = $request->all();
+        $resetToken = DB::table('password_reset_tokens')->where('email', $data['email'])->first();
+        if (!$resetToken || $resetToken->token !== $data['token']) {
+            return response(['result' => false, 'message' => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.'], 400);
+        }
+        $user = $this->userRepository->firstWhere('email', $data['email']);
+        $data = array_intersect_key($data, ['password' => '']);
+        $this->userRepository->update($data, $user->id);
+        return response([
+            'result' => true,
+            'message' => 'Cập nhật mật khẩu mới thành công',
+        ], 200);
     }
 
     public function logout()

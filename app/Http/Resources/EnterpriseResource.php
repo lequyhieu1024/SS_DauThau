@@ -21,18 +21,7 @@ class EnterpriseResource extends JsonResource
                 return $industry;
             })->values()->toArray(),
             'attachments' => $this->attachments,
-            'project_investor' => $this->projectInvestors->map(function ($projectInvestor) {
-                return [
-                    'id' => $projectInvestor->id,
-                    'name' => $projectInvestor->name,
-                ];
-            }),
-            'project_tenderer' => $this->projectTenderers->map(function ($projectTenderer) {
-                return [
-                    'id' => $projectTenderer->id,
-                    'name' => $projectTenderer->name,
-                ];
-            }),
+            'project_win' => BiddingResultResource::collection($this->biddingResults),
             'name' => $this->user->name,
             'email' => $this->user->email,
             'taxcode' => $this->user->taxcode,

@@ -147,6 +147,19 @@ class BidDocumentController extends Controller
         ], 200);
     }
 
+    public function getNameAndIds() {
+        $bidDocuments = $this->bidDocumentRepository->getNameAndIds();
+        return response()->json([
+            'result' => true,
+            'data' => $bidDocuments->map(function ($bidDocument) {
+                return [
+                    "id" => $bidDocument->id,
+                    "name" => 'HSDT của doanh nghiệp ' . $bidDocument->enterprise_name . ' nộp cho dự án '  . $bidDocument->project_name,
+                ];
+            }),
+        ], 200);
+    }
+
 
     /**
      * @OA\Get(
@@ -274,31 +287,6 @@ class BidDocumentController extends Controller
         $data = $request->all();
         $data['submission_date'] = now();
 
-
-        $project = $this->projectRepository->find($data['project_id']);
-
-        if ($project->status != ProjectStatus::RECEIVED->value) {
-            return response()->json([
-                'result' => false,
-                'message' => 'Dự án không ở trạng thái cho phép gửi hồ sơ dự thầu.',
-            ], 400);
-        }
-
-        if ($data['submission_date'] < $project->bid_submission_start) {
-            return response()->json([
-                'result' => false,
-                'message' => "Dự án sẽ nhận hồ sơ từ ngày {$project->bid_submission_start} đến ngày {$project->bid_submission_end}.",
-
-            ], 400);
-        }
-
-        if ($data['submission_date'] > $project->bid_submission_end) {
-            return response()->json([
-                'result' => false,
-                'message' => "Dự án đã dừng nhận hồ sơ từ ngày {$project->bid_submission_end}.",
-            ], 400);
-        }
-
         // Check if a bid document already exists for the given project_id and enterprise_id
         if ($this->bidDocumentRepository->findByProjectAndEnterprise($data['project_id'], $data['enterprise_id'])) {
             return response()->json([
@@ -309,6 +297,10 @@ class BidDocumentController extends Controller
 
         DB::beginTransaction();
         try {
+            if ($request->hasFile($data['file'])) {
+                $data['file'] = upload_file($data['file']);
+            }
+            $data['status'] = BidDocumentStatus::ACCEPTED->value;
             $bidDocument = $this->bidDocumentRepository->create($data);
             DB::commit();
             return response()->json([

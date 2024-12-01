@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SupportFormRequest;
 use App\Http\Resources\SupportCollection;
+use App\Jobs\SendSupportRequestMailJob;
 use App\Repositories\SupportRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -60,6 +61,7 @@ class SupportController extends Controller
             $data['document'] = upload_file($data['document']);
         }
         $this->supportRepository->create($data);
+        SendSupportRequestMailJob::dispatch($data);
         return response([
             'result' => true,
             'message' => 'Gửi thư hỗ trợ thành công',

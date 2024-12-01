@@ -23,6 +23,13 @@ class BiddingResultController extends Controller
 
     public function __construct(BiddingResultRepository $biddingResultRepository, ProjectRepository $projectRepository, UserRepository $userRepository, BidDocumentRepository $bidDocumentRepository)
     {
+
+        $this->middleware(['permission:list_bidding_result'])->only('index');
+        $this->middleware(['permission:create_bidding_result'])->only('store');
+        $this->middleware(['permission:update_bidding_result'])->only('update');
+        $this->middleware(['permission:detail_bidding_result'])->only('show');
+
+
         // permission here
         $this->biddingResultRepository = $biddingResultRepository;
         $this->projectRepository = $projectRepository;

@@ -2,25 +2,28 @@
 
 namespace App\Jobs;
 
-use App\Mail\sendEmailActiveMail;
+use App\Mail\ForgotPasswordMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class sendEmailActiveJob implements ShouldQueue
+class SendForgotPasswordJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $data;
+    public $data;
     /**
      * Create a new job instance.
      */
     public function __construct($data)
     {
+
         $this->data = $data;
+//        Log::error('JOB: ' .$this->data);
     }
 
     /**
@@ -28,7 +31,8 @@ class sendEmailActiveJob implements ShouldQueue
      */
     public function handle(): void
     {
+//        Log::info('JOB handle: ' .$this->data);
         Mail::to($this->data['email'])
-            ->send(new sendEmailActiveMail($this->data));
+            ->send(new ForgotPasswordMail($this->data));
     }
 }

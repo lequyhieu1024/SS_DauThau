@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\sendEmailActiveMail;
+use App\Mail\SupportRequestMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class sendEmailActiveJob implements ShouldQueue
+class SendSupportRequestMailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -29,6 +29,6 @@ class sendEmailActiveJob implements ShouldQueue
     public function handle(): void
     {
         Mail::to($this->data['email'])
-            ->send(new sendEmailActiveMail($this->data));
+            ->send(new SupportRequestMail($this->data));
     }
 }

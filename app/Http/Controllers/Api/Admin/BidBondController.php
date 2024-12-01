@@ -299,12 +299,11 @@ class BidBondController extends Controller
      *     )
      * )
      */
-    public function listAll(){
-        $bidBonds = $this->bidBondRepository->listAll();
+    public function getBondNumberAndIds(){
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách bảo lãnh dự thầu thành công.',
-            'data' =>  (new BidBondCollection($bidBonds))->toArrayWithoutPagination()
+            'data' =>  $this->bidBondRepository->getBondNumberAndIds()
         ], 200);
     }
 
@@ -673,15 +672,7 @@ class BidBondController extends Controller
             DB::beginTransaction();
 
             $data = $request->all();
-
-            $issueDate = $this->projectRepository->find($request->project_id)->submission_deadline;
-            $expiryValidation = $this->validateExpiryDate($request->expiry_date, $issueDate);
-            if (!$expiryValidation['result']) {
-                return response()->json($expiryValidation, 422);
-            }
-
             $data['bond_amount_in_words'] = SpellNumber::value($request->bond_amount)->toLetters();
-            $data['issue_date'] = $issueDate;
             $bidBond = $this->bidBondRepository->update($data, $id);
 
             DB::commit();

@@ -16,6 +16,7 @@ class BiddingResultResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user' => $this->enterprise->user,
             'enterprise' => $this->enterprise,
             'project' => $this->project,
             'bid_document' => $this->biddingDocument,

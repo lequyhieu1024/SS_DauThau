@@ -34,8 +34,24 @@ class EnterpriseController extends Controller
                 $this->middleware(['permission:list_enterprise'])->only('index');
                 $this->middleware(['permission:create_enterprise'])->only(['create', 'store']);
                 $this->middleware(['permission:update_enterprise'])->only(['edit', 'update', 'changeActive', 'banEnterprise']);
-                $this->middleware(['permission:detail_enterprise'])->only('show');
+//                $this->middleware(['permission:detail_enterprise'])->only('show');
                 $this->middleware(['permission:destroy_enterprise'])->only('destroy');
+                $this->middleware(['permission:move_to_blacklist_enterprise'])->only('moveToBlacklist');
+                $this->middleware(['permission:employee_qty_statistic_by_enterprise'])->only('employeeQtyStatisticByEnterprise');
+                $this->middleware(['permission:employee_education_level_statistic_by_enterprise'])->only('employeeEducationLevelStatisticByEnterprise');
+                $this->middleware(['permission:employee_salary_statistic_by_enterprise'])->only('employeeSalaryStatisticByEnterprise');
+                $this->middleware(['permission:employee_age_statistic_by_enterprise'])->only('employeeAgeStatisticByEnterprise');
+                $this->middleware(['permission:employee_project_statistic_by_enterprise'])->only('employeeProjectStatisticByEnterprise');
+                $this->middleware(['permission:bidding_result_statistics_by_enterprise'])->only('biddingResultStatisticsByEnterprise');
+                $this->middleware(['permission:average_difficulty_level_tasks_by_enterprise'])->only('averageDifficultyLevelTasksByEnterprise');
+                $this->middleware(['permission:average_difficulty_level_tasks_by_employee'])->only('averageDifficultyLevelTasksByEmployee');
+                $this->middleware(['permission:average_feedback_by_employee'])->only('averageFeedbackByEmployee');
+                $this->middleware(['permission:get_detail_enterprise_by_ids'])->only('getDetailEnterpriseByIds');
+                $this->middleware(['permission:project_completed_by_enterprise'])->only('projectCompletedByEnterprise');
+                $this->middleware(['permission:project_won_by_enterprise'])->only('projectWonByEnterprise');
+                $this->middleware(['permission:evaluations_statistics_by_enterprise'])->only('evaluationsStatisticsByEnterprise');
+                $this->middleware(['permission:reputations_statistics_by_enterprise'])->only('reputationsStatisticsByEnterprise');
+
 
         $this->enterpriseRepository = $enterpriseRepository;
         $this->userRepository = $userRepository;
@@ -129,7 +145,7 @@ class EnterpriseController extends Controller
 
             if ($request->hasFile('avatar')) {
                 $data['avatar'] = upload_image($request->file('avatar'));
-                isset($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
+                isset($this->enterpriseRepository->findOrFail($id)->avatar) && file_exists($this->enterpriseRepository->findOrFail($id)->avatar) ? unlink($this->enterpriseRepository->findOrFail($id)->avatar) : "";
             } else {
                 $data['avatar'] = $this->enterpriseRepository->findOrFail($id)->avatar;
             }
