@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectCollection;
+use App\Repositories\BidBondRepository;
+use App\Repositories\BiddingResultRepository;
 use App\Repositories\EnterpriseRepository;
+use App\Repositories\EvaluateRepository;
 use App\Repositories\IndustryRepository;
 use App\Repositories\ProjectRepository;
+use App\Repositories\StaffRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,7 +19,15 @@ class DashboardController extends Controller
     protected $projectRepository;
     protected $enterpriseRepository;
     protected $industryRepository;
-    public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository)
+    protected $staffRepository;
+    protected $bidBondRepository;
+    protected $biddingResultRepository;
+    protected $evaluateRepository;
+
+
+
+    public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository, StaffRepository $staffRepository, BidBondRepository $bidBondRepository, 
+    BiddingResultRepository $biddingResultRepository, EvaluateRepository $evaluateRepository)
     {
         //        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
         //        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
@@ -40,6 +52,10 @@ class DashboardController extends Controller
         $this->projectRepository = $projectRepository;
         $this->enterpriseRepository = $enterpriseRepository;
         $this->industryRepository = $industryRepository;
+        $this->staffRepository = $staffRepository;
+        $this->bidBondRepository = $bidBondRepository;
+        $this->biddingResultRepository = $biddingResultRepository;
+        $this->evaluateRepository = $evaluateRepository;
     }
 
     // Lấy tỷ lệ dự án theo nghành nghề
@@ -247,6 +263,42 @@ class DashboardController extends Controller
             'result' => true,
             'message' => "Lấy thành công",
             'data' => $this->industryRepository->countIndustries()
+        ], 200);
+    }
+
+    public function countStaff()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->staffRepository->countStaff()
+        ], 200);
+    }
+
+    public function countBidBond()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->bidBondRepository->countBidBond()
+        ], 200);
+    }
+
+    public function countBiddingResult()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->biddingResultRepository->countBiddingResult()
+        ], 200);
+    }
+
+    public function countEvaluate()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->evaluateRepository->countEvaluate()
         ], 200);
     }
 }

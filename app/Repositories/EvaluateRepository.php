@@ -33,4 +33,9 @@ class EvaluateRepository extends BaseRepository {
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function countEvaluate()
+    {
+        return $this->model->count();
+    }
 }

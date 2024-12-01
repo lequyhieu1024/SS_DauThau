@@ -53,4 +53,9 @@ class BiddingResultRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function countBiddingResult()
+    {
+        return $this->model->count();
+    }
 }

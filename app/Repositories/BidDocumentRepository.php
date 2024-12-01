@@ -60,5 +60,9 @@ class BidDocumentRepository extends BaseRepository
         return $query->get();
     }
 
+    public function countBidDocument()
+    {
+        return $this->model->count();
+    }
 
 }

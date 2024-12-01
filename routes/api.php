@@ -251,6 +251,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-projects', [DashboardController::class, 'countProjects']);
     Route::get('count-enterprises', [DashboardController::class, 'countEnterprises']);
     Route::get('count-industries', [DashboardController::class, 'countIndustries']);
+    Route::get('count-staff', [DashboardController::class, 'countStaff']);
+    Route::get('count-bidBond', [DashboardController::class, 'countBidBond']);
+    Route::get('count-biddingResult', [DashboardController::class, 'countBiddingResult']);
+    Route::get('count-evaluate', [DashboardController::class, 'countEvaluate']);
+
 });
 
 Route::group(['prefix' => 'admin'], function () {
