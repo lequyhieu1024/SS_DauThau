@@ -18,6 +18,8 @@ use App\Repositories\SelectionMethodRepository;
 use App\Repositories\StaffRepository;
 use App\Repositories\SupportRepository;
 use App\Repositories\TaskRepository;
+use App\Repositories\BidBondRepository;
+use App\Repositories\BiddingResultRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
