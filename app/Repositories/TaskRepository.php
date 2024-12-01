@@ -37,4 +37,9 @@ class TaskRepository extends BaseRepository
         $task = $this->model->findOrFail($id);
         return $task->employees()->sync($data['employee_id']);
     }
+
+    public function countTask()
+    {
+        return $this->model->count();
+    }
 }

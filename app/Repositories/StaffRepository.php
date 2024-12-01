@@ -40,4 +40,9 @@ class StaffRepository extends BaseRepository
     {
         return $this->model->with('user')->find($id);
     }
+
+    public function countStaff()
+    {
+        return $this->model->count();
+    }
 }

@@ -110,5 +110,9 @@ class IndustryRepository extends BaseRepository
         return $top10;
     }
 
+    public function countIndustries(){
+        return $this->model->count();
+    }
+
 
 }

@@ -20,4 +20,9 @@ class FeedbackComplaintRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function countFeedbackComplaint()
+    {
+        return $this->model->count();
+    }
 }
