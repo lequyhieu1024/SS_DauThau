@@ -95,7 +95,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectCountByIndustry();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data,
         ], 200);
     }
@@ -106,7 +106,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageByFundingSource();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -117,7 +117,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getDomesticPercentage();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -127,7 +127,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageBySubmissionMethod();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -137,7 +137,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageBySelectionMethod();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -147,7 +147,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageByTendererInvestor();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -157,7 +157,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getAverageProjectDurationByIndustry();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -167,7 +167,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getEnterpriseByOrganizationType();
         return response()->json([
             'result' => true,
-            'message' => 'Lấy thành công',
+            'message' => 'Số lượng ',
             'data' =>  $data
         ], 200);
     }
@@ -177,7 +177,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getTopTenderersByProjectCount();
         return response()->json([
             'result' => true,
-            'message' => '10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng',
+            'message' => '10 đơn vị mời thầu có tổng gói thầu nhiều nhất theo số lượng lượng',
             'data' =>  $data
         ], 200);
     }
@@ -237,7 +237,7 @@ class DashboardController extends Controller
         $year = $request->input('year') ?? Carbon::now()->year;
         return response()->json([
             'result' => true,
-            'message' => "Biểu đồ thể hiện số lượng doanh nghiệp tham gia hệ thống theo từng tháng trong năm $year",
+            'message' => "Biểu đồ thể hiện số lượng lượng doanh nghiệp tham gia hệ thống theo từng tháng trong năm $year",
             'data' =>  $this->enterpriseRepository->timeJoiningWebsite($year)
         ], 200);
     }
@@ -247,7 +247,7 @@ class DashboardController extends Controller
         $year = $request->input('year') ?? Carbon::now()->year;
         return response()->json([
             'result' => true,
-            'message' => "Biểu đồ thể hiện số lượng dự án hoàn thành, số lượng dự án được phê duyệt, số lượng dự án mở thầu theo từng tháng trong năm $year",
+            'message' => "Biểu đồ thể hiện số lượng lượng dự án hoàn thành, số lượng lượng dự án được phê duyệt, số lượng lượng dự án mở thầu theo từng tháng trong năm $year",
             'data' =>  $this->projectRepository->projectsStatusPerMonth($year)
         ], 200);
     }
@@ -256,7 +256,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Biểu đồ thể hiện số lượng dự án theo ngành nghề",
+            'message' => "Biểu đồ thể hiện số lượng lượng dự án theo ngành nghề",
             'data' =>  $this->industryRepository->top10IndustryHasTheMostProjects($this->industryRepository->getNameAndIdsActive())
         ], 200);
     }
@@ -265,7 +265,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Biểu đồ thể hiện số lượng doanh nghiệp theo ngành nghề",
+            'message' => "Biểu đồ thể hiện số lượng lượng doanh nghiệp theo ngành nghề",
             'data' =>  $this->industryRepository->top10IndustryHasTheMostEnterprises($this->industryRepository->getNameAndIdsActive())
         ], 200);
     }
@@ -274,7 +274,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng dự án",
             'data' => $this->projectRepository->countProjects()
         ], 200);
     }
@@ -283,7 +283,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng doanh nghiệp",
             'data' => $this->enterpriseRepository->countEnterprises()
         ], 200);
     }
@@ -292,7 +292,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng ngành nghề",
             'data' => $this->industryRepository->countIndustries()
         ], 200);
     }
@@ -301,7 +301,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng nhân viên hệ thống",
             'data' => $this->staffRepository->countStaff()
         ], 200);
     }
@@ -310,7 +310,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng bảo lãnh dự thầu",
             'data' => $this->bidBondRepository->countBidBond()
         ], 200);
     }
@@ -319,7 +319,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng kết quả đấu thầu",
             'data' => $this->biddingResultRepository->countBiddingResult()
         ], 200);
     }
@@ -328,7 +328,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng đánh giá",
             'data' => $this->evaluateRepository->countEvaluate()
         ], 200);
     }
@@ -337,7 +337,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng chi tiết đánh giá",
             'data' => $this->evaluationCriteriaRepository->countEvaluationCriteria()
         ], 200);
     }
@@ -346,7 +346,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng khiếu nại và phản hồi",
             'data' => $this->feedbackComplaintRepository->countFeedbackComplaint()
         ], 200);
     }
@@ -355,7 +355,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng nguồn tài trợ",
             'data' => $this->fundingSourceRepository->countFundingSource()
         ], 200);
     }
@@ -364,7 +364,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng danh mục bài viết",
             'data' => $this->postCatalogRepository->countPostCatalog()
         ], 200);
     }
@@ -373,7 +373,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng bài viết",
             'data' => $this->postRepository->countPost()
         ], 200);
     }
@@ -382,7 +382,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng lĩnh vực mua sắm công",
             'data' => $this->procurementCategoryRepository->countProcurementCategory()
         ], 200);
     }
@@ -391,7 +391,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng phương thức lựa chọn nhà thầu",
             'data' => $this->selectionMethodRepository->countSelectionMethod()
         ], 200);
     }
@@ -400,7 +400,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng yêu cầu hỗ trợ",
             'data' => $this->supportRepository->countSupport()
         ], 200);
     }
@@ -409,7 +409,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Lấy thành công",
+            'message' => "Số lượng nhiệm vụ",
             'data' => $this->taskRepository->countTask()
         ], 200);
     }
