@@ -61,6 +61,12 @@ class ProjectRepository extends BaseRepository
             $query->where('staff_id',$data['staff']);
         }
 
+        if (isset($data['win'])) {
+            $query->whereHas('biddingResult', function ($query) use ($data) {
+                $query->where('enterprise_id', $data['win']);
+            });
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
@@ -131,7 +137,7 @@ class ProjectRepository extends BaseRepository
             ->whereNull('parent_id')
             ->with(['children' => function ($query) {
                 $query->select('id', 'name', 'parent_id');
-            }])
+            }])->orderBy('id','desc')
             ->get();
     }
 

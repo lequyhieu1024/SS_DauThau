@@ -48,6 +48,7 @@ class EnterpriseRepository extends BaseRepository
         if (isset($data['is_blacklist'])) {
             $query->where('is_blacklist', '=', $data['is_blacklist']);
         }
+
         if (isset($data['industry_ids']) && is_array($data['industry_ids'])) {
             $data['industry_ids'] = array_filter($data['industry_ids'], function ($value) {
                 return $value !== null && $value !== '';

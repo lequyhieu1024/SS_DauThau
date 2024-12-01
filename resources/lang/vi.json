@@ -196,5 +196,6 @@
     "Compare Bar Chart Bidder Count": "So sánh biểu đồ cột số lượng nhà thầu",
     "Approve Project": "Duyệt dự án",
     "Project By Staff": "Dự án theo nhân viên",
-    "Ban Staff": "Cấm nhân viên"
+    "Ban Staff": "Cấm nhân viên",
+    "Get Detail Project By Ids" : "Chi tiết dự án theo nhân viên"
 }

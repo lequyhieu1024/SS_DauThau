@@ -18,7 +18,7 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function getNameAndIds()
     {
-        return $this->model->select('id', 'name')->get();
+        return $this->model->select('id', 'name')->orderBy('id', 'DESC')->get();
     }
 
     public function getNameAndIdTreeSelect() {
@@ -32,11 +32,11 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function getAllNotPaginate()
     {
-        return $this->model->all();
+        return $this->model->orderBy('id', 'DESC')->get();
     }
 
     public function getNameAndIdsActive() {
-        return $this->model->select('id', 'name')->where('is_active', 1)->get();
+        return $this->model->select('id', 'name')->where('is_active', 1)->orderBy('id', 'DESC')->get();
     }
 
     public function create(array $data)
