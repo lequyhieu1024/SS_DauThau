@@ -255,7 +255,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-bidBond', [DashboardController::class, 'countBidBond']);
     Route::get('count-biddingResult', [DashboardController::class, 'countBiddingResult']);
     Route::get('count-evaluate', [DashboardController::class, 'countEvaluate']);
-
+    Route::get('count-evaluation-criteria', [DashboardController::class, 'countEvaluationCriteria']);
+    Route::get('count-feedback-complaint', [DashboardController::class, 'countFeedbackComplaint']);
+    Route::get('count-funding-source', [DashboardController::class, 'countFundingSource']);
+ 
 });
 
 Route::group(['prefix' => 'admin'], function () {

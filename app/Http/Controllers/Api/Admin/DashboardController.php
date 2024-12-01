@@ -8,6 +8,9 @@ use App\Repositories\BidBondRepository;
 use App\Repositories\BiddingResultRepository;
 use App\Repositories\EnterpriseRepository;
 use App\Repositories\EvaluateRepository;
+use App\Repositories\EvaluationCriteriaRepository;
+use App\Repositories\FeedbackComplaintRepository;
+use App\Repositories\FundingSourceRepository;
 use App\Repositories\IndustryRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\StaffRepository;
@@ -23,11 +26,16 @@ class DashboardController extends Controller
     protected $bidBondRepository;
     protected $biddingResultRepository;
     protected $evaluateRepository;
+    
+    protected $evaluationCriteriaRepository;
+    protected $feedbackComplaintRepository;
+    protected $fundingSourceRepository;
 
 
 
     public function __construct(ProjectRepository $projectRepository, EnterpriseRepository $enterpriseRepository, IndustryRepository $industryRepository, StaffRepository $staffRepository, BidBondRepository $bidBondRepository, 
-    BiddingResultRepository $biddingResultRepository, EvaluateRepository $evaluateRepository)
+    BiddingResultRepository $biddingResultRepository, EvaluateRepository $evaluateRepository, EvaluationCriteriaRepository $evaluationCriteriaRepository, FeedbackComplaintRepository $feedbackComplaintRepository,
+    FundingSourceRepository $fundingSourceRepository)
     {
         //        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
         //        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
@@ -56,6 +64,9 @@ class DashboardController extends Controller
         $this->bidBondRepository = $bidBondRepository;
         $this->biddingResultRepository = $biddingResultRepository;
         $this->evaluateRepository = $evaluateRepository;
+        $this->evaluationCriteriaRepository = $evaluationCriteriaRepository;
+        $this->feedbackComplaintRepository = $feedbackComplaintRepository;
+        $this->fundingSourceRepository = $fundingSourceRepository;
     }
 
     // Lấy tỷ lệ dự án theo nghành nghề
@@ -301,4 +312,32 @@ class DashboardController extends Controller
             'data' => $this->evaluateRepository->countEvaluate()
         ], 200);
     }
+
+    public function countEvaluationCriteria()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->evaluationCriteriaRepository->countEvaluationCriteria()
+        ], 200);
+    }
+
+    public function countFeedbackComplaint()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->feedbackComplaintRepository->countFeedbackComplaint()
+        ], 200);
+    }
+
+    public function countFundingSource()
+    {
+        return response()->json([
+            'result' => true,
+            'message' => "Lấy thành công",
+            'data' => $this->fundingSourceRepository->countFundingSource()
+        ], 200);
+    }
+
 }

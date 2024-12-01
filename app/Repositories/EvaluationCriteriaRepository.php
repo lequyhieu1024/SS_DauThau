@@ -29,4 +29,9 @@ class EvaluationCriteriaRepository extends BaseRepository
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function countEvaluationCriteria()
+    {
+        return $this->model->count();
+    }
 }
