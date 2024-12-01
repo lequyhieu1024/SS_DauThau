@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Jobs\SendForgotPasswordJob;
 use App\Models\User;
 use App\Repositories\EnterpriseRepository;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -272,13 +273,18 @@ class AuthController extends Controller
                     'message' => "Người dùng không tồn tại",
                 ], 200);
             }
-//            $data['password'] = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, 12);
-//            $this->userRepository->update($data, $user->id);
-//            $user['newPassword'] = $data['password'];
-//            $userData = $user->toArray();
-//            $userData['newPassword'] = $data['password'];
-            SendForgotPasswordJob::dispatch($user);
-//            $this->userRepository->update($data, $user->id);
+            $token = Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->input('email')],
+                [
+                    'token' => $token,
+                    'created_at' => now(),
+                ]
+            );
+            $userData = $user->toArray();
+            $userData['token'] = $token;
+            SendForgotPasswordJob::dispatch($userData);
             DB::commit();
             return response([
                 'result' => true,
@@ -290,21 +296,13 @@ class AuthController extends Controller
         }
     }
 
-    public function changePassword(Request $request) {
+    public function changePassword(ChangePasswordRequest $request) {
         $data = $request->all();
-        if ($data['password'] !== $data['password_confirmation']) {
-            return response([
-                'result' => false,
-                'message' => "Mật khẩu xác nhận không khớp",
-            ], 422);
+        $resetToken = DB::table('password_reset_tokens')->where('email', $data['email'])->first();
+        if (!$resetToken || $resetToken->token !== $data['token']) {
+            return response(['result' => false, 'message' => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.'], 400);
         }
         $user = $this->userRepository->firstWhere('email', $data['email']);
-        if (!$user) {
-            return response([
-                'result' => false,
-                'message' => "Người dùng không tồn tại",
-            ], 400);
-        }
         $data = array_intersect_key($data, ['password' => '']);
         $this->userRepository->update($data, $user->id);
         return response([
