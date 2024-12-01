@@ -20,7 +20,7 @@ class EmployeeFactory extends Factory
         $enterprises = Enterprise::all();
         return [
             'enterprise_id' => $enterprises->random()->id,
-            'code' => 'NV' . $this->faker->unique()->randomNumber(8, true),
+            'code' => 'NV' . $this->faker->unique()->randomNumber(9, true),
             'avatar' => $this->faker->imageUrl(),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
