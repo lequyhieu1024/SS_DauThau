@@ -427,6 +427,26 @@ class BidDocumentController extends Controller
      *     )
      * )
      */
+    public function update(BidDocumentFormRequest $request, $id) {
+        $data = $request->all();
+
+        try {
+            if ($request->hasFile($data['file'])) {
+                $data['file'] = upload_file($data['file']);
+            }
+            $this->bidDocumentRepository->update($data, $id);
+            return response()->json([
+                'result' => true,
+                'message' => 'Cập nhật hồ sơ dự thầu thành công',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Lỗi khi tạo hồ sơ dự thầu',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         try {
