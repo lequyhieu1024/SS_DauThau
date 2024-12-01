@@ -28,7 +28,7 @@ class BidDocumentResource extends JsonResource
             'validity_period' => $this->validity_period,
             'status' => $this->status,
             'note' => $this->note,
-            'file' => $this->file,
+            'file' => env('APP_URL') . '/' . $this->file,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
