@@ -427,13 +427,14 @@ class BidDocumentController extends Controller
      *     )
      * )
      */
-    public function update(BidDocumentFormRequest $request, $id) {
+    public function update (BidDocumentFormRequest $request, $id) {
         $data = $request->all();
 
         try {
-            if ($request->hasFile($data['file'])) {
-                $data['file'] = upload_file($data['file']);
+            if ($request->hasFile('file')) {
+                $data['file'] = upload_file($request->file('file'));
             }
+
             $this->bidDocumentRepository->update($data, $id);
             return response()->json([
                 'result' => true,
