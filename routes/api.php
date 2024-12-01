@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BidBondController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\Api\BiddingResultController;
 use App\Http\Controllers\Api\BiddingTypeController;
 use App\Http\Controllers\Api\BidDocumentController;
 use App\Http\Controllers\Api\BusinessActivityTypeController;
-use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\EnterpriseController;
 use App\Http\Controllers\Api\EvaluateController;
@@ -34,7 +34,6 @@ use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -260,7 +259,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-selection-method', [DashboardController::class, 'countSelectionMethod']);
     Route::get('count-support', [DashboardController::class, 'countSupport']);
     Route::get('count-task', [DashboardController::class, 'countTask']);
-    
+
 });
 
 Route::group(['prefix' => 'admin'], function () {
