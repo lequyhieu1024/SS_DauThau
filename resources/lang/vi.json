@@ -194,5 +194,7 @@
     "Compare Bar Chart Bid Submission Time": "So sánh biểu đồ cột thời gian nộp thầu",
     "Compare Pie Chart Total Amount": "So sánh biểu đồ tròn tổng giá trị",
     "Compare Bar Chart Bidder Count": "So sánh biểu đồ cột số lượng nhà thầu",
-    "Get Detail Project By IDs": "Lấy chi tiết dự án theo danh sách ID"
+    "Approve Project": "Duyệt dự án",
+    "Project By Staff": "Dự án theo nhân viên",
+    "Ban Staff": "Cấm nhân viên"
 }
