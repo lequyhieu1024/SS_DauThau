@@ -20,6 +20,7 @@ class EvaluateCollection extends ResourceCollection
                     'id' => $evaluate->id,
                     'project' => $evaluate->project,
                     'enterprise' => $evaluate->enterprise,
+                    'user' => $evaluate->enterprise->user,
                     'title' => $evaluate->title,
                     'score' => $evaluate->score,
                     'evaluate' => $evaluate->evaluate,
