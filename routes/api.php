@@ -60,6 +60,7 @@ Route::group(['prefix' => 'auth'], function () {
     // Route::post('register', [AuthController::class, 'register']);
 
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('refresh-token', [AuthController::class, 'refreshToken']);
 
     Route::post('send-mail-forgot-password', [AuthController::class, 'sendMailForPasswordReset']);
     Route::post('change-password', [AuthController::class, 'changePassword']);

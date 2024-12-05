@@ -50,7 +50,7 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $data['enterprise_id'] = $this->userRepository->getEnterpriseId(Auth::user()->id);
+//        $data['enterprise_id'] = $this->userRepository->getEnterpriseId(Auth::user()->id);
         $projects = $this->projectRepository->filter($data);
         return response([
             'result' => true,
