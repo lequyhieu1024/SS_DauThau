@@ -21,14 +21,16 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-        if ($data['enterprise_id'] == null) {
-            $query = $this->model->with('children')->whereNull('parent_id');
-        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
-                $query->where('investor_id', $data['enterprise_id'])
-                    ->orWhere('tenderer_id', $data['enterprise_id']);
-            });
-        }
+//        if ($data['enterprise_id'] == null) {
+//            $query = $this->model->with('children')->whereNull('parent_id');
+//        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+//            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
+//                $query->where('investor_id', $data['enterprise_id'])
+//                    ->orWhere('tenderer_id', $data['enterprise_id']);
+//            });
+//        }
+        $query = $this->model->with('children')->whereNull('parent_id');
+
         // logic loc du an
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
