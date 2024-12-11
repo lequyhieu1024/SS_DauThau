@@ -21,7 +21,35 @@ class SupportRepository extends BaseRepository
     public function filter($data)
     {
         $query = $this->model->query();
-        // logic loc du an
+
+        if (isset($data['username'])) {
+            $query->where(function ($query) use ($data) {
+                $query->whereHas('users', function ($query) use ($data) {
+                    $query->where('users.name', 'like', '%' . $data['username'] . '%');
+                })->orWhereNull('user_id');
+            });
+        }
+
+
+        if (isset($data['title'])) {
+            $query->where('title', 'like', '%' . $data['title'] . '%');
+        }
+
+        if (isset($data['email'])) {
+            $query->where('email', 'like', '%' . $data['email'] . '%');
+        }
+
+        if (isset($data['phone'])) {
+            $query->where('phone', 'like', '%' . $data['phone'] . '%');
+        }
+
+        if (isset($data['type'])) {
+            $query->where('type', $data['type']);
+        }
+
+        if (isset($data['status'])) {
+            $query->where('status', $data['status']);
+        }
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
