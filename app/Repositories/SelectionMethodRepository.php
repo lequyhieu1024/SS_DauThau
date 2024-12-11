@@ -51,7 +51,7 @@ class SelectionMethodRepository extends BaseRepository
 
     public function getSelectionMethod()
     {
-        return $this->model->select('id', 'method_name')->get();
+        return $this->model->select('id', 'method_name')->orderBy('id', 'desc')->get();
     }
 
     public function countSelectionMethod()

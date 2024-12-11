@@ -57,7 +57,7 @@ class BidDocumentRepository extends BaseRepository
             ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
             ->join('users', 'users.id', '=', 'enterprises.user_id');
 
-        return $query->get();
+        return $query->orderBy('id', 'DESC')->get();
     }
 
     public function countBidDocument()

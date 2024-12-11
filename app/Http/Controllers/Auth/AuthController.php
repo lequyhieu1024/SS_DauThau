@@ -70,7 +70,6 @@ class AuthController extends Controller
             'email.required' => 'Email không được để trống',
         ];
 
-        // Xác thực yêu cầu
         $validator = Validator::make($request->all(), [
             'taxcode' => [
                 'required_without:email',
@@ -98,40 +97,41 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        // Lấy thông tin xác thực
-        $credentials = $request->only('taxcode', 'email', 'password', 'account_ban_at');
+        $credentials = $request->only('taxcode', 'email', 'password');
         $credentials = array_filter($credentials); // Xóa các trường rỗng
 
         try {
             $user = User::where('taxcode', $request->taxcode)
                 ->orWhere('email', $request->email)
                 ->first();
-            if ($user->account_ban_at != NULL) {
+
+            if ($user->account_ban_at != null) {
                 return response()->json(
                     ['result' => false, 'message' => 'Tài khoản đã bị cấm'],
                     400
                 );
             }
+
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(
                     ['result' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác'],
                     401
                 );
             }
+
+            return $this->respondWithToken($token, $user);
         } catch (JWTException $e) {
             return response()->json(['result' => false, 'message' => 'Không thể tạo token'], 500);
         }
-
-        return $this->respondWithToken($token);
     }
 
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $user)
     {
         return response()->json([
             'data' => [
                 'access_token' => $token,
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                'refresh_token' => JWTAuth::fromUser(auth()->user(), ['refresh' => true])
+                'refresh_token' => JWTAuth::fromUser($user, ['refresh' => true]),
             ]
         ]);
     }
@@ -140,19 +140,31 @@ class AuthController extends Controller
     {
         try {
             $token = $request->header('Authorization');
+            $token = str_replace('Bearer ', '', $token);
 
-            if (!$user = JWTAuth::setToken($token)->authenticate()) {
+            $payload = JWTAuth::setToken($token)->getPayload();
+
+            $user = JWTAuth::setToken($token)->authenticate();
+
+            if (!$user) {
                 return response()->json(['result' => false, 'message' => 'Token không hợp lệ'], 401);
             }
 
-            // Tạo token mới
             $newToken = JWTAuth::fromUser($user);
 
-            return $this->respondWithToken($newToken);
+            return response()->json([
+                'result' => true,
+                'access_token' => $newToken,
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            ]);
+        } catch (TokenExpiredException $e) {
+            return response()->json(['result' => false, 'message' => 'Token đã hết hạn'], 401);
         } catch (JWTException $e) {
             return response()->json(['result' => false, 'message' => 'Không thể làm mới token'], 500);
         }
     }
+
+
 
     public function profile()
     {

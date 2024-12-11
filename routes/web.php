@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\AttachmentController;
-use App\Models\Enterprise;
-use App\Models\Industry;
+use App\Http\Controllers\Api\AttachmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
