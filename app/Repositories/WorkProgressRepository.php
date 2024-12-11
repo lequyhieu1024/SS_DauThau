@@ -36,4 +36,5 @@ class WorkProgressRepository extends BaseRepository {
         $progress = $this->model->findOrFail($id);
         return $progress->taskProgresses()->sync($data['task_ids']);
     }
+
 }

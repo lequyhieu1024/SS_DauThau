@@ -42,4 +42,27 @@ class TaskRepository extends BaseRepository
     {
         return $this->model->count();
     }
+
+    public function compareRatioDificultyByProject($project_ids) {
+        $taskCounts = $this->model
+            ->select('difficulty_level', \DB::raw('COUNT(*) as count'))
+            ->whereIn('project_id', $project_ids)
+            ->groupBy('difficulty_level')
+            ->get()
+            ->pluck('count', 'difficulty_level')
+            ->toArray();
+
+        $easyCount = $taskCounts['easy'] ?? 0;
+        $mediumCount = $taskCounts['medium'] ?? 0;
+        $hardCount = $taskCounts['hard'] ?? 0;
+        $veryHardCount = $taskCounts['very_hard'] ?? 0;
+
+        return [
+            'easy' => $easyCount,
+            'medium' => $mediumCount,
+            'hard' => $hardCount,
+            'very_hard' => $veryHardCount,
+        ];
+    }
+
 }

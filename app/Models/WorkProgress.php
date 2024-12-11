@@ -35,6 +35,10 @@ class WorkProgress extends Model
         return $this->belongsToMany(Task::class, 'task_progresses');
     }
 
+    public function tasks() {
+        return $this->belongsToMany(Task::class, 'task_progresses');
+    }
+
     protected function getModelName(): string
     {
         return 'Tiến độ nhiệm vụ của dự án - WorkProgress';
