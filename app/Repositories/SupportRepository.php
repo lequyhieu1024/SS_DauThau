@@ -22,10 +22,10 @@ class SupportRepository extends BaseRepository
     {
         $query = $this->model->query();
 
-        if (isset($data['username'])) {
+        if (isset($data['sender'])) {
             $query->where(function ($query) use ($data) {
                 $query->whereHas('users', function ($query) use ($data) {
-                    $query->where('users.name', 'like', '%' . $data['username'] . '%');
+                    $query->where('users.name', 'like', '%' . $data['sender'] . '%');
                 })->orWhereNull('user_id');
             });
         }
