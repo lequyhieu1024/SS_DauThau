@@ -23,6 +23,6 @@ class Post extends Model
     }
 
     public function postCatalogs(){
-        return $this->belongsToMany(PostCatalog::class, 'post_catalog_links');
+        return $this->belongsToMany(PostCatalog::class, 'post_catalog_links', 'post_id', 'post_catalog_id');
     }
 }

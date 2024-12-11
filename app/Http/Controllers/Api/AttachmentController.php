@@ -38,7 +38,7 @@ class AttachmentController extends Controller
         return response([
             'result' => 'true',
             'message' => 'Lấy danh sách liệu đính kèm thành công',
-            'attachments' => new AttachmentCollection($this->attachmentRepository->filter($request->all()))
+            'data' => new AttachmentCollection($this->attachmentRepository->filter($request->all()))
         ], 200);
     }
 
