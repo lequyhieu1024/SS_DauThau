@@ -31,7 +31,7 @@ class BannerFormRequest extends FormRequest
                 'max:191',
                 'unique:banners,name,' . $id
             ],
-            'path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'path' => request()->isMethod('POST') ? 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000' : "nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000",
             'is_active' => 'required|boolean',
         ];
     }
