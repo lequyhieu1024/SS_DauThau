@@ -13,11 +13,11 @@ class InstructController extends Controller
 {
     protected $instructRepository;
     public function __construct(InstructRepository $instructRepository){
-         $this->middleware(['permission:list_instruct'])->only('index');
-         $this->middleware(['permission:create_instruct'])->only('store');
-         $this->middleware(['permission:update_instruct'])->only('update', 'changeActive');
-         $this->middleware(['permission:detail_instruct'])->only('edit');
-         $this->middleware(['permission:destroy_instruct'])->only('destroy');
+        //  $this->middleware(['permission:list_instruct'])->only('index');
+        //  $this->middleware(['permission:create_instruct'])->only('store');
+        //  $this->middleware(['permission:update_instruct'])->only('update', 'changeActive');
+        //  $this->middleware(['permission:detail_instruct'])->only('edit');
+        //  $this->middleware(['permission:destroy_instruct'])->only('destroy');
 
         $this->instructRepository = $instructRepository;
 
@@ -150,31 +150,66 @@ class InstructController extends Controller
     }
 
     public function changeActive($id){
-        $activeCount = $this->instructRepository->countActive();
+        // $activeCount = $this->instructRepository->countActive();
+        // if ($activeCount === 0 ) {
+        //     return response([
+        //         'result' => false,
+        //         'status' => 400,
+        //         'message' => 'Bắt buộc phải có 1 instruct được sử dụng'
+        //     ], 400);
+        // }
 
-        if ($activeCount != "1") {
+        // $currentActiveInstruct = $this->instructRepository->getCurrentActive();
+
+        // $instruct = $this->instructRepository->findOrFail($id);
+
+        // $instruct->is_use = !$instruct->is_use;
+        // $instruct->save();
+
+        // $currentActiveInstruct->is_use = !$currentActiveInstruct->is_use;
+        // $currentActiveInstruct->save();
+
+        // return response([
+        //     'result' => true,
+        //     'status' => 200,
+        //     'message' => 'Thay đổi trạng thái thành công',
+        //     'is_active' => $instruct->is_use
+        // ], 200);
+        // $activeCount = $this->instructRepository->countActive();
+        // if ($activeCount === 0 ) {
+        //     return response([
+        //         'result' => false,
+        //         'status' => 400,
+        //         'message' => 'Bắt buộc phải có 1 instruct được sử dụng'
+        //     ], 400);
+        // }
+        
+            $instruct = $this->instructRepository->findOrFail($id);
+            if ($this->instructRepository->countActive() == 1) {
+                if ($instruct->is_use) {
+                    return response([
+                        'result' => false,
+                        'message' => "Cần phải để ít nhất một hướng dẫn sử dụng ở trạng thái hoạt động",
+                    ], 400);
+                }
+    
+                $instruct->is_use = !$instruct->is_use;
+                $instructUsing = $this->instructRepository->getCurrentActive();
+                $instructUsing->is_use = !$instructUsing->is_use;
+                $instructUsing->save();
+            } else if ($this->instructRepository->countActive() > 1 ){
+                $this->instructRepository->resetIsUseColumn();
+            }
+            $instruct->is_use = true;
+            $instruct->save();
+    
+    
             return response([
-                'result' => false,
-                'status' => 400,
-                'message' => 'Bắt buộc phải có 1 instruct được sử dụng'
-            ], 400);
-        }
-
-        $currentActiveInstruct = $this->instructRepository->getCurrentActive();
-
-        $instruct = $this->instructRepository->findOrFail($id);
-
-        $instruct->is_use = !$instruct->is_use;
-        $instruct->save();
-
-        $currentActiveInstruct->is_use = !$currentActiveInstruct->is_use;
-        $currentActiveInstruct->save();
-
-        return response([
-            'result' => true,
-            'status' => 200,
-            'message' => 'Thay đổi trạng thái thành công',
-            'is_active' => $instruct->is_use
-        ], 200);
+                'result' => true,
+                'message' => 'Thay đổi trạng thái thành công',
+            ], 200);
+        
     }
+
+    
 }
