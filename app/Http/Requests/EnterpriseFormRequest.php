@@ -46,7 +46,7 @@ class EnterpriseFormRequest extends FormRequest
             'phone' =>  [
                 'required',
                 $isPutOrPatch ? 'unique:enterprises,phone,' . $this->route('enterprise') : 'unique:enterprises,phone',
-                'regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
+                'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/'
             ],
 
             'address' => 'required|max:191',
