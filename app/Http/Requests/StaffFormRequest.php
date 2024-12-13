@@ -44,7 +44,7 @@ class StaffFormRequest extends FormRequest
             ],
             'phone' => [
                 'required',
-                'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
+                'regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
                 request()->isMethod('PUT') ? 'unique:staffs,phone,' . $this->route('staff') : 'unique:staffs,phone'
             ],
             'password' => request()->isMethod('PUT') ? '' : 'required',

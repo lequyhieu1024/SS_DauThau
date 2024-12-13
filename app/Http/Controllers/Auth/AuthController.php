@@ -215,7 +215,7 @@ class AuthController extends Controller
                     'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'phone' =>  [
                         'required',
-                        'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
+                        'regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
                     ],
                     'address' => 'required|max:191',
                     'website' => 'required|max:191',
@@ -247,7 +247,7 @@ class AuthController extends Controller
                     'email' => 'required',
                     'phone' => [
                         'required',
-                        'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
+                        'regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
                     ],
                 ];
                 $validator = Validator::make($data, $rules);
