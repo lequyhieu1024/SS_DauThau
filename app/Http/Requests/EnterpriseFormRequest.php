@@ -51,8 +51,8 @@ class EnterpriseFormRequest extends FormRequest
 
             'address' => 'required|max:191',
             'website' => 'required|max:191',
-            'establish_date' => 'required|date|before:today|after_or_equal:1900-01-01',
-            'registration_date' => 'required|date|before:today|after_or_equal:1900-01-01',
+            'establish_date' => 'required|date|before_or_equal:today|after_or_equal:1900-01-01',
+            'registration_date' => 'required|date|before_or_equal:today|after_or_equal:1900-01-01',
             'registration_number' => 'required|max:50',
             'organization_type' => 'required|in:1,2',
             'is_active' => 'required|in:1,0',
