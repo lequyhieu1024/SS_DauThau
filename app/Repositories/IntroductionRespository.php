@@ -46,5 +46,8 @@ class IntroductionRespository extends BaseRepository
     public function getIntroductionLandipage() {
         return $this->model->where('is_use', true)->first();
     }
+    public function resetIsUseColumn() {
+        return $this->model->where('is_use', true)->update(['is_use' => false]);
+    }
 }
 
