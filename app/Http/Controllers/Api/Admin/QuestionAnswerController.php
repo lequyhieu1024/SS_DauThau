@@ -14,11 +14,11 @@ class QuestionAnswerController extends Controller
 {
     protected $questionAnswerRepository;
     public function __construct(QuestionAnswerRepository $questionAnswerRepository){
-        // $this->middleware(['permission:list_question_answer'])->only('index');
-        // $this->middleware(['permission:create_question_answer'])->only(['store']);
-        // $this->middleware(['permission:update_question_answer'])->only(['update', 'changeActive']);
-        // $this->middleware(['permission:detail_question_answer'])->only('edit');
-        // $this->middleware(['permission:destroy_question_answer'])->only('destroy');
+        $this->middleware(['permission:list_question_answer'])->only('index');
+        $this->middleware(['permission:create_question_answer'])->only(['store']);
+        $this->middleware(['permission:update_question_answer'])->only(['update', 'changeActive']);
+        $this->middleware(['permission:detail_question_answer'])->only('edit');
+        $this->middleware(['permission:destroy_question_answer'])->only('destroy');
 
         $this->questionAnswerRepository = $questionAnswerRepository;
     }
@@ -127,7 +127,7 @@ class QuestionAnswerController extends Controller
                 ], 404);
             }
 
-            // Xóa câu hỏi/câu trả lời
+
             $this->questionAnswerRepository->delete($id);
             return response()->json([
                 'result' => true,

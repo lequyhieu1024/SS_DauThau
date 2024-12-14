@@ -13,11 +13,11 @@ class InstructController extends Controller
 {
     protected $instructRepository;
     public function __construct(InstructRepository $instructRepository){
-        //  $this->middleware(['permission:list_instruct'])->only('index');
-        //  $this->middleware(['permission:create_instruct'])->only('store');
-        //  $this->middleware(['permission:update_instruct'])->only('update', 'changeActive');
-        //  $this->middleware(['permission:detail_instruct'])->only('edit');
-        //  $this->middleware(['permission:destroy_instruct'])->only('destroy');
+         $this->middleware(['permission:list_instruct'])->only('index');
+         $this->middleware(['permission:create_instruct'])->only('store');
+         $this->middleware(['permission:update_instruct'])->only('update', 'changeActive');
+         $this->middleware(['permission:detail_instruct'])->only('edit');
+         $this->middleware(['permission:destroy_instruct'])->only('destroy');
 
         $this->instructRepository = $instructRepository;
 
