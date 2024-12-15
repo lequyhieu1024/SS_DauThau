@@ -46,13 +46,13 @@ class EnterpriseFormRequest extends FormRequest
             'phone' =>  [
                 'required',
                 $isPutOrPatch ? 'unique:enterprises,phone,' . $this->route('enterprise') : 'unique:enterprises,phone',
-                'regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/'
+                'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/'
             ],
 
             'address' => 'required|max:191',
             'website' => 'required|max:191',
-            'establish_date' => 'required|date|before:today|after_or_equal:1900-01-01',
-            'registration_date' => 'required|date|before:today|after_or_equal:1900-01-01',
+            'establish_date' => 'required|date|before_or_equal:today|after_or_equal:1900-01-01',
+            'registration_date' => 'required|date|before_or_equal:today|after_or_equal:1900-01-01',
             'registration_number' => 'required|max:50',
             'organization_type' => 'required|in:1,2',
             'is_active' => 'required|in:1,0',

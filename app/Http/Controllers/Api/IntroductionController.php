@@ -149,32 +149,58 @@ class IntroductionController extends Controller
         ], 200);
     }
 
+    // public function changeActive($id){
+    //     $activeCount = $this->introductionRespository->countActive();
+
+    //     if ($activeCount != "1") {
+    //         return response([
+    //             'result' => false,
+    //             'status' => 400,
+    //             'message' => 'Bắt buộc phải có 1 introduction được sử dụng'
+    //         ], 400);
+    //     }
+
+    //     $currentActiveIntroduction = $this->introductionRespository->getCurrentActive();
+
+    //     $introduction = $this->introductionRespository->findOrFail($id);
+
+    //     $introduction->is_use = !$introduction->is_use;
+    //     $introduction->save();
+
+    //     $currentActiveIntroduction->is_use = !$currentActiveIntroduction->is_use;
+    //     $currentActiveIntroduction->save();
+
+    //     return response([
+    //         'result' => true,
+    //         'status' => 200,
+    //         'message' => 'Thay đổi trạng thái thành công',
+    //         'is_active' => $introduction->is_use
+    //     ], 200);
+    // }
     public function changeActive($id){
-        $activeCount = $this->introductionRespository->countActive();
-
-        if ($activeCount != "1") {
-            return response([
-                'result' => false,
-                'status' => 400,
-                'message' => 'Bắt buộc phải có 1 introduction được sử dụng'
-            ], 400);
-        }
-
-        $currentActiveIntroduction = $this->introductionRespository->getCurrentActive();
-
         $introduction = $this->introductionRespository->findOrFail($id);
+        if ($this->introductionRespository->countActive() == 1) {
+            if ($introduction->is_use) {
+                return response([
+                    'result' => false,
+                    'message' => "Cần phải để ít nhất một hướng dẫn sử dụng ở trạng thái hoạt động",
+                ], 400);
+            }
 
-        $introduction->is_use = !$introduction->is_use;
+            $introduction->is_use = !$introduction->is_use;
+            $introductionUsing = $this->introductionRespository->getCurrentActive();
+            $introductionUsing->is_use = !$introductionUsing->is_use;
+            $introductionUsing->save();
+        } else if ($this->introductionRespository->countActive() > 1 ){
+            $this->introductionRespository->resetIsUseColumn();
+        }
+        $introduction->is_use = true;
         $introduction->save();
 
-        $currentActiveIntroduction->is_use = !$currentActiveIntroduction->is_use;
-        $currentActiveIntroduction->save();
 
         return response([
             'result' => true,
-            'status' => 200,
             'message' => 'Thay đổi trạng thái thành công',
-            'is_active' => $introduction->is_use
         ], 200);
     }
 }

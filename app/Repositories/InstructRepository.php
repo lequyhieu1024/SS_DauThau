@@ -46,6 +46,9 @@ class InstructRepository extends BaseRepository
     public function getInstructLandipage() {
         return $this->model->where('is_use', true)->first();
     }
+    public function resetIsUseColumn() {
+        return $this->model->where('is_use', true)->update(['is_use' => false]);
+    }
 
 
 }
