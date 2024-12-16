@@ -194,6 +194,8 @@ return [
         'feedback' => 'phản hồi',
         'code' => 'mã',
         'bid_document_id' => 'hồ sơ đấu thầu',
-        'decision_number' => 'số quyết định phê duyệt'
+        'decision_number' => 'số quyết định phê duyệt',
+        'progress' => 'tiến độ',
+        'task' => 'nhiệm vụ',
     ],
 ];
