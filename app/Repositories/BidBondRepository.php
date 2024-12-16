@@ -19,6 +19,18 @@ class BidBondRepository extends BaseRepository
             $query->where('bond_number', 'like', '%' . $data['bond_number'] . '%');
         }
 
+        if (isset($data['bond_type'])) {
+            $query->where('bond_type', 'like', '%' . $data['bond_type'] . '%');
+        }
+
+        if (isset($data['project_id'])) {
+            $query->where('project_id', 'like', '%' . $data['project_id'] . '%');
+        }
+
+        if (isset($data['enterprise_id'])) {
+            $query->where('enterprise_id', 'like', '%' . $data['enterprise_id'] . '%');
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
