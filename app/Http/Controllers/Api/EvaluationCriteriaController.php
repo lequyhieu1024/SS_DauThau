@@ -142,7 +142,7 @@ class EvaluationCriteriaController extends Controller
 
     public function getNameAndIds()
     {
-        $data = $this->evaluationCriteriaRepository->getNameAndIds();
+        $data = $this->evaluationCriteriaRepository->getNameAndIdsActive();
         return response([
             'result' => true,
             'message' => "Lấy danh sách tiêu chí đánh giá thành công",
