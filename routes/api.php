@@ -299,6 +299,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('list-bid-documents', [BidDocumentController::class, 'getNameAndIds']);
     Route::get('list-bid-bonds', [BidBondController::class, 'getBondNumberAndIds']);
+    Route::get('get-enterprise-of-bidding-result-by-project/{project}', [ProjectController::class, 'getEnterpriseOfBiddingResultByProject']);
 
 });
 
