@@ -54,7 +54,7 @@ Route::group(['middleware' => 'web'], function () {
 });
 // check login
 Route::get('not-yet-authenticated', [AuthController::class, 'notYetAuthenticated'])->name('not-yet-authenticated');
-
+Route::get('get-system', [SystemController::class, 'getDataSystem']);
 Route::group(['prefix' => 'auth'], function () {
     // API không cần đăng nhập
     // Route::post('register', [AuthController::class, 'register']);
