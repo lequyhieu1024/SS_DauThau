@@ -147,13 +147,22 @@ class ProjectRepository extends BaseRepository
 
     public function getNameAndIdProjectHasBiddingResult()
     {
-        return $this->model->whereHas('BiddingResult')->select('id', 'name')->get();
+        return $this->model
+            ->whereHas('BiddingResult')
+            ->select('id', 'name')
+            ->whereNull('parent_id')
+            ->with(['children' => function ($query) {
+                $query->select('id', 'name', 'parent_id');
+            }])
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
     public function approvedProjects()
     {
         return $this->model->where('status', ProjectStatus::APPROVED->value);
     }
+
 
     public function getProjectCountByIndustry()
     {
