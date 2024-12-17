@@ -28,6 +28,10 @@ class TaskCollection extends ResourceCollection
                     'name' => $tasks->name,
                     'description' => $tasks->description,
                     'difficulty_level' => $tasks->difficulty_level,
+                    'project' => [
+                        'id' => $tasks->project->id,
+                        'name' => $tasks->project->name,
+                    ],
                 ];
             }),
             'total_elements' => $this->total(),
