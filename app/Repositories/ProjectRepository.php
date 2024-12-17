@@ -150,9 +150,14 @@ class ProjectRepository extends BaseRepository
         return $this->model->whereHas('BiddingResult')->select('id', 'name')->get();
     }
 
+    public function approvedProjects()
+    {
+        return $this->model->where('status', ProjectStatus::APPROVED->value);
+    }
+
     public function getProjectCountByIndustry()
     {
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -163,6 +168,7 @@ class ProjectRepository extends BaseRepository
         }
 
         $industries = Industry::withCount('projects')
+            ->where('is_active', 1)
             ->orderByDesc('projects_count')
             ->get();
 
@@ -191,7 +197,7 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectPercentageByFundingSource()
     {
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -202,6 +208,7 @@ class ProjectRepository extends BaseRepository
         }
 
         $rawData = FundingSource::query()
+            ->where('is_active', 1)
             ->selectRaw('funding_sources.name as funding_source_name, COUNT(projects.id) as projects_count')
             ->leftJoin('projects', 'funding_sources.id', '=', 'projects.funding_source_id')
             ->groupBy('funding_sources.id', 'funding_sources.name')
@@ -234,7 +241,7 @@ class ProjectRepository extends BaseRepository
     public function getDomesticPercentage()
     {
         // Tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -244,9 +251,9 @@ class ProjectRepository extends BaseRepository
         }
 
         // trong nước
-        $domesticCount = $this->model::where('is_domestic', true)->count();
+        $domesticCount = $this->approvedProjects()->where('is_domestic', true)->count();
         // quốc tế
-        $internationalCount = $this->model::where('is_domestic', false)->count();
+        $internationalCount = $this->approvedProjects()->where('is_domestic', false)->count();
 
         return [
             ['name' => 'Trong nước', 'value' => $domesticCount],
@@ -257,7 +264,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageBySubmissionMethod()
     {
         // Tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -267,10 +274,10 @@ class ProjectRepository extends BaseRepository
         }
 
         // Online
-        $onlineCount = $this->model::where('submission_method', 'online')->count();
+        $onlineCount = $this->approvedProjects()->where('submission_method', 'online')->count();
 
         // Trực tiếp
-        $inPersonCount = $this->model::where('submission_method', 'in_person')->count();
+        $inPersonCount = $this->approvedProjects()->where('submission_method', 'in_person')->count();
 
         return [
             ['name' => 'Online', 'value' => $onlineCount],
@@ -281,7 +288,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageBySelectionMethod()
     {
         // 1. Lấy tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         // Nếu không có dự án nào
         if ($totalProjects === 0) {
@@ -294,6 +301,7 @@ class ProjectRepository extends BaseRepository
 
         //
         $selectionMethods = SelectionMethod::withCount('projects')
+            ->where('is_active', 1)
             ->orderByDesc('projects_count')
             ->get();
 
@@ -324,7 +332,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageByTendererInvestor()
     {
         // Tổng số dự án
-        $totalProjects = Project::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         // Nếu không có dự án nào
         if ($totalProjects === 0) {
@@ -336,13 +344,13 @@ class ProjectRepository extends BaseRepository
         }
 
         // dự án mà bên mời thầu khác nhà đầu tư
-        $tendererCount = Project::whereColumn('tenderer_id', '!=', 'investor_id')->count();
+        $tendererCount = $this->approvedProjects()->whereColumn('tenderer_id', '!=', 'investor_id')->count();
 
         // dự án mà nhà đầu tư khác bên mời thầu
-        $investorCount = Project::whereColumn('investor_id', '!=', 'tenderer_id')->count();
+        $investorCount = $this->approvedProjects()->whereColumn('investor_id', '!=', 'tenderer_id')->count();
 
         // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
-        $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
+        $bothCount = $this->approvedProjects()->whereColumn('tenderer_id', 'investor_id')->count();
 
         //
         // $tendererPercentage = ($tendererCount / $totalProjects) * 100;
@@ -360,10 +368,13 @@ class ProjectRepository extends BaseRepository
     public function getAverageProjectDurationByIndustry()
     {
         // lấy ra các ngành với dự án có start_time, end_time
-        $industries = Industry::with(['projects' => function ($query) {
-            $query->whereNotNull('start_time')->whereNotNull('end_time')
-                ->select('start_time', 'end_time');
-        }])->get();
+        $industries = Industry::where('is_active', 1)
+            ->with(['projects' => function ($query) {
+                $query->whereNotNull('start_time')
+                    ->whereNotNull('end_time')
+                    ->where('status', ProjectStatus::APPROVED->value)
+                    ->select('start_time', 'end_time');
+            }])->get();
 
         $data = [];
         foreach ($industries as $industry) {
@@ -418,10 +429,10 @@ class ProjectRepository extends BaseRepository
     public function getEnterpriseByOrganizationType()
     {
         // nhà nước
-        $stateOwnedCount = Enterprise::where('organization_type', 1)->count();
+        $stateOwnedCount = Enterprise::where('is_active', 1)->where('organization_type', 1)->count();
 
         // ngoài nhà nước
-        $privateOwnedCount = Enterprise::where('organization_type', 2)->count();
+        $privateOwnedCount = Enterprise::where('is_active', 1)->where('organization_type', 2)->count();
 
         return [
             ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
@@ -433,7 +444,7 @@ class ProjectRepository extends BaseRepository
     public function getTopTenderersByProjectCount()
     {
         // đếm tổng số lượng dự án cho từng đơn vị mời thầu
-        $topTenderers = Project::with('tenderer.user')
+        $topTenderers = $this->approvedProjects()->with('tenderer.user')
             ->select('tenderer_id')
             ->selectRaw('COUNT(*) as project_count')
             ->groupBy('tenderer_id')
@@ -467,7 +478,7 @@ class ProjectRepository extends BaseRepository
     public function getTopTenderersByProjectTotalAmount()
     {
         // tổng giá từng dự án theo đơn vị mời thầu
-        $topTenderers = Project::with('tenderer.user')
+        $topTenderers = $this->approvedProjects()->with('tenderer.user')
             ->select('tenderer_id')
             ->selectRaw('SUM(total_amount) as total')
             ->groupBy('tenderer_id')
@@ -501,7 +512,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectPartial()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->whereNotNull('parent_id')
             ->select('investor_id')
             ->selectRaw('COUNT(investor_id) as investor_count')
@@ -525,7 +536,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectFull()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->whereNull('parent_id')
             ->select('investor_id')
             ->selectRaw('COUNT(investor_id) as investor_count')
@@ -549,7 +560,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectTotalAmount()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->select('investor_id')
             ->selectRaw('SUM(total_amount) as total')
             ->groupBy('investor_id')
