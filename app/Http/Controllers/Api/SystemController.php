@@ -129,7 +129,7 @@ class SystemController extends Controller
             return response([
                 'result' => true,
                 "message" => "Lấy thông tin hệ thống thành công",
-                "data" => $data
+                "data" => new SystemResource($data)
             ], 200);
         } else {
             return response([
