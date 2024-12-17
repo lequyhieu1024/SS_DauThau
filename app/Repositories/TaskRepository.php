@@ -44,25 +44,30 @@ class TaskRepository extends BaseRepository
     }
 
     public function compareRatioDificultyByProject($project_ids) {
-        $taskCounts = $this->model
-            ->select('difficulty_level', \DB::raw('COUNT(*) as count'))
-            ->whereIn('project_id', $project_ids)
-            ->groupBy('difficulty_level')
-            ->get()
-            ->pluck('count', 'difficulty_level')
-            ->toArray();
+    $projects = $this->model
+        ->select('projects.name as project_name', 'tasks.difficulty_level', \DB::raw('COUNT(*) as count'))
+        ->join('projects', 'tasks.project_id', '=', 'projects.id')
+        ->whereIn('tasks.project_id', $project_ids)
+        ->groupBy('projects.name', 'tasks.difficulty_level')
+        ->get()
+        ->groupBy('project_name');
 
-        $easyCount = $taskCounts['easy'] ?? 0;
-        $mediumCount = $taskCounts['medium'] ?? 0;
-        $hardCount = $taskCounts['hard'] ?? 0;
-        $veryHardCount = $taskCounts['very_hard'] ?? 0;
+    $data = [
+        ['project', 'easy', 'medium', 'hard', 'very_hard']
+    ];
 
-        return [
-            'easy' => $easyCount,
-            'medium' => $mediumCount,
-            'hard' => $hardCount,
-            'very_hard' => $veryHardCount,
+    foreach ($projects as $projectName => $tasks) {
+        $taskCounts = $tasks->pluck('count', 'difficulty_level')->toArray();
+        $data[] = [
+            'project' => $projectName,
+            'easy' => $taskCounts['easy'] ?? 0,
+            'medium' => $taskCounts['medium'] ?? 0,
+            'hard' => $taskCounts['hard'] ?? 0,
+            'very_hard' => $taskCounts['very_hard'] ?? 0,
         ];
     }
+
+    return $data;
+}
 
 }
