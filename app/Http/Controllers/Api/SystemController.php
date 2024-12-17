@@ -95,6 +95,9 @@ class SystemController extends Controller
             $system = System::find($id);
             $data = $request->all();
             if ($request->hasFile('logo')) {
+                if ($system->logo && file_exists($system->logo)) {
+                    unlink($system->logo);
+                }
                 $data['logo'] = upload_image($request->file('logo'));
             }
             $system->update($data);
