@@ -21,14 +21,14 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-//        if ($data['enterprise_id'] == null) {
-//            $query = $this->model->with('children')->whereNull('parent_id');
-//        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-//            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
-//                $query->where('investor_id', $data['enterprise_id'])
-//                    ->orWhere('tenderer_id', $data['enterprise_id']);
-//            });
-//        }
+        //        if ($data['enterprise_id'] == null) {
+        //            $query = $this->model->with('children')->whereNull('parent_id');
+        //        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+        //            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
+        //                $query->where('investor_id', $data['enterprise_id'])
+        //                    ->orWhere('tenderer_id', $data['enterprise_id']);
+        //            });
+        //        }
         $query = $this->model->with('children')->whereNull('parent_id');
 
         // logic loc du an
@@ -60,7 +60,7 @@ class ProjectRepository extends BaseRepository
         }
 
         if (isset($data['staff'])) {
-            $query->where('staff_id',$data['staff']);
+            $query->where('staff_id', $data['staff']);
         }
 
         if (isset($data['win'])) {
@@ -136,17 +136,18 @@ class ProjectRepository extends BaseRepository
     public function getNameAndIdsProject()
     {
         return $this->model->select('id', 'name')
+            ->where('status', ProjectStatus::APPROVED->value)
             ->whereNull('parent_id')
             ->with(['children' => function ($query) {
                 $query->select('id', 'name', 'parent_id');
-            }])->orderBy('id','desc')
+            }])->orderBy('id', 'desc')
             ->get();
     }
 
 
     public function getNameAndIdProjectHasBiddingResult()
     {
-        return $this->model->whereHas('BiddingResult')->select('id','name')->get();
+        return $this->model->whereHas('BiddingResult')->select('id', 'name')->get();
     }
 
     public function getProjectCountByIndustry()
@@ -680,7 +681,7 @@ class ProjectRepository extends BaseRepository
             $startOfMonth = Carbon::createFromDate($year, $i, 1)->startOfMonth();
             $endOfMonth = Carbon::createFromDate($year, $i, 1)->endOfMonth();
 
-            $data['completed'][] =[
+            $data['completed'][] = [
                 'Tháng ' . $i => $this->model
                     ->where('end_time', '<', Carbon::now())
                     ->whereYear('end_time', '=', $year)
@@ -688,7 +689,7 @@ class ProjectRepository extends BaseRepository
                     ->count()
             ];
 
-            $data['approved'][] =[
+            $data['approved'][] = [
                 'Tháng ' . $i => $this->model
                     ->whereBetween('approve_at', [$startOfMonth, $endOfMonth])
                     ->where('status', ProjectStatus::APPROVED->value)
@@ -705,7 +706,8 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    public function getProjectByStaff($staff_id, $data) {
+    public function getProjectByStaff($staff_id, $data)
+    {
         $query = $this->model->query();
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
@@ -737,7 +739,8 @@ class ProjectRepository extends BaseRepository
         return $query->where('staff_id', $staff_id)->orderBy('status', 'ASC')->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 
-    public function countProjects(){
+    public function countProjects()
+    {
         return $this->model->count();
     }
 }

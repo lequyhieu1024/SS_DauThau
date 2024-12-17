@@ -120,7 +120,7 @@ class IndustryController extends Controller
         return response()->json([
             'result' => true,
             'message' => 'Lấy danh sách ngành nghề thành công',
-            'data' => $this->industryRepository->getNameAndIds(),
+            'data' => $this->industryRepository->getNameAndIdsActive(),
         ], 200);
     }
 
