@@ -197,5 +197,10 @@
     "Approve Project": "Duyệt dự án",
     "Project By Staff": "Dự án theo nhân viên",
     "Ban Staff": "Cấm nhân viên",
-    "Get Detail Project By Ids" : "Chi tiết dự án theo nhân viên"
+    "Get Detail Project By Ids" : "Chi tiết dự án theo nhân viên",
+    "List Questions Answers" : "Danh sách câu hỏi/ câu trả lời",
+    "Create Questions Answers": "Tạo mới câu hỏi/ câu trả lời",
+    "Detail Questions Answers": "Chi tiết câu hỏi/ câu trả lời",
+    "Update Questions Answers": "Cập nhật câu hỏi/ câu trả lời",
+    "Destroy Questions Answers": "Xoá câu hỏi/ câu trả lời"
 }
