@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SystemFormRequest;
+use App\Http\Resources\SystemResource;
 use App\Models\System;
 use Illuminate\Http\Request;
 
@@ -26,7 +28,7 @@ class SystemController extends Controller
             return response([
                 'result' => true,
                 "message" => "Lấy thông tin hệ thống thành công",
-                "data" => $data
+                "data" => new SystemResource($data),
             ], 200);
         } else {
             return response([
@@ -87,49 +89,28 @@ class SystemController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SystemFormRequest $request, $id)
     {
-        $data = $request->all();
-        $rules = [
-            'name' => 'required',
-            'logo' => 'required',
-            'phone' => 'required|regex:/^(\+84|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
-
-            'email' => 'required|regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
-            'address' => 'required',
-        ];
-        $messages = [
-            'name.required' => 'Tên website không được bỏ trống',
-            'logo.required' => 'Logo website không được để trống',
-            'phone.required' => 'Số điện thoại website không được để trống',
-            'email.required' => 'Email không được bỏ trống',
-            'address.required' => 'Địa chỉ không được bỏ trống',
-            'phone.regex' => 'Số điện thoại sai định dạng',
-            'email.regex' => 'Email phải đúng định dạng example@ex.com',
-        ];
-
-        $validator = validator($data, $rules, $messages);
-
-        if ($validator->fails()) {
-            return response([
-                'result' => false,
-                "message" => $validator->errors()
-            ], 200);
-        } else {
+        try {
             $system = System::find($id);
-            $system->name = $data['name'];
+            $data = $request->all();
             if ($request->hasFile('logo')) {
-                $system->logo = upload_image($request->file('logo'));
+                if ($system->logo && file_exists($system->logo)) {
+                    unlink($system->logo);
+                }
+                $data['logo'] = upload_image($request->file('logo'));
             }
-            $system->phone = $data['phone'];
-            $system->email = $data['email'];
-            $system->address = $data['address'];
-            $system->save();
+            $system->update($data);
             return response([
                 'result' => true,
-                "message" => "Cập nhật thành công",
-                "data" => $system
+                "message" => "Cập nhật thông tin hệ thống thành công",
+                "data" => new SystemResource($system)
             ], 200);
+        }catch (\Exception $exception){
+            return response([
+                'result' => false,
+                'message' => $exception->getMessage()
+            ], 500);
         }
     }
 
@@ -142,5 +123,23 @@ class SystemController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getDataSystem()
+    {
+        $data = System::where('id', 1)->first();
+        if ($data) {
+            return response([
+                'result' => true,
+                "message" => "Lấy thông tin hệ thống thành công",
+                "data" => new SystemResource($data)
+            ], 200);
+        } else {
+            return response([
+                'result' => false,
+                'message' => 'Chưa có thông tin hệ thống',
+                'data' => []
+            ], 400);
+        }
     }
 }

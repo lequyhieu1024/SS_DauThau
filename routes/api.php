@@ -54,7 +54,7 @@ Route::group(['middleware' => 'web'], function () {
 });
 // check login
 Route::get('not-yet-authenticated', [AuthController::class, 'notYetAuthenticated'])->name('not-yet-authenticated');
-
+Route::get('get-system', [SystemController::class, 'getDataSystem']);
 Route::group(['prefix' => 'auth'], function () {
     // API không cần đăng nhập
     // Route::post('register', [AuthController::class, 'register']);
@@ -299,6 +299,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('list-bid-documents', [BidDocumentController::class, 'getNameAndIds']);
     Route::get('list-bid-bonds', [BidBondController::class, 'getBondNumberAndIds']);
+    Route::get('get-enterprise-of-bidding-result-by-project/{project}', [ProjectController::class, 'getEnterpriseOfBiddingResultByProject']);
 
 });
 

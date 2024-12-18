@@ -242,7 +242,7 @@ class ProjectController extends Controller
         return response([
             'result' => true,
             'message' => 'Lấy danh sách dự án và gói thầu đã có kết quả đấu thầu thành công',
-            'data' => new TreeSelectCollection($this->projectRepository->getNameAndIdProjectHasBiddingResult()),
+            'data' => $this->projectRepository->getNameAndIdProjectHasBiddingResult(),
         ], 200);
     }
 
@@ -252,6 +252,24 @@ class ProjectController extends Controller
             'result' => true,
             'message' => "Lấy danh sách dự án được giao cho nhân viên phê duyệt thành công",
             'data' => new ProjectCollection($projects)
+        ], 200);
+    }
+
+    public function getEnterpriseOfBiddingResultByProject($project_id) {
+        $project = $this->projectRepository->findOrFail($project_id);
+        if (!$project || !$project->biddingResult || !$project->biddingResult->enterprise || !$project->biddingResult->enterprise->user) {
+            return response([
+                'result' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+            ], 400);
+        }
+        return response([
+            'result' => true,
+            'message' => "Lấy thông tin doanh nghiệp trúng thầu thành công",
+            'data' => [
+                'id' => $project->biddingResult->enterprise->id,
+                'name' => $project->biddingResult->enterprise->user->name
+            ]
         ], 200);
     }
 }
