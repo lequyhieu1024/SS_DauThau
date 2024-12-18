@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\WorkProgressController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Api\Admin\QuestionAnswerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -262,6 +263,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::get('count-selection-method', [DashboardController::class, 'countSelectionMethod']);
     Route::get('count-support', [DashboardController::class, 'countSupport']);
     Route::get('count-task', [DashboardController::class, 'countTask']);
+
+    //question answers
+    Route::resource('questionsAnswers', QuestionAnswerController::class);
+    Route::put('questionsAnswers/{questionsAnswers}/changeActive', [QuestionAnswerController::class, 'changeActive']);
 
 });
 
