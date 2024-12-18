@@ -13,6 +13,8 @@ class QuestionAnswer extends Model
     use LogsActivity;
     use ActivityLogOptionsTrait;
 
+    protected $table = "questions_answers";
+
     protected $fillable = [
         'project_id',
         'question_content',
