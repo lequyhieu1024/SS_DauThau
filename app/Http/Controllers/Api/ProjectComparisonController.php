@@ -1,17 +1,25 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
+use App\Repositories\BiddingResultRepository;
 use App\Repositories\ProjectRepository;
+use App\Repositories\TaskRepository;
+use App\Repositories\WorkProgressRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectComparisonController extends Controller
 {
     protected $projectRepository;
+    protected $taskRepository;
+    protected $workProgressRepository;
+    protected $biddingResultRepository;
 
-    public function __construct(ProjectRepository $projectRepository)
+    public function __construct(ProjectRepository $projectRepository, TaskRepository $taskRepository, WorkProgressRepository $workProgressRepository, BiddingResultRepository $biddingResultRepository)
     {
         $this->middleware(['permission:compare_bar_chart_total_amount'])->only('compareBarChartTotalAmount');
         $this->middleware(['permission:compare_bar_chart_construction_time'])->only('compareBarChartConstructionTime');
@@ -21,6 +29,9 @@ class ProjectComparisonController extends Controller
         $this->middleware(['permission:get_detail_project_by_ids'])->only('getDetailProjectByIds');
 
         $this->projectRepository = $projectRepository;
+        $this->taskRepository = $taskRepository;
+        $this->workProgressRepository = $workProgressRepository;
+        $this->biddingResultRepository = $biddingResultRepository;
     }
 
     /**
@@ -264,5 +275,48 @@ class ProjectComparisonController extends Controller
             'data' => ProjectResource::collection($projects),
         ], 200);
     }
+
+    public function compareDifficultyOfProjects(Request $request)
+    {
+        return response([
+            'result' => true,
+            'message' => 'Lấy số lượng nhiệm vụ theo độ khó của dự án thành công',
+            'data' => $this->taskRepository->compareRatioDificultyByProject($request->input('project_ids'))
+        ], 200);
+    }
+
+    public function compareWorkProgressOfProjects(Request $request)
+    {
+        $projectIds = $request->input('project_ids');
+        $projects = $this->projectRepository->findWhereInModel('id', $projectIds)
+            ->with([
+                'biddingResult.workProgresses.tasks'
+            ])
+            ->get();
+
+        $projectDetails = $projects->map(function ($project) {
+            return [
+                'project_id' => $project->id,
+                'project_name' => $project->name,
+                'work_progresses' => $project->biddingResult->workProgresses->map(function ($workProgress) {
+                    return [
+                        'name' => $workProgress->name,
+                        'progress' => $workProgress->progress,
+                        'expense' => $workProgress->expense,
+                        'time_doing' => Carbon::parse($workProgress->end_date)->diffInDays(Carbon::parse($workProgress->start_date)),
+                        'task_total' => count($workProgress->tasks),
+                        'tasks' => $workProgress->tasks
+                    ];
+                }),
+            ];
+        });
+
+        return response([
+            'result' => true,
+            'message' => 'Lấy thông tin tiến độ công việc của dự án thành công',
+            'data' => $projectDetails,
+        ], 200);
+    }
+
 
 }

@@ -4,11 +4,9 @@ namespace App\Http\Requests;
 
 use App\Traits\HandlesValidationFailures;
 use Illuminate\Foundation\Http\FormRequest;
-
-class SupportFormRequest extends FormRequest
+class SystemFormRequest extends FormRequest
 {
     use HandlesValidationFailures;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,14 +23,18 @@ class SupportFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'sometimes|exists:users,id',
-            'title' => 'required|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
-            'content' => 'sometimes|max:10000',
-            'document' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,ppt,pptx|max:2048',
-            'type' => 'required|numeric',
+            'name' => 'required',
+            'logo' => 'required',
+            'phone' =>  [
+                'required',
+                'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/'
+            ],
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/',
+            'address' => 'required',
+            ],
         ];
     }
 }
-

@@ -29,7 +29,7 @@ class BiddingResult extends Model
     public function biddingDocument() {
         return $this->belongsTo(BidDocument::class, 'bid_document_id');
     }
-    public function WorkProgresses() {
+    public function workProgresses() {
         return $this->hasMany(WorkProgress::class);
     }
 }

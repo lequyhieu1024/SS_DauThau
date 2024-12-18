@@ -54,7 +54,7 @@ Route::group(['middleware' => 'web'], function () {
 });
 // check login
 Route::get('not-yet-authenticated', [AuthController::class, 'notYetAuthenticated'])->name('not-yet-authenticated');
-
+Route::get('get-system', [SystemController::class, 'getDataSystem']);
 Route::group(['prefix' => 'auth'], function () {
     // API không cần đăng nhập
     // Route::post('register', [AuthController::class, 'register']);
@@ -233,6 +233,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('compare-projects/comparing-did-submission-time', [ProjectComparisonController::class, 'compareBarChartBidSubmissionTime']);
     Route::post('compare-projects/compare-pie-chart-total-amount', [ProjectComparisonController::class, 'comparePieChartTotalAmount']);
     Route::post('compare-projects/compare-bidder-count', [ProjectComparisonController::class, 'compareBarChartBidderCount']);
+    Route::post('compare-projects/get-difficulty-of-project', [ProjectComparisonController::class, 'compareDifficultyOfProjects']);
+    Route::post('compare-projects/get-work-progress-of-project', [ProjectComparisonController::class, 'compareWorkProgressOfProjects']);
 
 
     // Introductions
@@ -297,6 +299,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('list-bid-documents', [BidDocumentController::class, 'getNameAndIds']);
     Route::get('list-bid-bonds', [BidBondController::class, 'getBondNumberAndIds']);
+    Route::get('get-enterprise-of-bidding-result-by-project/{project}', [ProjectController::class, 'getEnterpriseOfBiddingResultByProject']);
 
 });
 
