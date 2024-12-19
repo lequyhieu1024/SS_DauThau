@@ -27,6 +27,10 @@ class WorkProgressRepository extends BaseRepository {
             $query->where('feedback', $data['feedback']);
         }
 
+        if (isset($data['name'])) {
+            $query->where('name', $data['name']);
+        }
+
 
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
