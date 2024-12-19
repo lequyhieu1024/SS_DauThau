@@ -334,5 +334,23 @@ class ProjectComparisonController extends Controller
             'data' => $projects,
         ]);
     }
+    public function getWeightOfEvaliationCriteriaByProject(Request $request)
+    {
+        $projectIds = $request->input('project_ids');
+
+        $projects = $this->projectRepository
+            ->findWhereInModel('id', $projectIds)
+            ->addSelect(['id', 'name'])
+            ->with(['evaluationCriterias' => function ($query) {
+                $query->select('project_id','name', 'weight');
+            }])
+            ->get();
+
+        return response()->json([
+            'result' => true,
+            'status' => 'Biểu đồ thể hiện trọng số của các tiêu chí đánh giá theo dự án',
+            'data' => $projects,
+        ]);
+    }
 
 }

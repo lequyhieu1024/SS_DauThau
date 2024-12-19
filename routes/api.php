@@ -237,6 +237,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('compare-projects/get-difficulty-of-project', [ProjectComparisonController::class, 'compareDifficultyOfProjects']);
     Route::post('compare-projects/get-work-progress-of-project', [ProjectComparisonController::class, 'compareWorkProgressOfProjects']);
     Route::post('compare-projects/compare-evaluation-criteria-quantity', [ProjectComparisonController::class, 'compareEvaluationCriteriaQuantity']);
+    Route::post('compare-projects/get-weight-of-evaliation-criteria-by-project', [ProjectComparisonController::class, 'getWeightOfEvaliationCriteriaByProject']);
 
 
     // Introductions
