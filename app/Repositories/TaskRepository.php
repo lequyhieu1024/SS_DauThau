@@ -43,11 +43,12 @@ class TaskRepository extends BaseRepository
         return $this->model->count();
     }
 
-    public function compareRatioDificultyByProject($project_ids) {
+    public function compareRatioDificultyByProject($project_ids)
+    {
         $projects = $this->model
             ->select('projects.name as project_name', 'tasks.difficulty_level', \DB::raw('COUNT(*) as count'))
-            ->join('projects', 'tasks.project_id', '=', 'projects.id')
-            ->whereIn('tasks.project_id', $project_ids)
+            ->rightJoin('projects', 'tasks.project_id', '=', 'projects.id')
+            ->whereIn('projects.id', $project_ids)
             ->groupBy('projects.name', 'tasks.difficulty_level')
             ->get()
             ->groupBy('project_name');
@@ -57,9 +58,9 @@ class TaskRepository extends BaseRepository
         ];
 
         foreach ($project_ids as $projectId) {
-            $projectName = $this->model->join('projects', 'tasks.project_id', '=', 'projects.id')
-                ->where('projects.id', $projectId)
-                ->value('projects.name');
+            $projectName = \DB::table('projects')
+                ->where('id', $projectId)
+                ->value('name');
 
             $taskCounts = $projects->get($projectName, collect())->pluck('count', 'difficulty_level')->toArray();
             $data[] = [
