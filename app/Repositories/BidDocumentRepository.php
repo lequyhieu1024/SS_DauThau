@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\BidDocumentStatus;
 use App\Models\BidDocument;
 
 class BidDocumentRepository extends BaseRepository
@@ -57,7 +58,7 @@ class BidDocumentRepository extends BaseRepository
             ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
             ->join('users', 'users.id', '=', 'enterprises.user_id');
 
-        return $query->orderBy('id', 'DESC')->get();
+        return $query->where('bid_documents.status', BidDocumentStatus::ACCEPTED->value)->orderBy('id', 'DESC')->get();
     }
 
     public function countBidDocument()

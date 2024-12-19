@@ -47,10 +47,11 @@ class QuestionAnswerController extends Controller
                 'message' => "Tạo mới câu hỏi/ câu trả lời thành công!",
                 'data' => $data
             ], 201);
-        } catch (\Throwable $qs){
+        } catch (\Exception $e){
             return response([
                 'result' => false,
                 'message' => "Có lỗi từ server!",
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

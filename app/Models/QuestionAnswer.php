@@ -13,6 +13,8 @@ class QuestionAnswer extends Model
     use LogsActivity;
     use ActivityLogOptionsTrait;
 
+    protected $table = "questions_answers";
+
     protected $fillable = [
         'project_id',
         'question_content',
@@ -25,6 +27,16 @@ class QuestionAnswer extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function asker()
+    {
+        return $this->belongsTo(User::class, 'asked_by');
+    }
+
+    public function responder()
+    {
+        return $this->belongsTo(User::class, 'answered_by');
     }
 
 
@@ -47,7 +59,7 @@ class QuestionAnswer extends Model
 
     protected function getFieldName(): string
     {
-        return $this->name;
+        return $this->question_content;
     }
 
 }

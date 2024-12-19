@@ -21,14 +21,14 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-//        if ($data['enterprise_id'] == null) {
-//            $query = $this->model->with('children')->whereNull('parent_id');
-//        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-//            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
-//                $query->where('investor_id', $data['enterprise_id'])
-//                    ->orWhere('tenderer_id', $data['enterprise_id']);
-//            });
-//        }
+        //        if ($data['enterprise_id'] == null) {
+        //            $query = $this->model->with('children')->whereNull('parent_id');
+        //        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+        //            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
+        //                $query->where('investor_id', $data['enterprise_id'])
+        //                    ->orWhere('tenderer_id', $data['enterprise_id']);
+        //            });
+        //        }
         $query = $this->model->with('children')->whereNull('parent_id');
 
         // logic loc du an
@@ -60,7 +60,7 @@ class ProjectRepository extends BaseRepository
         }
 
         if (isset($data['staff'])) {
-            $query->where('staff_id',$data['staff']);
+            $query->where('staff_id', $data['staff']);
         }
 
         if (isset($data['win'])) {
@@ -136,10 +136,11 @@ class ProjectRepository extends BaseRepository
     public function getNameAndIdsProject()
     {
         return $this->model->select('id', 'name')
+            ->where('status', ProjectStatus::APPROVED->value)
             ->whereNull('parent_id')
             ->with(['children' => function ($query) {
                 $query->select('id', 'name', 'parent_id');
-            }])->orderBy('id','desc')
+            }])->orderBy('id', 'desc')
             ->get();
     }
 
@@ -157,10 +158,15 @@ class ProjectRepository extends BaseRepository
             ->get();
     }
 
+    public function approvedProjects()
+    {
+        return $this->model->where('status', ProjectStatus::APPROVED->value);
+    }
+
 
     public function getProjectCountByIndustry()
     {
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -171,6 +177,7 @@ class ProjectRepository extends BaseRepository
         }
 
         $industries = Industry::withCount('projects')
+            ->where('is_active', 1)
             ->orderByDesc('projects_count')
             ->get();
 
@@ -199,7 +206,7 @@ class ProjectRepository extends BaseRepository
 
     public function getProjectPercentageByFundingSource()
     {
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -210,6 +217,7 @@ class ProjectRepository extends BaseRepository
         }
 
         $rawData = FundingSource::query()
+            ->where('is_active', 1)
             ->selectRaw('funding_sources.name as funding_source_name, COUNT(projects.id) as projects_count')
             ->leftJoin('projects', 'funding_sources.id', '=', 'projects.funding_source_id')
             ->groupBy('funding_sources.id', 'funding_sources.name')
@@ -242,7 +250,7 @@ class ProjectRepository extends BaseRepository
     public function getDomesticPercentage()
     {
         // Tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -252,9 +260,9 @@ class ProjectRepository extends BaseRepository
         }
 
         // trong nước
-        $domesticCount = $this->model::where('is_domestic', true)->count();
+        $domesticCount = $this->approvedProjects()->where('is_domestic', true)->count();
         // quốc tế
-        $internationalCount = $this->model::where('is_domestic', false)->count();
+        $internationalCount = $this->approvedProjects()->where('is_domestic', false)->count();
 
         return [
             ['name' => 'Trong nước', 'value' => $domesticCount],
@@ -265,7 +273,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageBySubmissionMethod()
     {
         // Tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         if ($totalProjects === 0) {
             return [
@@ -275,10 +283,10 @@ class ProjectRepository extends BaseRepository
         }
 
         // Online
-        $onlineCount = $this->model::where('submission_method', 'online')->count();
+        $onlineCount = $this->approvedProjects()->where('submission_method', 'online')->count();
 
         // Trực tiếp
-        $inPersonCount = $this->model::where('submission_method', 'in_person')->count();
+        $inPersonCount = $this->approvedProjects()->where('submission_method', 'in_person')->count();
 
         return [
             ['name' => 'Online', 'value' => $onlineCount],
@@ -289,7 +297,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageBySelectionMethod()
     {
         // 1. Lấy tổng số dự án
-        $totalProjects = $this->model::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         // Nếu không có dự án nào
         if ($totalProjects === 0) {
@@ -302,6 +310,7 @@ class ProjectRepository extends BaseRepository
 
         //
         $selectionMethods = SelectionMethod::withCount('projects')
+            ->where('is_active', 1)
             ->orderByDesc('projects_count')
             ->get();
 
@@ -332,7 +341,7 @@ class ProjectRepository extends BaseRepository
     public function getProjectPercentageByTendererInvestor()
     {
         // Tổng số dự án
-        $totalProjects = Project::count();
+        $totalProjects = $this->approvedProjects()->count();
 
         // Nếu không có dự án nào
         if ($totalProjects === 0) {
@@ -344,13 +353,13 @@ class ProjectRepository extends BaseRepository
         }
 
         // dự án mà bên mời thầu khác nhà đầu tư
-        $tendererCount = Project::whereColumn('tenderer_id', '!=', 'investor_id')->count();
+        $tendererCount = $this->approvedProjects()->whereColumn('tenderer_id', '!=', 'investor_id')->count();
 
         // dự án mà nhà đầu tư khác bên mời thầu
-        $investorCount = Project::whereColumn('investor_id', '!=', 'tenderer_id')->count();
+        $investorCount = $this->approvedProjects()->whereColumn('investor_id', '!=', 'tenderer_id')->count();
 
         // dự án mà bên mời thầu và nhà đầu tư là cùng một doanh nghiệp
-        $bothCount = Project::whereColumn('tenderer_id', 'investor_id')->count();
+        $bothCount = $this->approvedProjects()->whereColumn('tenderer_id', 'investor_id')->count();
 
         //
         // $tendererPercentage = ($tendererCount / $totalProjects) * 100;
@@ -368,10 +377,13 @@ class ProjectRepository extends BaseRepository
     public function getAverageProjectDurationByIndustry()
     {
         // lấy ra các ngành với dự án có start_time, end_time
-        $industries = Industry::with(['projects' => function ($query) {
-            $query->whereNotNull('start_time')->whereNotNull('end_time')
-                ->select('start_time', 'end_time');
-        }])->get();
+        $industries = Industry::where('is_active', 1)
+            ->with(['projects' => function ($query) {
+                $query->whereNotNull('start_time')
+                    ->whereNotNull('end_time')
+                    ->where('status', ProjectStatus::APPROVED->value)
+                    ->select('start_time', 'end_time');
+            }])->get();
 
         $data = [];
         foreach ($industries as $industry) {
@@ -426,10 +438,10 @@ class ProjectRepository extends BaseRepository
     public function getEnterpriseByOrganizationType()
     {
         // nhà nước
-        $stateOwnedCount = Enterprise::where('organization_type', 1)->count();
+        $stateOwnedCount = Enterprise::where('is_active', 1)->where('organization_type', 1)->count();
 
         // ngoài nhà nước
-        $privateOwnedCount = Enterprise::where('organization_type', 2)->count();
+        $privateOwnedCount = Enterprise::where('is_active', 1)->where('organization_type', 2)->count();
 
         return [
             ['name' => 'Nhà nước', 'value' => $stateOwnedCount],
@@ -441,7 +453,7 @@ class ProjectRepository extends BaseRepository
     public function getTopTenderersByProjectCount()
     {
         // đếm tổng số lượng dự án cho từng đơn vị mời thầu
-        $topTenderers = Project::with('tenderer.user')
+        $topTenderers = $this->approvedProjects()->with('tenderer.user')
             ->select('tenderer_id')
             ->selectRaw('COUNT(*) as project_count')
             ->groupBy('tenderer_id')
@@ -475,7 +487,7 @@ class ProjectRepository extends BaseRepository
     public function getTopTenderersByProjectTotalAmount()
     {
         // tổng giá từng dự án theo đơn vị mời thầu
-        $topTenderers = Project::with('tenderer.user')
+        $topTenderers = $this->approvedProjects()->with('tenderer.user')
             ->select('tenderer_id')
             ->selectRaw('SUM(total_amount) as total')
             ->groupBy('tenderer_id')
@@ -509,7 +521,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectPartial()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->whereNotNull('parent_id')
             ->select('investor_id')
             ->selectRaw('COUNT(investor_id) as investor_count')
@@ -533,7 +545,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectFull()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->whereNull('parent_id')
             ->select('investor_id')
             ->selectRaw('COUNT(investor_id) as investor_count')
@@ -557,7 +569,7 @@ class ProjectRepository extends BaseRepository
     public function getTopInvestorsByProjectTotalAmount()
     {
         //
-        $topInvestors = Project::with('investor.user')
+        $topInvestors = $this->approvedProjects()->with('investor.user')
             ->select('investor_id')
             ->selectRaw('SUM(total_amount) as total')
             ->groupBy('investor_id')
@@ -580,7 +592,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: total amount
     public function getBarChartDataTotalAmount($projectIds)
     {
-        return $this->model->whereIn('id', $projectIds)
+        return $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name')
             ->selectRaw('
             CASE
@@ -594,7 +606,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: construction time
     public function getBarChartDataComparingConstructionTime($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'start_time', 'end_time')
             ->get();
 
@@ -616,7 +628,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: bid submission time
     public function getBarChartDataComparingBidSubmissionTime($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'bid_submission_start', 'bid_submission_end')
             ->get();
 
@@ -638,7 +650,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ tròn: total amount
     public function getPieChartDataAmountAndTotalAmount($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'parent_id', 'total_amount')
             ->with('children:id,name,parent_id,total_amount')
             ->get();
@@ -669,7 +681,7 @@ class ProjectRepository extends BaseRepository
     // Số lượng tham gia đấu thầu
     public function getBarChartDataBidderCount($projectIds)
     {
-        $data = $this->model->whereIn('projects.id', $projectIds)
+        $data = $this->approvedProjects()->whereIn('projects.id', $projectIds)
             ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
             ->select('projects.id', 'projects.name', DB::raw('COUNT(bid_documents.id) as bidder_count'))
             ->groupBy('projects.id', 'projects.name')
@@ -689,7 +701,7 @@ class ProjectRepository extends BaseRepository
             $startOfMonth = Carbon::createFromDate($year, $i, 1)->startOfMonth();
             $endOfMonth = Carbon::createFromDate($year, $i, 1)->endOfMonth();
 
-            $data['completed'][] =[
+            $data['completed'][] = [
                 'Tháng ' . $i => $this->model
                     ->where('end_time', '<', Carbon::now())
                     ->whereYear('end_time', '=', $year)
@@ -697,7 +709,7 @@ class ProjectRepository extends BaseRepository
                     ->count()
             ];
 
-            $data['approved'][] =[
+            $data['approved'][] = [
                 'Tháng ' . $i => $this->model
                     ->whereBetween('approve_at', [$startOfMonth, $endOfMonth])
                     ->where('status', ProjectStatus::APPROVED->value)
@@ -714,7 +726,8 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    public function getProjectByStaff($staff_id, $data) {
+    public function getProjectByStaff($staff_id, $data)
+    {
         $query = $this->model->query();
         if (isset($data['name'])) {
             $query->where('name', 'like', '%' . $data['name'] . '%');
@@ -746,7 +759,8 @@ class ProjectRepository extends BaseRepository
         return $query->where('staff_id', $staff_id)->orderBy('status', 'ASC')->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 
-    public function countProjects(){
+    public function countProjects()
+    {
         return $this->model->count();
     }
 }
