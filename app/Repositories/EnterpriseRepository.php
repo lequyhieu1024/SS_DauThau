@@ -342,7 +342,7 @@ class EnterpriseRepository extends BaseRepository
 
     public function topEnterprisesHaveCompletedProjectsByIndustry($id)
     {
-        $industry = Industry::where('is_actice', 1)->find($id);
+        $industry = Industry::where('is_active', 1)->find($id);
         $topEnterprises = Project::whereHas('industries', function ($query) use ($id) {
             $query->where('industries.id', $id);
         })
@@ -372,7 +372,7 @@ class EnterpriseRepository extends BaseRepository
 
     public function topEnterprisesHaveCompletedProjectsByFundingSource($id)
     {
-        $fundingSource = FundingSource::where('is_actice', 1)->find($id);
+        $fundingSource = FundingSource::where('is_active', 1)->find($id);
         $topEnterprises = Project::where('funding_source_id', $id)
             ->where('status', ProjectStatus::APPROVED->value)
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
