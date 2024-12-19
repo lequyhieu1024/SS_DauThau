@@ -94,7 +94,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectCountByIndustry();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án theo ngành nghề',
             'data' =>  $data,
         ], 200);
     }
@@ -105,7 +105,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageByFundingSource();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án theo nguồn vốn',
             'data' =>  $data
         ], 200);
     }
@@ -116,7 +116,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getDomesticPercentage();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án theo phạm vị trong nước, quốc tế',
             'data' =>  $data
         ], 200);
     }
@@ -126,7 +126,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageBySubmissionMethod();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án theo phương thức nộp thầu',
             'data' =>  $data
         ], 200);
     }
@@ -136,7 +136,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageBySelectionMethod();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án theo phương thức lựa chọn nhà thầu',
             'data' =>  $data
         ], 200);
     }
@@ -146,7 +146,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getProjectPercentageByTendererInvestor();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng dự án phân bổ dự án theo vai trò bên mời thầu, đầu tư và cả hai',
             'data' =>  $data
         ], 200);
     }
@@ -156,7 +156,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getAverageProjectDurationByIndustry();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ thời gian trung bình thực hiện dự án theo ngành',
             'data' =>  $data
         ], 200);
     }
@@ -166,7 +166,7 @@ class DashboardController extends Controller
         $data = $this->projectRepository->getEnterpriseByOrganizationType();
         return response()->json([
             'result' => true,
-            'message' => 'Số lượng ',
+            'message' => 'Biểu đồ số lượng doanh nghiệp nhà nước, ngoài nhà nước',
             'data' =>  $data
         ], 200);
     }
