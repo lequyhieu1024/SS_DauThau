@@ -32,6 +32,11 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function getAllNotPaginate()
     {
+        return $this->model->orderBy('id', 'DESC')->get();
+    }
+
+    public function getAllNotPaginateActive()
+    {
         return $this->model->where('is_active', 1)->orderBy('id', 'DESC')->get();
     }
 

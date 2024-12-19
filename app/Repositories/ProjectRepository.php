@@ -592,7 +592,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: total amount
     public function getBarChartDataTotalAmount($projectIds)
     {
-        return $this->model->whereIn('id', $projectIds)
+        return $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name')
             ->selectRaw('
             CASE
@@ -606,7 +606,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: construction time
     public function getBarChartDataComparingConstructionTime($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'start_time', 'end_time')
             ->get();
 
@@ -628,7 +628,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ cột: bid submission time
     public function getBarChartDataComparingBidSubmissionTime($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'bid_submission_start', 'bid_submission_end')
             ->get();
 
@@ -650,7 +650,7 @@ class ProjectRepository extends BaseRepository
     // Biểu đồ tròn: total amount
     public function getPieChartDataAmountAndTotalAmount($projectIds)
     {
-        $projects = $this->model->whereIn('id', $projectIds)
+        $projects = $this->approvedProjects()->whereIn('id', $projectIds)
             ->select('id', 'name', 'parent_id', 'total_amount')
             ->with('children:id,name,parent_id,total_amount')
             ->get();
@@ -681,7 +681,7 @@ class ProjectRepository extends BaseRepository
     // Số lượng tham gia đấu thầu
     public function getBarChartDataBidderCount($projectIds)
     {
-        $data = $this->model->whereIn('projects.id', $projectIds)
+        $data = $this->approvedProjects()->whereIn('projects.id', $projectIds)
             ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
             ->select('projects.id', 'projects.name', DB::raw('COUNT(bid_documents.id) as bidder_count'))
             ->groupBy('projects.id', 'projects.name')
