@@ -165,7 +165,7 @@ class ProcurementCategoryController extends Controller
 
     public function getNameAndIds()
     {
-        $procurementCategories = $this->procurementCategoryRepository->getNameAndIds();
+        $procurementCategories = $this->procurementCategoryRepository->getNameAndIdsActive();
         return response()->json([
             'result' => true,
             'data' => $procurementCategories,

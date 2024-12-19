@@ -645,7 +645,7 @@ class FundingSourceController extends Controller
         return response([
             'result' => true,
             'message' => 'lấy nguồn tài trợ thành công',
-            'data' => $this->fundingSourceRepository->getNameAndIds()
+            'data' => $this->fundingSourceRepository->getNameAndIdsActive()
         ], 200);
     }
 }
