@@ -169,6 +169,12 @@ class AuthController extends Controller
     public function profile()
     {
         $user = JWTAuth::user();
+        if ($user->staff && $user->staff->avatar) {
+            $user->staff->avatar = env('APP_URL') .'/'. $user->staff->avatar;
+        }
+        if ($user->enterprise && $user->enterprise->avatar) {
+            $user->enterprise->avatar = env('APP_URL') .'/'. $user->enterprise->avatar;
+        }
         return response()->json([
             'result' => true,
             'data' => [
@@ -186,6 +192,12 @@ class AuthController extends Controller
     public function editProfile()
     {
         $user = JWTAuth::user();
+        if ($user->staff && $user->staff->avatar) {
+            $user->staff->avatar = env('APP_URL') .'/'. $user->staff->avatar;
+        }
+        if ($user->enterprise && $user->enterprise->avatar) {
+            $user->enterprise->avatar = env('APP_URL') .'/'. $user->enterprise->avatar;
+        }
         return response()->json([
             'result' => true,
             'message' => "Lấy thông tin cá nhân thành công",
