@@ -10,6 +10,7 @@ use App\Repositories\BiddingResultRepository;
 use App\Repositories\BidDocumentRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -113,5 +114,27 @@ class BiddingResultController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->biddingResultRepository->findOrFail($id)->delete();
+            return response([
+                'result' => true,
+                'message' => 'Xóa kết quả đấu thầu thành công'
+            ], 200);
+        } catch (ModelNotFoundException) {
+            return response([
+                'result' => false,
+                'message' => 'Không có kết quả đấu thầu này'
+            ], 404);
+        }catch (\Exception $e) {
+            return response([
+                'result' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }
