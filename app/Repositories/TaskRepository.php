@@ -44,30 +44,34 @@ class TaskRepository extends BaseRepository
     }
 
     public function compareRatioDificultyByProject($project_ids) {
-    $projects = $this->model
-        ->select('projects.name as project_name', 'tasks.difficulty_level', \DB::raw('COUNT(*) as count'))
-        ->join('projects', 'tasks.project_id', '=', 'projects.id')
-        ->whereIn('tasks.project_id', $project_ids)
-        ->groupBy('projects.name', 'tasks.difficulty_level')
-        ->get()
-        ->groupBy('project_name');
+        $projects = $this->model
+            ->select('projects.name as project_name', 'tasks.difficulty_level', \DB::raw('COUNT(*) as count'))
+            ->join('projects', 'tasks.project_id', '=', 'projects.id')
+            ->whereIn('tasks.project_id', $project_ids)
+            ->groupBy('projects.name', 'tasks.difficulty_level')
+            ->get()
+            ->groupBy('project_name');
 
-    $data = [
-        ['project', 'easy', 'medium', 'hard', 'very_hard']
-    ];
-
-    foreach ($projects as $projectName => $tasks) {
-        $taskCounts = $tasks->pluck('count', 'difficulty_level')->toArray();
-        $data[] = [
-            'project' => $projectName,
-            'easy' => $taskCounts['easy'] ?? 0,
-            'medium' => $taskCounts['medium'] ?? 0,
-            'hard' => $taskCounts['hard'] ?? 0,
-            'very_hard' => $taskCounts['very_hard'] ?? 0,
+        $data = [
+            ['project', 'easy', 'medium', 'hard', 'very_hard']
         ];
-    }
 
-    return $data;
-}
+        foreach ($project_ids as $projectId) {
+            $projectName = $this->model->join('projects', 'tasks.project_id', '=', 'projects.id')
+                ->where('projects.id', $projectId)
+                ->value('projects.name');
+
+            $taskCounts = $projects->get($projectName, collect())->pluck('count', 'difficulty_level')->toArray();
+            $data[] = [
+                'project' => $projectName,
+                'easy' => $taskCounts['easy'] ?? 0,
+                'medium' => $taskCounts['medium'] ?? 0,
+                'hard' => $taskCounts['hard'] ?? 0,
+                'very_hard' => $taskCounts['very_hard'] ?? 0,
+            ];
+        }
+
+        return $data;
+    }
 
 }
