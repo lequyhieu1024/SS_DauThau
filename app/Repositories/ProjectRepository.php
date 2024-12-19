@@ -666,19 +666,21 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    // Số lượng tham gia đấu thầu
     public function getBarChartDataBidderCount($projectIds)
     {
-        $projects = $this->approvedProjects()->whereIn('projects.id', $projectIds)
+        // Get all selected projects
+        $projects = $this->model->whereIn('projects.id', $projectIds)
             ->select('projects.id', 'projects.name')
             ->get();
 
-        $bidderCounts = $this->approvedProjects()->whereIn('projects.id', $projectIds)
+        // Get bidder counts for the selected projects
+        $bidderCounts = $this->model->whereIn('projects.id', $projectIds)
             ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
             ->select('projects.id', DB::raw('COUNT(bid_documents.id) as bidder_count'))
             ->groupBy('projects.id')
             ->pluck('bidder_count', 'projects.id');
 
+        // Merge projects with bidder counts
         $data = $projects->map(function ($project) use ($bidderCounts) {
             return [
                 'id' => $project->id,
