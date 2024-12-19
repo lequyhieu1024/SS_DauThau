@@ -318,5 +318,21 @@ class ProjectComparisonController extends Controller
         ], 200);
     }
 
+    public function compareEvaluationCriteriaQuantity(Request $request)
+    {
+        $projectIds = $request->input('project_ids');
+
+        $projects = $this->projectRepository
+            ->findWhereInModel('id', $projectIds)
+            ->addSelect(['id', 'name'])
+            ->withCount('evaluationCriterias')
+            ->get();
+
+        return response()->json([
+            'result' => true,
+            'status' => 'Biểu đồ so sánh số lượng tiêu chí đánh giá theo từng dự án',
+            'data' => $projects,
+        ]);
+    }
 
 }
