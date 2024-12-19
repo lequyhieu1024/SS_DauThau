@@ -230,6 +230,9 @@ class AuthController extends Controller
                     if ($user->enterprise && $user->enterprise->avatar && file_exists($user->enterprise->avatar)) {
                         unlink($user->enterprise->avatar);
                     }
+                    if ($user->staff && $user->staff->avatar && file_exists($user->staff->avatar)) {
+                        unlink($user->staff->avatar);
+                    }
                     $data['avatar'] = upload_image($request->file('avatar'));
                 }
                 if ($validator->fails()) {
