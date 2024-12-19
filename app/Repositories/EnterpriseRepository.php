@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\ProjectStatus;
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\BiddingResult;
@@ -70,6 +71,10 @@ class EnterpriseRepository extends BaseRepository
     }
 
     //chart
+    public function enterpriseActive()
+    {
+        return $this->model->where('is_active', 1);
+    }
 
     /*
      * parameter $id is enterprise ID
@@ -79,7 +84,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             $data[] = [
@@ -104,7 +109,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
         foreach ($enterprises as $enterprise) {
             $data[] = [
                 'enterprise' => $enterprise->user->name,
@@ -120,7 +125,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
         foreach ($enterprises as $enterprise) {
             $ages = $enterprise->employees->map(function ($employee) {
                 return \Carbon\Carbon::parse($employee->birthday)->diffInYears(\Carbon\Carbon::parse(now()));
@@ -139,7 +144,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             $tendererProjectCount = $this->getProjectCount($enterprise, true);
@@ -182,7 +187,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             $biddingResults = $enterprise->biddingResults;
@@ -337,11 +342,12 @@ class EnterpriseRepository extends BaseRepository
 
     public function topEnterprisesHaveCompletedProjectsByIndustry($id)
     {
-        $industry = Industry::find($id);
+        $industry = Industry::where('is_active', 1)->find($id);
         $topEnterprises = Project::whereHas('industries', function ($query) use ($id) {
             $query->where('industries.id', $id);
         })
             ->where('status', 3)
+            ->where('end_time', '<', Carbon::now())
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
             ->groupBy('investor_id')
             ->orderByDesc('completed_projects_count')
@@ -366,9 +372,9 @@ class EnterpriseRepository extends BaseRepository
 
     public function topEnterprisesHaveCompletedProjectsByFundingSource($id)
     {
-        $fundingSource = FundingSource::find($id);
+        $fundingSource = FundingSource::where('is_active', 1)->find($id);
         $topEnterprises = Project::where('funding_source_id', $id)
-            ->where('status', 3)
+            ->where('status', ProjectStatus::APPROVED->value)
             ->selectRaw('investor_id, COUNT(*) as completed_projects_count')
             ->groupBy('investor_id')
             ->orderByDesc('completed_projects_count')
@@ -408,12 +414,12 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             // Dự án hoàn thành của doanh nghiệp trong năm được chọn
             $completedProjects = Project::where('investor_id', $enterprise->id)
-                ->where('status', 3)
+                ->where('status', ProjectStatus::APPROVED->value)
                 ->whereYear('end_time', $year)
                 ->selectRaw('MONTH(end_time) as month, COUNT(*) as completed_count')
                 ->groupBy('month')
@@ -444,7 +450,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             // Dự án trúng thầu của doanh nghiệp trong năm được chọn
@@ -479,7 +485,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
             $evaluationStats = Evaluate::where('enterprise_id', $enterprise->id)
@@ -501,7 +507,7 @@ class EnterpriseRepository extends BaseRepository
     {
         $data = [];
         $ids = collect($ids)->flatten()->unique()->toArray();
-        $enterprises = $this->model->whereIn('id', $ids)->get();
+        $enterprises = $this->enterpriseActive()->whereIn('id', $ids)->get();
 
         foreach ($enterprises as $enterprise) {
 
@@ -517,7 +523,8 @@ class EnterpriseRepository extends BaseRepository
         return $data;
     }
 
-    public function countEnterprises(){
+    public function countEnterprises()
+    {
         return $this->model->count();
     }
 }

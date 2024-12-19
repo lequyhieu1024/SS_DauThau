@@ -43,4 +43,9 @@ class EmployeeRepository extends BaseRepository
         }
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
+
+    public function getNameAndIds()
+    {
+        return $this->model->select('id', 'name')->where('status','doing')->orderBy('id', 'DESC')->get();
+    }
 }

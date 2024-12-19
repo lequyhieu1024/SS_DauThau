@@ -29,6 +29,16 @@ class QuestionAnswer extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function asker()
+    {
+        return $this->belongsTo(User::class, 'asked_by');
+    }
+
+    public function responder()
+    {
+        return $this->belongsTo(User::class, 'answered_by');
+    }
+
 
     protected function getModelName(): string
     {
@@ -49,7 +59,7 @@ class QuestionAnswer extends Model
 
     protected function getFieldName(): string
     {
-        return $this->name;
+        return $this->question_content;
     }
 
 }

@@ -21,14 +21,14 @@ class ProjectRepository extends BaseRepository
 
     public function filter($data)
     {
-//        if ($data['enterprise_id'] == null) {
-//            $query = $this->model->with('children')->whereNull('parent_id');
-//        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
-//            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
-//                $query->where('investor_id', $data['enterprise_id'])
-//                    ->orWhere('tenderer_id', $data['enterprise_id']);
-//            });
-//        }
+        //        if ($data['enterprise_id'] == null) {
+        //            $query = $this->model->with('children')->whereNull('parent_id');
+        //        } else { // login với tài khoản doanh nghiệp thì chỉ xem được dự án của doanh nghiệp đó
+        //            $query = $this->model->with('children')->whereNull('parent_id')->where(function ($query) use ($data) {
+        //                $query->where('investor_id', $data['enterprise_id'])
+        //                    ->orWhere('tenderer_id', $data['enterprise_id']);
+        //            });
+        //        }
         $query = $this->model->with('children')->whereNull('parent_id');
 
         // logic loc du an
@@ -666,17 +666,32 @@ class ProjectRepository extends BaseRepository
         return $data;
     }
 
-    // Số lượng tham gia đấu thầu
     public function getBarChartDataBidderCount($projectIds)
     {
-        $data = $this->model->whereIn('projects.id', $projectIds)
-            ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
-            ->select('projects.id', 'projects.name', DB::raw('COUNT(bid_documents.id) as bidder_count'))
-            ->groupBy('projects.id', 'projects.name')
+        // Get all selected projects
+        $projects = $this->model->whereIn('projects.id', $projectIds)
+            ->select('projects.id', 'projects.name')
             ->get();
+
+        // Get bidder counts for the selected projects
+        $bidderCounts = $this->model->whereIn('projects.id', $projectIds)
+            ->leftJoin('bid_documents', 'projects.id', '=', 'bid_documents.project_id')
+            ->select('projects.id', DB::raw('COUNT(bid_documents.id) as bidder_count'))
+            ->groupBy('projects.id')
+            ->pluck('bidder_count', 'projects.id');
+
+        // Merge projects with bidder counts
+        $data = $projects->map(function ($project) use ($bidderCounts) {
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'bidder_count' => $bidderCounts->get($project->id, 0),
+            ];
+        });
 
         return $data;
     }
+
     public function projectsStatusPerMonth($year)
     {
         $data = [

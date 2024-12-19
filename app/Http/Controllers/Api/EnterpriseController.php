@@ -260,7 +260,7 @@ class EnterpriseController extends Controller
 
     public function getnameAndIds()
     {
-        $enterprises = $this->enterpriseRepository->getAllNotPaginate();
+        $enterprises = $this->enterpriseRepository->getAllNotPaginateActive();
         return response()->json([
             'result' => true,
             'message' => "Lấy danh sách doanh nghiệp thành công",
