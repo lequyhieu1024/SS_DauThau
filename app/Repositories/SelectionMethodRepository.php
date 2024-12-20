@@ -56,6 +56,9 @@ class SelectionMethodRepository extends BaseRepository
 
     public function countSelectionMethod()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Hình thức lựa chọn nhà thầu',
+            'total_selection_method' => $this->model->count()
+        ];
     }
 }

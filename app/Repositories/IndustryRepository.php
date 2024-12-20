@@ -113,6 +113,7 @@ class IndustryRepository extends BaseRepository
 
     public function countIndustries(){
         return [
+            'name' => 'Ngành nghề',
             'total_industries' =>$this->model->count(),
             'total_active_industries' =>$this->model->where('is_active', 1)->count(),
             'total_inactive_industries' =>$this->model->where('is_active', 0)->count(),

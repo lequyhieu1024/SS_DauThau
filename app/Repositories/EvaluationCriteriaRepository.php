@@ -33,6 +33,7 @@ class EvaluationCriteriaRepository extends BaseRepository
     public function countEvaluationCriteria()
     {
         return [
+            'name' => 'Tiêu chí đánh giá',
             'total_evaluation_criterias' => $this->model->count(),
             'total_active_evaluation_criterias' => $this->model->where('is_active', 1)->count(),
             'total_inactive_evaluation_criterias' => $this->model->where('is_active', 0)->count(),

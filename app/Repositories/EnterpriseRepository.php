@@ -526,6 +526,7 @@ class EnterpriseRepository extends BaseRepository
     public function countEnterprises()
     {
         return [
+            'name' => 'Doanh nghiệp',
             'total_enterprises' =>$this->model->count(),
             'total_active_enterprises' =>$this->model->where('is_active', 1)->count(),
             'total_inactive_enterprises' =>$this->model->where('is_active', 0)->count(),

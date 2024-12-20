@@ -57,6 +57,7 @@ class BiddingResultRepository extends BaseRepository
     public function countBiddingResult()
     {
         return [
+            'name' => 'Kết quả đấu thầu',
             'total_bidding_result' => $this->model->count()
         ];
     }

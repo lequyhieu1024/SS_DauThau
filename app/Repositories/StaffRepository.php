@@ -44,6 +44,7 @@ class StaffRepository extends BaseRepository
     public function countStaff()
     {
         return [
+            'name' => 'Nhân viên',
             'total_staffs' => $this->model->count(),
             'total_is_not_ban_staffs' => $this->model
                 ->whereHas('user', function ($query) {

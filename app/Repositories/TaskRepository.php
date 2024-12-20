@@ -45,6 +45,7 @@ class TaskRepository extends BaseRepository
     public function countTask()
     {
         return [
+            'name' => 'Công việc',
             'total_task' => $this->model->count(),
             'total_easy_task' => $this->model->where('difficulty_level', 'easy')->count(),
             'total_medium_task' => $this->model->where('difficulty_level', 'medium')->count(),

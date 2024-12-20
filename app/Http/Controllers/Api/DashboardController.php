@@ -50,25 +50,26 @@ class DashboardController extends Controller
     FundingSourceRepository $fundingSourceRepository, PostCatalogRepository $postCatalogRepository, PostRepository $postRepository, ProcurementCategoryRepository $procurementCategoryRepository,
     SelectionMethodRepository $selectionMethodRepository, SupportRepository $supportRepository, TaskRepository $taskRepository)
     {
-        //        $this->middleware(['permission:dashboard'])->only('projectByIndustry');
-        //        $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
-        //        $this->middleware(['permission:dashboard'])->only('projectByIsDomestic');
-        //        $this->middleware(['permission:dashboard'])->only('projectBySubmissionMethod');
-        //        $this->middleware(['permission:dashboard'])->only('projectBySelectionMethod');
-        //        $this->middleware(['permission:dashboard'])->only('projectByTendererAndInvestor');
-        //        $this->middleware(['permission:dashboard'])->only('averageProjectDurationByIndustry');
-        //        $this->middleware(['permission:dashboard'])->only('enterpriseByOrganizationType');
-        //        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectCount');
-        //        $this->middleware(['permission:dashboard'])->only('topTenderersByProjectTotalAmount');
-        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectPartial');
-        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectFull');
-        //        $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectTotalAmount');
-        //        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByIndustry');
-        //        $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByFundingSource');
-        //        $this->middleware(['permission:dashboard'])->only('timeJoiningWebsiteOfEnterprise');
-        //        $this->middleware(['permission:dashboard'])->only('projectsStatusPerMonth');
-        //        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostProject');
-        //        $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostEnterprise');
+                    $this->middleware(['permission:supper_admin_dashboard'])->only('countData');
+//                $this->middleware(['permission:dashboard'])->only('projectByIndustry');
+//                $this->middleware(['permission:dashboard'])->only('projectByFundingSource');
+//                $this->middleware(['permission:dashboard'])->only('projectByIsDomestic');
+//                $this->middleware(['permission:dashboard'])->only('projectBySubmissionMethod');
+//                $this->middleware(['permission:dashboard'])->only('projectBySelectionMethod');
+//                $this->middleware(['permission:dashboard'])->only('projectByTendererAndInvestor');
+//                $this->middleware(['permission:dashboard'])->only('averageProjectDurationByIndustry');
+//                $this->middleware(['permission:dashboard'])->only('enterpriseByOrganizationType');
+//                $this->middleware(['permission:dashboard'])->only('topTenderersByProjectCount');
+//                $this->middleware(['permission:dashboard'])->only('topTenderersByProjectTotalAmount');
+//                $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectPartial');
+//                $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectFull');
+//                $this->middleware(['permission:dashboard'])->only('topInvestorsByProjectTotalAmount');
+//                $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByIndustry');
+//                $this->middleware(['permission:dashboard'])->only('topEnterprisesHaveCompletedProjectsByFundingSource');
+//                $this->middleware(['permission:dashboard'])->only('timeJoiningWebsiteOfEnterprise');
+//                $this->middleware(['permission:dashboard'])->only('projectsStatusPerMonth');
+//                $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostProject');
+//                $this->middleware(['permission:dashboard'])->only('top10IndustryHasTheMostEnterprise');
 
         $this->projectRepository = $projectRepository;
         $this->enterpriseRepository = $enterpriseRepository;

@@ -60,6 +60,7 @@ class FundingSourceRepository extends BaseRepository
     public function countFundingSource()
     {
         return [
+            'name' => 'Nguồn tài trợ',
             'total_funding_source' =>$this->model->count(),
             'total_active_funding_source' =>$this->model->where('is_active', 1)->count(),
             'total_inactive_funding_source' =>$this->model->where('is_active', 0)->count(),
