@@ -24,7 +24,7 @@ class BidDocumentCollection extends ResourceCollection
                     ],
                     'enterprise' => [
                         'id' => $bidDocument->enterprise->id,
-                        'name' => $bidDocument->enterprise->representative,
+                        'name' => $bidDocument->enterprise->user->name,
                     ],
                     'bid_price' => $bidDocument->bid_price,
                     'status' => $bidDocument->status,
