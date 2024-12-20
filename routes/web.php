@@ -19,9 +19,9 @@ Route::get('documents/{filename}', [AttachmentController::class, 'serveDocumentF
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/{any}', function () {
-    return redirect('/');
-})->where('any', '.*');
+//Route::get('/{any}', function () {
+//    return redirect('/');
+//})->where('any', '.*');
 
 Route::get('/clear-cache-config', function () {
     Artisan::call('cache:clear');
