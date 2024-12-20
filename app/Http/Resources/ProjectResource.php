@@ -66,6 +66,7 @@ class ProjectResource extends JsonResource
             'approve_at' => $this->approve_at,
             'decision_number_approve' => $this->decision_number_approve,
             'status' => $this->status,
+            'evaluate' => $this->evaluate,
         ];
     }
 }
