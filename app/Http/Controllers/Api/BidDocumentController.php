@@ -160,6 +160,23 @@ class BidDocumentController extends Controller
     }
 
 
+    public function getBidDocumentsWithoutBidResult(): \Illuminate\Http\JsonResponse
+    {
+
+        $bidDocuments = $this->bidDocumentRepository->getBidDocumentsWithoutBidResult();
+
+        return response()->json([
+            'result' => true,
+            'data' => $bidDocuments->map(function ($bidDocument) {
+                return [
+                    "id" => $bidDocument->id,
+                    "name" => 'HSDT của doanh nghiệp ' . $bidDocument->enterprise_name . ' nộp cho dự án '  . $bidDocument->project_name,
+                ];
+            }),
+        ], 200);
+    }
+
+
     /**
      * @OA\Get(
      *     path="/api/admin/bid-documents/check-bid-participation/{projectId}",

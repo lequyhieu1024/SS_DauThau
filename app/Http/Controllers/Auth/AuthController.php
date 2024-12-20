@@ -197,6 +197,7 @@ class AuthController extends Controller
         }
         if ($user->enterprise && $user->enterprise->avatar) {
             $user->enterprise->avatar = env('APP_URL') .'/'. $user->enterprise->avatar;
+            $user->enterprise->industries = $user->enterprise->industries;
         }
         return response()->json([
             'result' => true,
@@ -227,7 +228,7 @@ class AuthController extends Controller
                     'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'phone' =>  [
                         'required',
-                        'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/'
+                        'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/'
                     ],
                     'address' => 'required|max:191',
                     'website' => 'required|max:191',
@@ -262,7 +263,7 @@ class AuthController extends Controller
                     'email' => 'required',
                     'phone' => [
                         'required',
-                        'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/',
+                        'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/',
                     ],
                 ];
                 $validator = Validator::make($data, $rules);

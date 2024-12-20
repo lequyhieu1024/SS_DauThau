@@ -54,9 +54,9 @@ class BidDocumentRepository extends BaseRepository
                 'projects.name as project_name',
                 'users.name as enterprise_name'
             ])
-            ->join('projects', 'projects.id', '=', 'bid_documents.project_id')
-            ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
-            ->join('users', 'users.id', '=', 'enterprises.user_id');
+            ->leftjoin('projects', 'projects.id', '=', 'bid_documents.project_id')
+            ->leftjoin('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
+            ->leftjoin('users', 'users.id', '=', 'enterprises.user_id');
 
         return $query->where('bid_documents.status', BidDocumentStatus::ACCEPTED->value)->orderBy('id', 'DESC')->get();
     }
@@ -64,6 +64,42 @@ class BidDocumentRepository extends BaseRepository
     public function countBidDocument()
     {
         return $this->model->count();
+    }
+
+//    public function getNameAndIdsWithoutBidResult()
+//    {
+//        $query = $this->model
+//            ->select([
+//                'bid_documents.id',
+//                'projects.name as project_name',
+//                'users.name as enterprise_name'
+//            ])
+//            ->join('projects', 'projects.id', '=', 'bid_documents.project_id')
+//            ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
+//            ->join('users', 'users.id', '=', 'enterprises.user_id')
+//            ->whereNull('bid_documents.bid_result');
+//
+//        return $query->where('bid_documents.status', BidDocumentStatus::ACCEPTED->value)
+//            ->orderBy('id', 'DESC')
+//            ->get();
+//    }
+
+    public function getBidDocumentsWithoutBidResult()
+    {
+        return $this->model
+            ->select([
+                'bid_documents.id',
+                'projects.name as project_name',
+                'users.name as enterprise_name'
+            ])
+            ->join('projects', 'projects.id', '=', 'bid_documents.project_id')
+            ->join('enterprises', 'enterprises.id', '=', 'bid_documents.enterprise_id')
+            ->join('users', 'users.id', '=', 'enterprises.user_id')
+            ->leftJoin('bidding_results', 'bid_documents.id', '=', 'bidding_results.bid_document_id')
+            ->whereNull('bidding_results.bid_document_id')
+            ->where('bid_documents.status', BidDocumentStatus::ACCEPTED->value)
+            ->orderBy('bid_documents.id', 'DESC')
+            ->get();
     }
 
 }

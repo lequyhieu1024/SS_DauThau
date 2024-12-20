@@ -226,6 +226,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
     Route::post('charts/enterprises/evaluations-statistics-by-enterprise', [EnterpriseController::class, 'evaluationsStatisticsByEnterprise']);
     Route::post('charts/enterprises/reputations-statistics-by-enterprise', [EnterpriseController::class, 'reputationsStatisticsByEnterprise']);
+    Route::post('charts/enterprises/employee-education-level-statistic-by-enterprises', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprises']);
 
     // Compare Project
     Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
@@ -249,22 +250,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::put('instructs/{instructs}/changeActive', [InstructController::class, 'changeActive']);
 
     // count
-    Route::get('count-projects', [DashboardController::class, 'countProjects']);
-    Route::get('count-enterprises', [DashboardController::class, 'countEnterprises']);
-    Route::get('count-industries', [DashboardController::class, 'countIndustries']);
-    Route::get('count-staff', [DashboardController::class, 'countStaff']);
-    Route::get('count-bidBond', [DashboardController::class, 'countBidBond']);
-    Route::get('count-biddingResult', [DashboardController::class, 'countBiddingResult']);
-    Route::get('count-evaluate', [DashboardController::class, 'countEvaluate']);
-    Route::get('count-evaluation-criteria', [DashboardController::class, 'countEvaluationCriteria']);
-    Route::get('count-feedback-complaint', [DashboardController::class, 'countFeedbackComplaint']);
-    Route::get('count-funding-source', [DashboardController::class, 'countFundingSource']);
-    Route::get('count-post-catalog', [DashboardController::class, 'countPostCatalog']);
-    Route::get('count-post', [DashboardController::class, 'countPost']);
-    Route::get('count-procurement-category', [DashboardController::class, 'countProcurementCategory']);
-    Route::get('count-selection-method', [DashboardController::class, 'countSelectionMethod']);
-    Route::get('count-support', [DashboardController::class, 'countSupport']);
-    Route::get('count-task', [DashboardController::class, 'countTask']);
+    Route::get('count-data', [DashboardController::class, 'countData']);
 
     //question answers
     Route::resource('questionsAnswers', QuestionAnswerController::class);
@@ -305,8 +291,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-enterprises', [EnterpriseController::class, 'getnameAndIds']);
     Route::get('list-industries', [IndustryController::class, 'getNameAndIds']);
     Route::get('list-bid-documents', [BidDocumentController::class, 'getNameAndIds']);
+    Route::get('list-bid-documents/get-bid-documents-without-bid-result', [BidDocumentController::class, 'getBidDocumentsWithoutBidResult']);
     Route::get('list-bid-bonds', [BidBondController::class, 'getBondNumberAndIds']);
     Route::get('get-enterprise-of-bidding-result-by-project/{project}', [ProjectController::class, 'getEnterpriseOfBiddingResultByProject']);
+    Route::get('get-task-of-project/{project}', [ProjectController::class, 'getTaskByProject']);
 
 });
 

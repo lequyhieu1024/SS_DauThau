@@ -41,6 +41,11 @@ class BidBondRepository extends BaseRepository
 
     public function countBidBond()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Bảo lãnh dự thầu',
+            'total_bid_bonds' =>$this->model->count(),
+            'total_not_expired_bid_bonds' =>$this->model->where('expiry_date', '>=' , now())->count(),
+            'total_expired_bid_bonds' =>$this->model->where('expiry_date', '<' , now())->count(),
+        ];
     }
 }

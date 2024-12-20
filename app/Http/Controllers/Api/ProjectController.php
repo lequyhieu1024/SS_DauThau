@@ -272,4 +272,24 @@ class ProjectController extends Controller
             ]
         ], 200);
     }
+
+    public function getTaskByProject($project_id) {
+        $project = $this->projectRepository->findOrFail($project_id);
+        if (!$project || !$project->tasks) {
+            return response([
+                'result' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+            ], 400);
+        }
+        return response([
+            'result' => true,
+            'message' => "Lấy thông tin nhiệm vụ của dự án này thành công",
+            'data' => $project->tasks->map(function ($task) {
+                return [
+                    'id' => $task->id,
+                    'name' => $task->name,
+                ];
+            })
+        ], 200);
+    }
 }

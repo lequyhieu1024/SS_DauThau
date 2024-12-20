@@ -36,6 +36,9 @@ class EvaluateRepository extends BaseRepository {
 
     public function countEvaluate()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Đánh giá doanh nghiệp',
+            'total_evaluates' => $this->model->count()
+        ];
     }
 }

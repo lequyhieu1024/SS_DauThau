@@ -525,6 +525,35 @@ class EnterpriseRepository extends BaseRepository
 
     public function countEnterprises()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Doanh nghiệp',
+            'total_enterprises' =>$this->model->count(),
+            'total_active_enterprises' =>$this->model->where('is_active', 1)->count(),
+            'total_inactive_enterprises' =>$this->model->where('is_active', 0)->count(),
+        ];
+    }
+
+    // biểu đồ so sánh trình độ học vấn của nhân viên khi so sánh doanh nghiệp
+    public function employeeEducationLevelStatisticByEnterprises(array $ids)
+    {
+        $education_levels = ['primary_school', 'secondary_school', 'high_school', 'college', 'university', 'after_university'];
+        $data = [];
+
+        $enterprises = $this->model->whereIn('id', $ids)->get();
+
+        foreach ($enterprises as $enterprise) {
+            $enterpriseData = [
+                'enterprise_name' => $enterprise->user->name,
+                'education_levels' => []
+            ];
+
+            foreach ($education_levels as $education_level) {
+                $enterpriseData['education_levels'][$education_level] = $enterprise->employees->where('education_level', $education_level)->count();
+            }
+
+            $data[] = $enterpriseData;
+        }
+
+        return $data;
     }
 }

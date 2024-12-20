@@ -8,7 +8,7 @@
 <body>
 <h4>Cập nhật mật khẩu mới tại trang web Septenary Solution JSC cho tài khoản {{ $data['name'] }}</h4>
 <p>Xin chào , <b class="text-primary">{{ $data['name'] }}</b></p>
-<p>Bạn vừa yêu cầu thay đổi mật khẩu, nếu đó là bạn, hãy click <b><a target="_blank" href="https://staging.septenarysolution.site/auth/change-password?token={{ $data['token'] }}&email={{$data['email']}}">vào đây</a></b> để thay đổi mật khẩu</p>
+<p>Bạn vừa yêu cầu thay đổi mật khẩu, nếu đó là bạn, hãy click <b><a target="_blank" href="{{ env('APP_FE_URL') }}/auth/change-password?token={{ $data['token'] }}&email={{$data['email']}}">vào đây</a></b> để thay đổi mật khẩu</p>
 <br>
 <h5>Thông tin người dùng</h5>
 <table class="table table-bordered">

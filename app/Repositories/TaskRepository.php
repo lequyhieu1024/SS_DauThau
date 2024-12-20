@@ -29,6 +29,10 @@ class TaskRepository extends BaseRepository
             $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
+        if (isset($data['project'])) {
+            $query->where('project_id', $data['project']);
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
@@ -40,7 +44,14 @@ class TaskRepository extends BaseRepository
 
     public function countTask()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Công việc',
+            'total_task' => $this->model->count(),
+            'total_easy_task' => $this->model->where('difficulty_level', 'easy')->count(),
+            'total_medium_task' => $this->model->where('difficulty_level', 'medium')->count(),
+            'total_hard_task' => $this->model->where('difficulty_level', 'hard')->count(),
+            'total_veryhard_task' => $this->model->where('difficulty_level', 'veryhard')->count(),
+        ];
     }
 
     public function compareRatioDificultyByProject($project_ids)

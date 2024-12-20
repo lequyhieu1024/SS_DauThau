@@ -56,7 +56,13 @@ class SupportRepository extends BaseRepository
 
     public function countSupport()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Hỗ trợ',
+            'total_support' =>$this->model->count(),
+            'total_sent_support' =>$this->model->where('status', 'sent')->count(),
+            'total_processing_support' =>$this->model->where('status', 'processing')->count(),
+            'total_responded_support' =>$this->model->where('status', 'responded')->count(),
+        ];
     }
 
 }

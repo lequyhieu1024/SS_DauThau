@@ -42,6 +42,12 @@ class PostRepository extends BaseRepository
 
     public function countPost()
     {
-        return $this->model->count();
+        return [
+            'name' => 'Bài viết',
+            'total_post' =>$this->model->count(),
+            'total_public_post' =>$this->model->where('status', 1)->count(),
+            'total_hidden_post' =>$this->model->where('status', 2)->count(),
+            'total_draft_post' =>$this->model->where('status', 3)->count(),
+        ];
     }
 }
