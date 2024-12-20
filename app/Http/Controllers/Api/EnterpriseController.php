@@ -430,4 +430,16 @@ class EnterpriseController extends Controller
         ], 200);
     }
 
+    // biểu đồ so sánh trình độ học vấn của nhân viên khi so sánh doanh nghiệp
+    public function employeeEducationLevelStatisticByEnterprises(Request $request)
+    {
+
+        $projectIds = $request->input('enterprise_ids');
+
+        return response([
+            'result' => true,
+            'message' => 'Biểu đồ thể hiện trình độ học vấn của nhân viên so sánh giữa các doanh nghiệp',
+            'data' => $this->enterpriseRepository->employeeEducationLevelStatisticByEnterprises($projectIds)
+        ], 200);
+    }
 }
