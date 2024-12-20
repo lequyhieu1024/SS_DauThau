@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\ProjectStatus;
+use App\Models\Industry;
 
 class IndustryRepository extends BaseRepository
 {
@@ -111,7 +112,11 @@ class IndustryRepository extends BaseRepository
     }
 
     public function countIndustries(){
-        return $this->model->count();
+        return [
+            'total_industries' =>$this->model->count(),
+            'total_active_industries' =>$this->model->where('is_active', 1)->count(),
+            'total_inactive_industries' =>$this->model->where('is_active', 0)->count(),
+        ];
     }
 
 

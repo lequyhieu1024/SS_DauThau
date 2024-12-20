@@ -336,7 +336,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'result' => true,
-            'message' => "Số lượng chi tiết đánh giá",
+            'message' => "Số lượng tiêu chí đánh giá",
             'data' => $this->evaluationCriteriaRepository->countEvaluationCriteria()
         ], 200);
     }

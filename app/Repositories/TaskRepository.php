@@ -44,7 +44,13 @@ class TaskRepository extends BaseRepository
 
     public function countTask()
     {
-        return $this->model->count();
+        return [
+            'total_task' => $this->model->count(),
+            'total_easy_task' => $this->model->where('difficulty_level', 'easy')->count(),
+            'total_medium_task' => $this->model->where('difficulty_level', 'medium')->count(),
+            'total_hard_task' => $this->model->where('difficulty_level', 'hard')->count(),
+            'total_veryhard_task' => $this->model->where('difficulty_level', 'veryhard')->count(),
+        ];
     }
 
     public function compareRatioDificultyByProject($project_ids)

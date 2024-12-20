@@ -762,6 +762,11 @@ class ProjectRepository extends BaseRepository
     }
 
     public function countProjects(){
-        return $this->model->count();
+        return [
+            'total_project' => $this->model->count(),
+            'total_await_project' => $this->model->where('status', ProjectStatus::AWAITING->value)->count(),
+            'total_reject_project' => $this->model->where('status', ProjectStatus::REJECT->value)->count(),
+            'total_approve_project' => $this->model->where('status', ProjectStatus::APPROVED->value)->count()
+        ];
     }
 }

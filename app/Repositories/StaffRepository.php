@@ -43,6 +43,19 @@ class StaffRepository extends BaseRepository
 
     public function countStaff()
     {
-        return $this->model->count();
+        return [
+            'total_staffs' => $this->model->count(),
+            'total_is_not_ban_staffs' => $this->model
+                ->whereHas('user', function ($query) {
+                    $query->whereNull('account_ban_at');
+                })
+                ->count(),
+            'total_ban_staffs' => $this->model
+                ->whereHas('user', function ($query) {
+                    $query->whereNotNull('account_ban_at');
+                })
+                ->count(),
+        ];
     }
+
 }

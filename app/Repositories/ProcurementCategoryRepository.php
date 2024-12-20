@@ -24,6 +24,10 @@ class ProcurementCategoryRepository extends BaseRepository
 
     public function countProcurementCategory()
     {
-        return $this->model->count();
+        return [
+            'total_procurement_category' =>$this->model->count(),
+            'total_active_procurement_category' =>$this->model->where('is_active', 1)->count(),
+            'total_inactive_procurement_category' =>$this->model->where('is_active', 0)->count(),
+        ];
     }
 }
