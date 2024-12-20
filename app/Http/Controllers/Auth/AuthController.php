@@ -197,6 +197,7 @@ class AuthController extends Controller
         }
         if ($user->enterprise && $user->enterprise->avatar) {
             $user->enterprise->avatar = env('APP_URL') .'/'. $user->enterprise->avatar;
+            $user->enterprise->industries = $user->enterprise->industries;
         }
         return response()->json([
             'result' => true,
