@@ -49,7 +49,7 @@ class SupportController extends Controller
         $this->supportRepository->create($data);
         return response([
             'result' => true,
-            'message' => 'Gữi thư hỗ trợ thành công',
+            'message' => 'Gửi thư hỗ trợ thành công',
             'data' => $data,
         ], 201);
     }

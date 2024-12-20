@@ -28,7 +28,7 @@ class SupportFormRequest extends FormRequest
             'user_id' => 'sometimes|exists:users,id',
             'title' => 'required|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|regex:/^(\(\+84\)|\+84|\(0\)|0)(\s?\d{3}|\s?\d{4}|\s?\d{5})(\s?\d{3,4}){2}$/',
+            'phone' => 'nullable|regex:/^(\+\d{1,3}[- ]?)?\d{10}$/',
             'content' => 'sometimes|max:10000',
             'document' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,ppt,pptx|max:2048',
             'type' => 'required|numeric',

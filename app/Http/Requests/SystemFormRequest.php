@@ -27,7 +27,7 @@ class SystemFormRequest extends FormRequest
             'logo' => 'required',
             'phone' =>  [
                 'required',
-                'regex:/^(\(\+84\s?\d{1,2}\)|\+84|\(0\d{1,2}\)|0\d{1,2})(\s?\d{3,4})(\s?\d{3,4})$/'
+                'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/'
             ],
             'email' => [
                 'required',
