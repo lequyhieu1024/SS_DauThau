@@ -294,6 +294,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list-bid-documents/get-bid-documents-without-bid-result', [BidDocumentController::class, 'getBidDocumentsWithoutBidResult']);
     Route::get('list-bid-bonds', [BidBondController::class, 'getBondNumberAndIds']);
     Route::get('get-enterprise-of-bidding-result-by-project/{project}', [ProjectController::class, 'getEnterpriseOfBiddingResultByProject']);
+    Route::get('get-task-of-project/{project}', [ProjectController::class, 'getTaskByProject']);
 
 });
 
