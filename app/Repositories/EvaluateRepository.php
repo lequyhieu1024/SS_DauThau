@@ -36,6 +36,8 @@ class EvaluateRepository extends BaseRepository {
 
     public function countEvaluate()
     {
-        return $this->model->count();
+        return [
+            'total_evaluates' => $this->model->count()
+        ];
     }
 }

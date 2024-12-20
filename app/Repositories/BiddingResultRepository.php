@@ -56,6 +56,8 @@ class BiddingResultRepository extends BaseRepository
 
     public function countBiddingResult()
     {
-        return $this->model->count();
+        return [
+            'total_bidding_result' => $this->model->count()
+        ];
     }
 }

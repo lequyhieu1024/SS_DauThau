@@ -269,147 +269,27 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function countProjects()
+    public function countData()
     {
         return response()->json([
             'result' => true,
-            'message' => "Số lượng dự án",
-            'data' => $this->projectRepository->countProjects()
-        ], 200);
-    }
-
-    public function countEnterprises()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng doanh nghiệp",
-            'data' => $this->enterpriseRepository->countEnterprises()
-        ], 200);
-    }
-
-    public function countIndustries()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng ngành nghề",
-            'data' => $this->industryRepository->countIndustries()
-        ], 200);
-    }
-
-    public function countStaff()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng nhân viên hệ thống",
-            'data' => $this->staffRepository->countStaff()
-        ], 200);
-    }
-
-    public function countBidBond()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng bảo lãnh dự thầu",
-            'data' => $this->bidBondRepository->countBidBond()
-        ], 200);
-    }
-
-    public function countBiddingResult()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng kết quả đấu thầu",
-            'data' => $this->biddingResultRepository->countBiddingResult()
-        ], 200);
-    }
-
-    public function countEvaluate()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng đánh giá",
-            'data' => $this->evaluateRepository->countEvaluate()
-        ], 200);
-    }
-
-    public function countEvaluationCriteria()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng tiêu chí đánh giá",
-            'data' => $this->evaluationCriteriaRepository->countEvaluationCriteria()
-        ], 200);
-    }
-
-    public function countFeedbackComplaint()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng khiếu nại và phản hồi",
-            'data' => $this->feedbackComplaintRepository->countFeedbackComplaint()
-        ], 200);
-    }
-
-    public function countFundingSource()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng nguồn tài trợ",
-            'data' => $this->fundingSourceRepository->countFundingSource()
-        ], 200);
-    }
-
-    public function countPostCatalog()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng danh mục bài viết",
-            'data' => $this->postCatalogRepository->countPostCatalog()
-        ], 200);
-    }
-
-    public function countPost()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng bài viết",
-            'data' => $this->postRepository->countPost()
-        ], 200);
-    }
-
-    public function countProcurementCategory()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng lĩnh vực mua sắm công",
-            'data' => $this->procurementCategoryRepository->countProcurementCategory()
-        ], 200);
-    }
-
-    public function countSelectionMethod()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng phương thức lựa chọn nhà thầu",
-            'data' => $this->selectionMethodRepository->countSelectionMethod()
-        ], 200);
-    }
-
-    public function countSupport()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng yêu cầu hỗ trợ",
-            'data' => $this->supportRepository->countSupport()
-        ], 200);
-    }
-
-    public function countTask()
-    {
-        return response()->json([
-            'result' => true,
-            'message' => "Số lượng nhiệm vụ",
-            'data' => $this->taskRepository->countTask()
+            'message' => "Lấy số lượng dữ liệu thành công",
+            'data' => [
+                $this->projectRepository->countProjects(),
+                $this->enterpriseRepository->countEnterprises(),
+                $this->industryRepository->countIndustries(),
+                $this->staffRepository->countStaff(),
+                $this->bidBondRepository->countBidBond(),
+                $this->biddingResultRepository->countBiddingResult(),
+                $this->evaluateRepository->countEvaluate(),
+                $this->evaluationCriteriaRepository->countEvaluationCriteria(),
+                $this->fundingSourceRepository->countFundingSource(),
+                $this->postRepository->countPost(),
+                $this->procurementCategoryRepository->countProcurementCategory(),
+                $this->selectionMethodRepository->countSelectionMethod(),
+                $this->supportRepository->countSupport(),
+                $this->taskRepository->countTask()
+            ]
         ], 200);
     }
 
