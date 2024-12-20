@@ -226,6 +226,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.jwt']], function () {
     Route::post('charts/enterprises/project-won-by-enterprise', [EnterpriseController::class, 'projectWonByEnterprise']);
     Route::post('charts/enterprises/evaluations-statistics-by-enterprise', [EnterpriseController::class, 'evaluationsStatisticsByEnterprise']);
     Route::post('charts/enterprises/reputations-statistics-by-enterprise', [EnterpriseController::class, 'reputationsStatisticsByEnterprise']);
+    Route::post('charts/enterprises/employee-education-level-statistic-by-enterprises', [EnterpriseController::class, 'employeeEducationLevelStatisticByEnterprises']);
 
     // Compare Project
     Route::post('compare-projects/detail-project-by-ids', [ProjectComparisonController::class, 'getDetailProjectByIds']);
