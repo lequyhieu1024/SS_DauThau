@@ -29,6 +29,10 @@ class TaskRepository extends BaseRepository
             $query->where('name', 'like', '%' . $data['name'] . '%');
         }
 
+        if (isset($data['project'])) {
+            $query->where('project_id', $data['project']);
+        }
+
         return $query->orderBy('id', 'desc')->paginate($data['size'] ?? 10);
     }
 
