@@ -43,6 +43,7 @@ class ProjectResource extends JsonResource
                     'type' => $attachment->type,
                     'path' => env('APP_URL') . '/' . $attachment->path,
                     'name' => $attachment->name,
+                    'size' => $attachment->size,
                 ];
             })->values()->toArray(),
             'children' => $this->children->map(function ($child) {
