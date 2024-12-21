@@ -27,7 +27,7 @@ class AttachmentRepository extends BaseRepository
         return $query->orderBy('id', 'DESC')->paginate($data['size'] ?? 10);
     }
 
-    public function createAttachment($files, $projectId, $userId, $projectName)
+    public function createAttachment2($files, $projectId, $userId, $projectName)
     {
         $currentAttachments = $this->model->where('project_id', $projectId)->get();
 
@@ -70,7 +70,7 @@ class AttachmentRepository extends BaseRepository
     }
 
 
-    public function createAttachment2($files, $projectId, $userId, $projectName)
+    public function createAttachment($files, $projectId, $userId, $projectName)
     {
 
         $attachments = [];
